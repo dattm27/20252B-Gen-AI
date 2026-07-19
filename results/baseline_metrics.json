@@ -1,0 +1,15 @@
+{
+  "accuracy": 0.6211,
+  "macro_f1": 0.4266,
+  "train_examples": 2036,
+  "dev_examples": 322,
+  "dev_ratio": 0.15,
+  "seed": 42,
+  "per_class": {
+    "conflict": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "support": 6},
+    "negative": {"precision": 0.64, "recall": 0.68, "f1": 0.66, "support": 132},
+    "neutral": {"precision": 0.32, "recall": 0.31, "f1": 0.32, "support": 54},
+    "positive": {"precision": 0.74, "recall": 0.72, "f1": 0.73, "support": 130}
+  },
+  "source": "notebooks/baseline_semeval_laptop_kaggle_run.ipynb (run on Kaggle, dataset charitarth/semeval-2014-task-4-aspectbasedsentimentanalysis)"
+}

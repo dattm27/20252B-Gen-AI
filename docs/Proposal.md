@@ -105,4 +105,12 @@ Chi tiết khảo sát đầy đủ (lý thuyết ABSA, so sánh các repo, ngu�
 
 ## Phân Công Nhóm
 
-_TODO: điền tên thành viên (4-5 người) và vai trò (data/baseline, model BERT, report generation + factual checker, đánh giá/báo cáo, slides)._
+Theo `plans/task.txt`:
+
+| Việc | Thành viên |
+|---|---|
+| Data pipeline + baseline (Tuần 3) | Đạt |
+| Fine-tune BERT (aspect extraction + sentiment classification) + tổng hợp thống kê theo aspect (Tuần 4) | Đạt, Sơn |
+| FLAN-T5 sinh report + factual checker (Tuần 4) | Hoàng, Vinh, Hưng |
+| Đánh giá & phân tích (Tuần 5) | _TODO: chưa phân công_ |
+| Viết báo cáo + slides (Tuần 6) | _TODO: chưa phân công_ |

@@ -11,7 +11,7 @@ Kế hoạch thực hiện đề tài **Phân tích cảm xúc theo khía cạnh
 | Tuần | Nội dung | Trạng thái |
 |------|----------|------------|
 | 1 | Nghiên cứu nền tảng | 🟢 Hoàn thành |
-| 2 | Chốt Proposal | 🟡 Đang làm (còn phân công nhóm) |
+| 2 | Chốt Proposal | 🟢 Hoàn thành |
 | 3 | Data pipeline & baseline | 🟢 Hoàn thành |
 | 4 | Model cải tiến & report generation | 🔴 Chưa bắt đầu |
 | 5 | Đánh giá & phân tích | 🔴 Chưa bắt đầu |
@@ -42,7 +42,7 @@ Chi tiết: [`docs/Research-Notes.md`](../docs/Research-Notes.md)
 - [x] Xác nhận dataset tải được thật (kèm link tải cụ thể) — *cho lựa chọn SemEval-2014 Laptop hiện tại*.
 - [x] Làm rõ Amazon Reviews chỉ dùng để demo quy mô lớn (không có ground-truth aspect), không dùng để benchmark.
 - [x] **Chốt dataset chính**: giữ **SemEval-2014 Laptop** (đã cân nhắc phương án thay thế trong [`docs/Dataset-Options.md`](../docs/Dataset-Options.md)); nhóm đã có tài khoản tải bản gốc từ [trang chính thức](https://alt.qcri.org/semeval2014/task4/index.php?id=data-and-tools).
-- [ ] Phân công thành viên nhóm. — **cần nhóm điền tên/vai trò**, xem `docs/Proposal.md` mục "Phân Công Nhóm".
+- [x] Phân công thành viên nhóm (theo `plans/task.txt`) — xem `docs/Proposal.md` mục "Phân Công Nhóm". Còn thiếu người phụ trách Tuần 5 (đánh giá) và Tuần 6 (báo cáo/slides).
 - [x] Cập nhật `docs/Proposal.md` theo các bổ sung trên.
 
 ## Tuần 3 — Data pipeline & baseline
