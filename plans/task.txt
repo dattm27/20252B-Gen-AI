@@ -1,0 +1,16 @@
+Phân công nhiệm vụ 
+
+1. Fine-tune DistilBERT/BERT cho aspect extraction + sentiment classification.
+—> Đạt, Sơn  
+Xây tổng hợp thống kê theo từng aspect.
+
+2.
+Dùng FLAN-T5 sinh báo cáo ngắn từ bảng thống kê. (sample)
+Xây factual checker đơn giản đối chiếu số liệu trong report với thống kê gốc.
+→ Hoàng, Vinh, Hưng 
+
+(T5)
+3.  Đánh giá & phân tích
+
+
+4. Viết báo cáo + slides
