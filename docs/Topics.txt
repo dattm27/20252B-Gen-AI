@@ -1,0 +1,11 @@
+Đây là topics gợi ý cho BTL nhé.
+1. Viết và tạo nội dung: Tự động viết bài blog, bài báo, kịch bản video, email marketing từ một đoạn yêu cầu ngắn.
+2. Thiết kế và nghệ thuật: Tạo hình ảnh từ mô tả văn bản, ví dụ: “con mèo ngồi trên bàn, phong cách anime”.
+3. Lập trình và phát triển phần mềm: Gợi ý mã lập trình, hoàn thành đoạn code, tạo hàm mới từ ngữ cảnh, hoặc tạo test case tự động.
+4. Dịch thuật và học ngoại ngữ: Dịch văn bản từ ngôn ngữ A sang ngôn ngữ B với độ chính xác cao, tự nhiên, kèm giải thích ngữ pháp.
+5. Chăm sóc khách hang: Xây dựng chatbot hỗ trợ khách hàng: trả lời câu hỏi, xử lý yêu cầu, gợi ý giải pháp, cá nhân hóa email.
+6. Phân tích dữ liệu và báo cáo: Tạo báo cáo, tóm tắt dữ liệu bán hàng, phân tích cảm xúc từ phản hồi khách hàng.
+7. Y tế và chăm sóc sức khỏe: Tổng hợp hồ sơ bệnh án, gợi ý chẩn đoán, thiết kế thuốc mới từ dữ liệu sinh học, cá nhân hóa phác đồ điều trị.
+8. Giáo dục và học tập: Tạo đề thi tự động, chấm điểm bài tập, sinh tài liệu học tập cá nhân hóa theo năng lực học sinh.
+9. Trò chơi và mô phỏng: Tạo nhân vật mới, môi trường, cốt truyện, nhạc nền cho trò chơi, mô phỏng hệ thống phức tạp trong khoa học.
+10. Bảo mật và quyền riêng tư: Tạo dữ liệu giả để bảo vệ thông tin nhạy cảm, phát hiện và ngăn chặn deepfake, tăng cường bảo mật dữ liệu cá nhân.
