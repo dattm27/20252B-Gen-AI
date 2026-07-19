@@ -66,6 +66,19 @@ Sau đó, khi có nhiều review, hệ thống tổng hợp và sinh báo cáo n
 - **Motivation**: model sinh văn bản có thể "bịa" số liệu không khớp thống kê gốc — cần một lớp kiểm tra trước khi xuất báo cáo.
 - **Cách làm**: rule-based — dùng regex trích các con số (%, số lượng) và tên aspect xuất hiện trong report, đối chiếu với bảng thống kê gốc; nếu lệch hoặc nhắc tới aspect không có trong thống kê → gắn cờ cảnh báo.
 
+## Kết Quả Baseline (Tuần 3)
+
+Đã train baseline TF-IDF + Logistic Regression thật trên `Laptop_Train_v2.xml` (3045 câu, dev-split 15% giữ lại làm test tạm — xem `docs/Dataset-Verification-Report.md`):
+
+| Polarity | Precision | Recall | F1 | Support |
+|---|---|---|---|---|
+| positive | 0.74 | 0.72 | 0.73 | 130 |
+| negative | 0.64 | 0.68 | 0.66 | 132 |
+| neutral | 0.32 | 0.31 | 0.32 | 54 |
+| conflict | 0.00 | 0.00 | 0.00 | 6 |
+
+**Accuracy: 0.6211 | Macro-F1: 0.4266**. Baseline gần như không học được lớp `conflict` (chỉ 6 example trong tập train) và yếu ở `neutral` — dữ liệu lệch lớp nặng, TF-IDF không nắm được ngữ cảnh phủ định/tương phản trong câu. Đây là mốc so sánh cho model BERT ở Tuần 4. Notebook: `notebooks/baseline_semeval_laptop_kaggle_run.ipynb`, số liệu đầy đủ: `results/baseline_metrics.json`.
+
 ## Metric Đánh Giá
 
 - **Aspect extraction**: Precision / Recall / F1 theo span (exact match, dùng `seqeval`).
@@ -75,7 +88,7 @@ Sau đó, khi có nhiều review, hệ thống tổng hợp và sinh báo cáo n
 
 ## Dataset — Xác Nhận & Nguồn Tải
 
-- **Chính: SemEval-2014 Task 4 (Laptop)** — có sẵn nhãn aspect term + polarity. Trang chính thức: [alt.qcri.org/semeval2014/task4](https://alt.qcri.org/semeval2014/task4/). Dữ liệu XML gốc được mirror công khai trong repo nền [lixin4ever/BERT-E2E-ABSA](https://github.com/lixin4ever/BERT-E2E-ABSA) (thư mục `data/laptop14`) — nhóm dùng bản này để tải được ngay, không phụ thuộc đăng ký.
+- **Chính: SemEval-2014 Task 4 (Laptop)** — có sẵn nhãn aspect term + polarity. Tải trực tiếp từ trang chính thức [alt.qcri.org/semeval2014/task4 — Data and Tools](https://alt.qcri.org/semeval2014/task4/index.php?id=data-and-tools) (nhóm đã có tài khoản để tải bản gốc). Nếu cần bản dự phòng, dữ liệu XML cũng được mirror công khai trong repo nền [lixin4ever/BERT-E2E-ABSA](https://github.com/lixin4ever/BERT-E2E-ABSA) (thư mục `data/laptop14`).
 - **Phụ: Amazon Reviews 2023** (McAuley Lab) — [huggingface.co/datasets/McAuley-Lab/Amazon-Reviews-2023](https://huggingface.co/datasets/McAuley-Lab/Amazon-Reviews-2023), tải qua `datasets.load_dataset("McAuley-Lab/Amazon-Reviews-2023", "raw_review_Electronics", trust_remote_code=True)`. **Lưu ý**: dataset này không có nhãn aspect/sentiment sẵn → chỉ dùng để demo chạy pipeline ở quy mô lớn (tự động gán nhãn bằng model đã train), **không** dùng để tính metric benchmark.
 
 Chi tiết khảo sát đầy đủ (lý thuyết ABSA, so sánh các repo, nguồn tham khảo) xem tại [`Research-Notes.md`](Research-Notes.md).

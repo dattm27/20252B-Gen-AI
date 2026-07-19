@@ -1,2 +1,16 @@
 .vscode
 .claude
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Raw dataset (gated/licensed — download locally, do not commit)
+data/raw/*
+!data/raw/.gitkeep
+
+# Generated results
+results/*
+!results/.gitkeep

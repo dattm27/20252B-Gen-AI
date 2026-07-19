@@ -1,6 +1,8 @@
-# Đề Xuất Dataset — Chờ Nhóm Họp Chốt
+# Đề Xuất Dataset (Tham Khảo — Đã Chốt Giữ Nguyên)
 
-Proposal hiện tại (`docs/Proposal.md`) đang chọn **SemEval-2014 Task 4 (Laptop)** làm dataset chính. Đây là các phương án thay thế/bổ sung để nhóm họp và chốt lại — chưa cập nhật vào Proposal chính thức.
+> **Quyết định**: nhóm giữ **SemEval-2014 Task 4 (Laptop)** làm dataset chính, tải qua tài khoản chính thức tại [alt.qcri.org/semeval2014/task4 — Data and Tools](https://alt.qcri.org/semeval2014/task4/index.php?id=data-and-tools). File này được giữ lại làm tham khảo nếu sau này cần đổi hướng.
+
+Các phương án thay thế/bổ sung từng được cân nhắc:
 
 ## So sánh
 

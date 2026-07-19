@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<sentences>
+  <sentence id="1">
+    <text>The battery life is amazing but the screen is too dim.</text>
+    <aspectTerms>
+      <aspectTerm term="battery life" polarity="positive" from="4" to="16"/>
+      <aspectTerm term="screen" polarity="negative" from="36" to="42"/>
+    </aspectTerms>
+  </sentence>
+  <sentence id="2">
+    <text>Boot time is fast and the build quality feels solid.</text>
+    <aspectTerms>
+      <aspectTerm term="Boot time" polarity="positive" from="0" to="9"/>
+      <aspectTerm term="build quality" polarity="positive" from="26" to="39"/>
+    </aspectTerms>
+  </sentence>
+  <sentence id="3">
+    <text>I like the design but the price is too high for what you get.</text>
+    <aspectTerms>
+      <aspectTerm term="design" polarity="positive" from="11" to="17"/>
+      <aspectTerm term="price" polarity="negative" from="26" to="31"/>
+    </aspectTerms>
+  </sentence>
+  <sentence id="4">
+    <text>The keyboard feels cheap.</text>
+    <aspectTerms>
+      <aspectTerm term="keyboard" polarity="negative" from="4" to="12"/>
+    </aspectTerms>
+  </sentence>
+  <sentence id="5">
+    <text>Great performance overall, though the fan noise is noticeable and forgettable.</text>
+    <aspectTerms>
+      <aspectTerm term="performance" polarity="positive" from="6" to="17"/>
+      <aspectTerm term="fan noise" polarity="neutral" from="38" to="47"/>
+    </aspectTerms>
+  </sentence>
+  <sentence id="6">
+    <text>Storage is huge but somehow also slow and outdated.</text>
+    <aspectTerms>
+      <aspectTerm term="Storage" polarity="positive" from="0" to="7"/>
+      <aspectTerm term="Storage" polarity="conflict" from="0" to="7"/>
+    </aspectTerms>
+  </sentence>
+</sentences>

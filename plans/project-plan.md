@@ -11,8 +11,8 @@ Kế hoạch thực hiện đề tài **Phân tích cảm xúc theo khía cạnh
 | Tuần | Nội dung | Trạng thái |
 |------|----------|------------|
 | 1 | Nghiên cứu nền tảng | 🟢 Hoàn thành |
-| 2 | Chốt Proposal | 🟡 Đang làm (còn phân công nhóm + họp chốt dataset) |
-| 3 | Data pipeline & baseline | 🔴 Chưa bắt đầu |
+| 2 | Chốt Proposal | 🟡 Đang làm (còn phân công nhóm) |
+| 3 | Data pipeline & baseline | 🟢 Hoàn thành |
 | 4 | Model cải tiến & report generation | 🔴 Chưa bắt đầu |
 | 5 | Đánh giá & phân tích | 🔴 Chưa bắt đầu |
 | 6 | Deliverables | 🔴 Chưa bắt đầu |
@@ -41,16 +41,27 @@ Chi tiết: [`docs/Research-Notes.md`](../docs/Research-Notes.md)
   - [x] Tỉ lệ lỗi bịa số liệu bắt được bởi factual checker.
 - [x] Xác nhận dataset tải được thật (kèm link tải cụ thể) — *cho lựa chọn SemEval-2014 Laptop hiện tại*.
 - [x] Làm rõ Amazon Reviews chỉ dùng để demo quy mô lớn (không có ground-truth aspect), không dùng để benchmark.
-- [ ] **Họp nhóm chốt lại dataset chính** — có đề xuất thay thế (UIT-ViSFD, SemEval Restaurant, MAMS), xem [`docs/Dataset-Options.md`](../docs/Dataset-Options.md). Sau khi chốt, cập nhật lại `docs/Proposal.md` + `docs/Research-Notes.md` nếu đổi dataset.
+- [x] **Chốt dataset chính**: giữ **SemEval-2014 Laptop** (đã cân nhắc phương án thay thế trong [`docs/Dataset-Options.md`](../docs/Dataset-Options.md)); nhóm đã có tài khoản tải bản gốc từ [trang chính thức](https://alt.qcri.org/semeval2014/task4/index.php?id=data-and-tools).
 - [ ] Phân công thành viên nhóm. — **cần nhóm điền tên/vai trò**, xem `docs/Proposal.md` mục "Phân Công Nhóm".
 - [x] Cập nhật `docs/Proposal.md` theo các bổ sung trên.
 
 ## Tuần 3 — Data pipeline & baseline
 
-- [ ] Setup repo/environment.
-- [ ] Viết data loader cho SemEval-2014 Laptop, tiền xử lý dữ liệu.
-- [ ] Xây baseline TF-IDF + Logistic Regression cho aspect sentiment classification.
-- [ ] Log kết quả baseline để làm mốc so sánh.
+- [x] Setup repo/environment (`requirements.txt`, `.venv`, cấu trúc `src/`, `scripts/`, `tests/`).
+- [x] Viết data loader cho SemEval-2014 Laptop (`src/data/semeval_loader.py`) + tiền xử lý (`src/data/preprocess.py`), có test (`tests/test_semeval_loader.py`) chạy trên fixture mẫu vì chưa có data thật.
+- [x] Xây baseline TF-IDF + Logistic Regression (`src/baseline/tfidf_logreg.py`) cho aspect sentiment classification, CLI chạy qua `scripts/train_baseline.py`.
+- [x] Log kết quả baseline thật — chạy trên Kaggle (`notebooks/baseline_semeval_laptop_kaggle_run.ipynb`), dataset `charitarth/semeval-2014-task-4-aspectbasedsentimentanalysis`, dev-split 15% (seed=42) từ `Laptop_Train_v2.xml` (3045 câu, 2358 aspect term → train 2036 / dev 322 example).
+
+  **Kết quả baseline (TF-IDF + Logistic Regression)**: Accuracy **0.6211** | Macro-F1 **0.4266**
+
+  | Polarity | Precision | Recall | F1 | Support |
+  |---|---|---|---|---|
+  | positive | 0.74 | 0.72 | 0.73 | 130 |
+  | negative | 0.64 | 0.68 | 0.66 | 132 |
+  | neutral | 0.32 | 0.31 | 0.32 | 54 |
+  | conflict | 0.00 | 0.00 | 0.00 | 6 |
+
+  Nhận xét: model gần như không nhận diện được lớp `conflict` (chỉ 6/2036 example trong train — quá ít để học), và `neutral` cũng yếu (F1 0.32) — dữ liệu lệch lớp nặng (`positive`/`negative` chiếm đa số). Đây là mốc so sánh (baseline) cho model BERT ở Tuần 4 — kỳ vọng BERT cải thiện rõ nhất ở 2 lớp `neutral`/`conflict` nhờ hiểu ngữ cảnh tốt hơn TF-IDF. Chi tiết: `results/baseline_metrics.json`.
 
 ## Tuần 4 — Model cải tiến & report generation
 
