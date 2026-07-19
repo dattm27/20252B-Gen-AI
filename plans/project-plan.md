@@ -10,8 +10,8 @@ Kế hoạch thực hiện đề tài **Phân tích cảm xúc theo khía cạnh
 
 | Tuần | Nội dung | Trạng thái |
 |------|----------|------------|
-| 1 | Nghiên cứu nền tảng | 🔴 Chưa bắt đầu |
-| 2 | Chốt Proposal | 🔴 Chưa bắt đầu |
+| 1 | Nghiên cứu nền tảng | 🟢 Hoàn thành |
+| 2 | Chốt Proposal | 🟡 Đang làm (còn phân công nhóm + họp chốt dataset) |
 | 3 | Data pipeline & baseline | 🔴 Chưa bắt đầu |
 | 4 | Model cải tiến & report generation | 🔴 Chưa bắt đầu |
 | 5 | Đánh giá & phân tích | 🔴 Chưa bắt đầu |
@@ -21,26 +21,29 @@ Chú thích: 🔴 Chưa bắt đầu · 🟡 Đang làm · 🟢 Hoàn thành
 
 ## Tuần 1 — Nghiên cứu nền tảng
 
-- [ ] Đọc lý thuyết Aspect-Based Sentiment Analysis (ABSA), phân biệt với sentiment analysis thông thường.
-- [ ] Khảo sát chi tiết dataset SemEval-2014 Task 4 (domain Laptop): cấu trúc data, nhãn aspect và sentiment.
-- [ ] Khảo sát các nhóm model:
-  - [ ] Baseline: TF-IDF + Logistic Regression.
-  - [ ] DistilBERT/BERT cho aspect extraction và aspect sentiment classification.
-  - [ ] T5/FLAN-T5 cho sinh report từ bảng thống kê aspect-sentiment.
-- [ ] Tìm và chọn **1 repo/paper nền** cụ thể để kế thừa, xác định rõ điểm nhóm sẽ cải tiến.
+- [x] Đọc lý thuyết Aspect-Based Sentiment Analysis (ABSA), phân biệt với sentiment analysis thông thường.
+- [x] Khảo sát chi tiết dataset SemEval-2014 Task 4 (domain Laptop): cấu trúc data, nhãn aspect và sentiment.
+- [x] Khảo sát các nhóm model:
+  - [x] Baseline: TF-IDF + Logistic Regression.
+  - [x] DistilBERT/BERT cho aspect extraction và aspect sentiment classification.
+  - [x] T5/FLAN-T5 cho sinh report từ bảng thống kê aspect-sentiment.
+- [x] Tìm và chọn **1 repo/paper nền** cụ thể để kế thừa, xác định rõ điểm nhóm sẽ cải tiến.
+
+Chi tiết: [`docs/Research-Notes.md`](../docs/Research-Notes.md)
 
 ## Tuần 2 — Chốt Proposal
 
-- [ ] Bổ sung motivation cho từng method (vì sao chọn, so với lựa chọn khác).
-- [ ] Giải thích input representation / training / prediction cho từng model.
-- [ ] Định nghĩa metric đánh giá cụ thể:
-  - [ ] F1/Accuracy cho aspect extraction & sentiment classification.
-  - [ ] ROUGE/BERTScore (hoặc human eval) cho chất lượng report sinh ra.
-  - [ ] Tỉ lệ lỗi bịa số liệu bắt được bởi factual checker.
-- [ ] Xác nhận dataset tải được thật (kèm link tải cụ thể).
-- [ ] Làm rõ Amazon Reviews chỉ dùng để demo quy mô lớn (không có ground-truth aspect), không dùng để benchmark.
-- [ ] Phân công thành viên nhóm.
-- [ ] Cập nhật `docs/Proposal.md` theo các bổ sung trên.
+- [x] Bổ sung motivation cho từng method (vì sao chọn, so với lựa chọn khác).
+- [x] Giải thích input representation / training / prediction cho từng model.
+- [x] Định nghĩa metric đánh giá cụ thể:
+  - [x] F1/Accuracy cho aspect extraction & sentiment classification.
+  - [x] ROUGE/BERTScore (hoặc human eval) cho chất lượng report sinh ra.
+  - [x] Tỉ lệ lỗi bịa số liệu bắt được bởi factual checker.
+- [x] Xác nhận dataset tải được thật (kèm link tải cụ thể) — *cho lựa chọn SemEval-2014 Laptop hiện tại*.
+- [x] Làm rõ Amazon Reviews chỉ dùng để demo quy mô lớn (không có ground-truth aspect), không dùng để benchmark.
+- [ ] **Họp nhóm chốt lại dataset chính** — có đề xuất thay thế (UIT-ViSFD, SemEval Restaurant, MAMS), xem [`docs/Dataset-Options.md`](../docs/Dataset-Options.md). Sau khi chốt, cập nhật lại `docs/Proposal.md` + `docs/Research-Notes.md` nếu đổi dataset.
+- [ ] Phân công thành viên nhóm. — **cần nhóm điền tên/vai trò**, xem `docs/Proposal.md` mục "Phân Công Nhóm".
+- [x] Cập nhật `docs/Proposal.md` theo các bổ sung trên.
 
 ## Tuần 3 — Data pipeline & baseline
 
