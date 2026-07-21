@@ -66,7 +66,29 @@ Chi tiết: [`docs/Research-Notes.md`](../docs/Research-Notes.md)
 ## Tuần 4 — Model cải tiến & report generation
 
 - [ ] Fine-tune DistilBERT/BERT cho aspect extraction + sentiment classification.
-- [ ] Xây bước tổng hợp thống kê theo từng aspect.
+
+  **Kết quả DistilBERT (aspect sentiment classification, sequence-pair `[CLS] sentence [SEP] aspect [SEP]`, class-weighted loss, 3 seed 42/43/44 × tối đa 20 epoch + early stopping, lr=3e-5)** — chạy trên Kaggle (`notebooks/finetune_distilbert_semeval_laptop.ipynb`, dataset `dattm03/genai-dataset`, đã bỏ nhãn `conflict` → chỉ còn `positive`/`negative`/`neutral`); kết quả đã chạy: `notebooks-output/finetune_distilbert_semeval_laptop_output.ipynb`.
+
+  Accuracy trung bình **0.7447 ± 0.0159** | Macro-F1 trung bình **0.6861 ± 0.0235** (seed tốt nhất: seed 44, Macro-F1 0.7031)
+
+  | Label | Precision | Recall | F1 | Support |
+  |---|---|---|---|---|
+  | negative | 0.747 | 0.808 | 0.775 | 132 |
+  | neutral | 0.492 | 0.432 | 0.458 | 54 |
+  | positive | 0.841 | 0.810 | 0.825 | 130 |
+
+  Nhận xét: cải thiện rõ so với baseline (Accuracy 0.6211 / Macro-F1 0.4266 — số baseline đo trên bản 4 lớp cũ có `conflict` nên không hoàn toàn tương đồng, cần baseline chạy lại trên data 3 lớp để so sánh chuẩn). `neutral` vẫn là lớp yếu nhất.
+
+  **Còn thiếu**: (1) chạy `notebooks/finetune_bert_semeval_laptop.ipynb` (BERT-base) để so sánh — Sơn đang chạy, sẽ cập nhật kết quả sau; (2) phần "aspect extraction" — hiện đang dùng aspect term gold có sẵn trong XML, chưa tự extract aspect từ câu thô, sẽ cần cho Tuần 5 khi test trên Amazon Reviews (không có gold aspect).
+- [x] Xây bước tổng hợp thống kê theo từng aspect.
+
+  Logic gộp số liệu thuần Python (`src/report/aspect_stats.py`, có test ở `tests/test_aspect_stats.py`, chạy local không cần GPU). Inference + tổng hợp thật chạy trên Kaggle: `notebooks/aspect_stats_semeval_laptop.ipynb`, dùng model DistilBERT (seed 44) qua Kaggle Model `dattm03/distilbert-absa`, chạy trên union train+valid+test (2313 example). Kết quả: `notebooks-output/aspect_stats_semeval_laptop_output.ipynb`, bảng đầy đủ tại `output/aspect_stats.txt`.
+
+  - 253 aspect có ≥2 lượt nhắc tới.
+  - Majority-sentiment agreement (so kết luận cuối cùng theo aspect giữa gold vs. predicted): **228/253 = 90.12%**.
+  - Top aspect theo số lượt nhắc: `screen` (60, positive), `price` (56, positive), `use` (53, positive), `battery life` (52, positive), `keyboard` (50, positive), `battery` (47, **negative**), `warranty` (31, **neutral**), `hard drive`/`windows` (negative).
+  - Lưu ý: per-example agreement in trong notebook (0.8617) đo trên union train+valid+test nên **cao hơn ảo** so với accuracy thật của model (0.7447, đo trên test set riêng) — không dùng số 0.8617 để so sánh/báo cáo hiệu năng model, chỉ dùng để sanity-check bước tổng hợp.
+  - Bàn giao `aspect_stats.json` (mảng `predicted`) cho bước FLAN-T5 report generation bên dưới.
 - [ ] Dùng FLAN-T5 sinh báo cáo ngắn từ bảng thống kê.
 - [ ] Xây factual checker đơn giản đối chiếu số liệu trong report với thống kê gốc.
 

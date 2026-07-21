@@ -31,19 +31,30 @@ See [`docs/Proposal.md`](docs/Proposal.md) for the full proposal, [`docs/Require
 │   ├── data/
 │   │   ├── semeval_loader.py     # Parses SemEval-2014 XML into Sentence/AspectTerm
 │   │   └── preprocess.py         # Flattens sentences into (context, aspect, polarity) examples
-│   └── baseline/
-│       └── tfidf_logreg.py       # TF-IDF + Logistic Regression baseline model
+│   ├── baseline/
+│   │   └── tfidf_logreg.py       # TF-IDF + Logistic Regression baseline model
+│   └── report/
+│       └── aspect_stats.py       # Groups (aspect, sentiment) pairs into a per-aspect summary table
 ├── scripts/
 │   ├── train_baseline.py         # CLI: train + evaluate the baseline
 │   └── split_dataset.py          # CLI: split the train XML into train/valid/test XML files
 ├── notebooks/
-│   ├── baseline_semeval_laptop.ipynb            # Self-contained template (Kaggle-ready)
-│   └── baseline_semeval_laptop_kaggle_run.ipynb # Executed copy with real results
+│   ├── baseline_semeval_laptop.ipynb              # Baseline template (Kaggle-ready)
+│   ├── baseline_semeval_laptop_kaggle_run.ipynb   # Executed baseline, with real results
+│   ├── finetune_distilbert_semeval_laptop.ipynb   # Fine-tune DistilBERT (Kaggle-ready)
+│   ├── finetune_bert_semeval_laptop.ipynb         # Fine-tune BERT-base (Kaggle-ready)
+│   └── aspect_stats_semeval_laptop.ipynb          # Runs the fine-tuned model + aggregates per-aspect stats
+├── notebooks-output/              # Executed copies of the notebooks above, with real Kaggle results
+│   ├── finetune_distilbert_semeval_laptop_output.ipynb
+│   └── aspect_stats_semeval_laptop_output.ipynb
 ├── tests/
 │   ├── fixtures/sample_laptop.xml  # Hand-built fixture matching the official XML schema
-│   └── test_semeval_loader.py
+│   ├── test_semeval_loader.py
+│   └── test_aspect_stats.py
 ├── results/
 │   └── baseline_metrics.json     # Recorded baseline results (Tuần 3)
+├── output/
+│   └── aspect_stats.txt          # Aggregated per-aspect sentiment stats (gold + predicted), from the Kaggle run
 └── requirements.txt
 ```
 
@@ -93,10 +104,63 @@ A Kaggle-ready, self-contained version of the same baseline is in [`notebooks/ba
 
 **Current result** (dev split, seed=42): Accuracy **0.6211**, Macro-F1 **0.4266** — see [`results/baseline_metrics.json`](results/baseline_metrics.json) and the "Kết Quả Baseline" section in [`docs/Proposal.md`](docs/Proposal.md).
 
+## Fine-tuning DistilBERT/BERT
+
+Same task as the baseline (aspect-term polarity classification), fine-tuned as a sentence-pair
+classifier: `[CLS] sentence [SEP] aspect_term [SEP]`. 3 labels — `positive`/`negative`/`neutral`
+(`conflict` was dropped from the dataset, too few examples to learn reliably).
+
+Both notebooks are Kaggle-ready and self-contained:
+
+- [`notebooks/finetune_distilbert_semeval_laptop.ipynb`](notebooks/finetune_distilbert_semeval_laptop.ipynb) — `distilbert-base-uncased`, lr=3e-5.
+- [`notebooks/finetune_bert_semeval_laptop.ipynb`](notebooks/finetune_bert_semeval_laptop.ipynb) — `bert-base-uncased`, lr=2e-5.
+
+Each trains 3 seeds (42/43/44) × up to 20 epochs with early stopping (patience=3 on valid
+macro-F1), class-weighted cross-entropy loss to counter the `positive`/`negative` vs `neutral`
+imbalance, then reports mean ± std accuracy/macro-F1 over the 3 seeds on the held-out test split
+and saves the best-of-3-seeds model.
+
+**Kaggle setup**: add the [`dattm03/genai-dataset`](https://www.kaggle.com/datasets/dattm03/genai-dataset)
+dataset as input, enable a GPU accelerator, Run All.
+
+**Current result (DistilBERT)**: Accuracy **0.7447 ± 0.0159**, Macro-F1 **0.6861 ± 0.0235** (best
+seed: 44) — see the executed notebook
+[`notebooks-output/finetune_distilbert_semeval_laptop_output.ipynb`](notebooks-output/finetune_distilbert_semeval_laptop_output.ipynb)
+and `plans/project-plan.md` (Tuần 4) for the full per-label breakdown. BERT-base result pending.
+
+After a run finishes, the fine-tuned model (`{distilbert,bert}-absa-model/`, ~270-420MB) is saved
+to `/kaggle/working/` — download it from the notebook's Output tab and upload it as its own Kaggle
+Dataset or Model to reuse in the aspect-stats notebook below (pick **PyTorch** as the framework if
+using Kaggle's Models feature). If you create it via "New Model from notebook output" it also pulls
+in the per-seed training checkpoints (`{...}-absa-seed<N>/`, several hundred MB each) — harmless
+clutter, `aspect_stats_semeval_laptop.ipynb` knows to skip them and only use the `*-absa-model` folder.
+
+## Aspect-level statistics
+
+Turns per-`(aspect, sentiment)` example pairs into a per-aspect summary table
+(`positive`/`negative`/`neutral` counts + majority sentiment) — the input the FLAN-T5
+report-generation step (Tuần 4) consumes.
+
+- [`src/report/aspect_stats.py`](src/report/aspect_stats.py) — the aggregation logic itself, pure
+  Python (no GPU/transformers needed), runs and is tested locally
+  ([`tests/test_aspect_stats.py`](tests/test_aspect_stats.py)).
+- [`notebooks/aspect_stats_semeval_laptop.ipynb`](notebooks/aspect_stats_semeval_laptop.ipynb) —
+  the Kaggle side: loads the fine-tuned model, runs inference over every `(sentence, aspect)`
+  example in the dataset, and aggregates both the gold-label table and the model-predicted table
+  (the one that generalizes to unlabeled data) for comparison.
+
+**Kaggle setup**: add `dattm03/genai-dataset` **and** the fine-tuned-model dataset/model created
+above as inputs, Run All (no GPU required — inference-only on a small dataset).
+
+**Current result**: 253 aspects with ≥2 mentions; majority-sentiment agreement between the gold
+and predicted tables **90.12%**. Full table:
+[`output/aspect_stats.txt`](output/aspect_stats.txt); executed notebook:
+[`notebooks-output/aspect_stats_semeval_laptop_output.ipynb`](notebooks-output/aspect_stats_semeval_laptop_output.ipynb).
+
 ## Tests
 
 ```bash
 python -m pytest tests/ -v
 ```
 
-Tests run against a small hand-built fixture (`tests/fixtures/sample_laptop.xml`) that mirrors the official XML schema, so they don't require the gated dataset.
+Tests run against a small hand-built fixture (`tests/fixtures/sample_laptop.xml`, for `test_semeval_loader.py`) and synthetic data (`test_aspect_stats.py`) — neither needs the gated dataset or GPU/transformers.
