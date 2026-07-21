@@ -22,11 +22,11 @@ See [`docs/Proposal.md`](docs/Proposal.md) for the full proposal, [`docs/Require
 ├── plans/
 │   ├── project-plan.md           # Week-by-week plan with progress checkboxes
 │   └── task.txt                  # Team task assignment
-├── data/raw/                      # Not committed (gitignored) — see data/raw/README.md
-│   ├── train/                    # Laptop_Train_v2.xml (official)
-│   ├── test/                     # Blind PhaseA/PhaseB test files (no gold labels yet)
-│   ├── restaurant_bonus/         # Restaurant domain, spare/unused for now
-│   └── legacy/                   # Superseded files, kept for reference
+├── data/
+│   ├── raw/                       # Not committed (gitignored) — see data/raw/README.md
+│   │   ├── train/                # Laptop_Train_v2.xml (official)
+│   │   └── test/                 # Blind PhaseA/PhaseB test files (no gold labels)
+│   └── processed/laptop/         # Not committed — train/valid/test split, see data/raw/README.md
 ├── src/
 │   ├── data/
 │   │   ├── semeval_loader.py     # Parses SemEval-2014 XML into Sentence/AspectTerm
@@ -34,7 +34,8 @@ See [`docs/Proposal.md`](docs/Proposal.md) for the full proposal, [`docs/Require
 │   └── baseline/
 │       └── tfidf_logreg.py       # TF-IDF + Logistic Regression baseline model
 ├── scripts/
-│   └── train_baseline.py         # CLI: train + evaluate the baseline
+│   ├── train_baseline.py         # CLI: train + evaluate the baseline
+│   └── split_dataset.py          # CLI: split the train XML into train/valid/test XML files
 ├── notebooks/
 │   ├── baseline_semeval_laptop.ipynb            # Self-contained template (Kaggle-ready)
 │   └── baseline_semeval_laptop_kaggle_run.ipynb # Executed copy with real results
@@ -62,9 +63,15 @@ Download the official SemEval-2014 Task 4 Laptop XML files from the [Data and To
 data/raw/train/Laptop_Train_v2.xml
 ```
 
+A mirror of the dataset used in this project is also available at [kaggle.com/datasets/dattm03/genai-dataset](https://www.kaggle.com/datasets/dattm03/genai-dataset), for anyone without an account on the official site.
+
 See [`data/raw/README.md`](data/raw/README.md) for what each file is and why there's currently no official gold test file (the baseline holds out a dev split from the train file instead — see below).
 
-`data/raw/` is gitignored — the dataset is not redistributed in this repo.
+`data/raw/` and `data/processed/` are both gitignored — the dataset is not redistributed in this repo. Once `data/raw/train/Laptop_Train_v2.xml` is in place, generate a fixed train/valid/test split with:
+
+```bash
+python scripts/split_dataset.py --input data/raw/train/Laptop_Train_v2.xml --output-dir data/processed/laptop
+```
 
 ## Baseline
 

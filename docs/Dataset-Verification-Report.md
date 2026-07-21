@@ -55,5 +55,8 @@ Kiểm tra bằng cách so khớp nội dung câu với 2 tập chính thức (t
 
 ## File đã dọn / không dùng
 
-- `data/raw/legacy/Laptops_Train.xml` — bản train cũ (3048 câu, lệch so với v2), giữ tham khảo, không dùng.
-- `data/raw/neudm/` — dữ liệu đã tải để kiểm tra, **không đưa vào pipeline** theo kết luận ở trên (có thể xoá nếu muốn dọn dẹp).
+- `data/raw/legacy/Laptops_Train.xml` — bản train cũ (3048 câu, lệch so với v2), không dùng.
+- `data/raw/neudm/` — dữ liệu đã tải để kiểm tra, **không đưa vào pipeline** theo kết luận ở trên.
+- `data/raw/restaurant_bonus/` — domain Restaurant dự phòng từ Kaggle, không dùng vì nhóm đã chốt chỉ dùng domain Laptop.
+
+**Cập nhật 2026-07-21**: đã xoá cả 3 thư mục trên khỏi `data/raw/` (dọn dẹp local, không ảnh hưởng git vì `data/raw/*` đã gitignore từ đầu). Dataset Laptop đang dùng được mirror lại tại [kaggle.com/datasets/dattm03/genai-dataset](https://www.kaggle.com/datasets/dattm03/genai-dataset).
