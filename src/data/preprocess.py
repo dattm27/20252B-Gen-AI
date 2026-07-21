@@ -3,7 +3,8 @@ from __future__ import annotations
 
 from .semeval_loader import Sentence
 
-VALID_POLARITIES = {"positive", "negative", "neutral", "conflict"}
+# "conflict" is excluded: <1% of examples, not enough signal to train/evaluate on.
+VALID_POLARITIES = {"positive", "negative", "neutral"}
 
 
 def mark_aspect(text: str, start: int, end: int) -> str:

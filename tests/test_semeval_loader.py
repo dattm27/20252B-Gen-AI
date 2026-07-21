@@ -34,10 +34,13 @@ def test_build_examples_flattens_one_row_per_aspect_term():
     sentences = load_semeval_xml(FIXTURE)
     contexts, aspects, labels = build_examples(sentences)
 
-    expected_count = sum(len(s.aspect_terms) for s in sentences)
+    expected_count = sum(
+        1 for s in sentences for t in s.aspect_terms if t.polarity != "conflict"
+    )
     assert len(contexts) == len(aspects) == len(labels) == expected_count
     assert "$T$" in contexts[0]
-    assert set(labels) <= {"positive", "negative", "neutral", "conflict"}
+    assert set(labels) <= {"positive", "negative", "neutral"}
+    assert "conflict" not in labels
 
 
 def test_baseline_trains_and_predicts_end_to_end():

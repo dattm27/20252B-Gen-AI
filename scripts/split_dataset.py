@@ -19,6 +19,22 @@ from pathlib import Path
 from sklearn.model_selection import train_test_split
 
 
+def drop_conflict_terms(sentences: list[ET.Element]) -> None:
+    """Remove aspectTerm elements labeled "conflict" in place (too few examples
+    to train/evaluate on — see src/data/preprocess.py). Drops the now-empty
+    <aspectTerms> wrapper too, to match how aspect-less sentences already look.
+    """
+    for sent in sentences:
+        aspect_terms_el = sent.find("aspectTerms")
+        if aspect_terms_el is None:
+            continue
+        for term_el in aspect_terms_el.findall("aspectTerm"):
+            if term_el.get("polarity") == "conflict":
+                aspect_terms_el.remove(term_el)
+        if len(aspect_terms_el) == 0:
+            sent.remove(aspect_terms_el)
+
+
 def split_sentences(
     sentences: list[ET.Element], valid_ratio: float, test_ratio: float, seed: int
 ) -> tuple[list[ET.Element], list[ET.Element], list[ET.Element]]:
@@ -52,6 +68,7 @@ def main() -> None:
 
     root = ET.parse(args.input).getroot()
     sentences = root.findall("sentence")
+    drop_conflict_terms(sentences)
 
     train, valid, test = split_sentences(sentences, args.valid_ratio, args.test_ratio, args.seed)
 
