@@ -123,10 +123,18 @@ and saves the best-of-3-seeds model.
 **Kaggle setup**: add the [`dattm03/genai-dataset`](https://www.kaggle.com/datasets/dattm03/genai-dataset)
 dataset as input, enable a GPU accelerator, Run All.
 
-**Current result (DistilBERT)**: Accuracy **0.7447 ± 0.0159**, Macro-F1 **0.6861 ± 0.0235** (best
-seed: 44) — see the executed notebook
-[`notebooks-output/finetune_distilbert_semeval_laptop_output.ipynb`](notebooks-output/finetune_distilbert_semeval_laptop_output.ipynb)
-and `plans/project-plan.md` (Tuần 4) for the full per-label breakdown. BERT-base result pending.
+**Current results**:
+
+| | Accuracy | Macro-F1 | best seed |
+|---|---|---|---|
+| DistilBERT | 0.7447 ± 0.0159 | 0.6861 ± 0.0235 | 44 |
+| BERT-base | **0.7627 ± 0.0239** | **0.7123 ± 0.0324** | 44 |
+
+BERT-base wins on every label, most notably `neutral` (F1 0.502 vs 0.458) — it's the model used
+downstream (aspect stats, report generation). See the executed notebooks
+([`notebooks-output/finetune_distilbert_semeval_laptop_output.ipynb`](notebooks-output/finetune_distilbert_semeval_laptop_output.ipynb),
+[`notebooks-output/finetune_bert_semeval_laptop_output.ipynb`](notebooks-output/finetune_bert_semeval_laptop_output.ipynb))
+and `plans/project-plan.md` (Tuần 4) for the full per-label breakdown.
 
 After a run finishes, the fine-tuned model (`{distilbert,bert}-absa-model/`, ~270-420MB) is saved
 to `/kaggle/working/` — download it from the notebook's Output tab and upload it as its own Kaggle
@@ -152,10 +160,16 @@ report-generation step (Tuần 4) consumes.
 **Kaggle setup**: add `dattm03/genai-dataset` **and** the fine-tuned-model dataset/model created
 above as inputs, Run All (no GPU required — inference-only on a small dataset).
 
-**Current result**: 253 aspects with ≥2 mentions; majority-sentiment agreement between the gold
-and predicted tables **90.12%**. Full table:
-[`output/aspect_stats.txt`](output/aspect_stats.txt); executed notebook:
-[`notebooks-output/aspect_stats_semeval_laptop_output.ipynb`](notebooks-output/aspect_stats_semeval_laptop_output.ipynb).
+**Current results**: 253 aspects with ≥2 mentions in both runs; majority-sentiment agreement
+between the gold and predicted tables:
+
+| Model | Agreement | Full table | Executed notebook |
+|---|---|---|---|
+| DistilBERT | 90.12% | [`output/aspect_stats.txt`](output/aspect_stats.txt) | [`notebooks-output/aspect_stats_semeval_laptop_output.ipynb`](notebooks-output/aspect_stats_semeval_laptop_output.ipynb) |
+| **BERT-base** | **93.28%** | [`output/aspect_stats_bert.txt`](output/aspect_stats_bert.txt) | [`notebooks-output/aspect-level-sentiment-statistics-bert-output.ipynb`](notebooks-output/aspect-level-sentiment-statistics-bert-output.ipynb) |
+
+`output/aspect_stats_bert.txt` is the official table handed off to report generation — the
+DistilBERT run is kept only for comparison.
 
 ## Tests
 

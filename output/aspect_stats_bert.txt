@@ -1,0 +1,4059 @@
+{
+  "model_dir": "/kaggle/input/models/dattm03/bert-absa/pytorch/default/1/bert-absa-model",
+  "min_mentions": 2,
+  "num_examples": 2313,
+  "per_example_agreement": 0.9420665801988759,
+  "majority_sentiment_agreement": 0.932806324110672,
+  "gold": [
+    {
+      "aspect": "screen",
+      "positive": 31,
+      "negative": 23,
+      "neutral": 6,
+      "total": 60,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "price",
+      "positive": 46,
+      "negative": 8,
+      "neutral": 2,
+      "total": 56,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "use",
+      "positive": 49,
+      "negative": 3,
+      "neutral": 1,
+      "total": 53,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "battery life",
+      "positive": 32,
+      "negative": 17,
+      "neutral": 3,
+      "total": 52,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "keyboard",
+      "positive": 23,
+      "negative": 19,
+      "neutral": 8,
+      "total": 50,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "battery",
+      "positive": 10,
+      "negative": 32,
+      "neutral": 5,
+      "total": 47,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "programs",
+      "positive": 19,
+      "negative": 9,
+      "neutral": 9,
+      "total": 37,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "features",
+      "positive": 22,
+      "negative": 5,
+      "neutral": 8,
+      "total": 35,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "software",
+      "positive": 9,
+      "negative": 17,
+      "neutral": 7,
+      "total": 33,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "warranty",
+      "positive": 5,
+      "negative": 13,
+      "neutral": 13,
+      "total": 31,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "hard drive",
+      "positive": 3,
+      "negative": 16,
+      "neutral": 11,
+      "total": 30,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "windows",
+      "positive": 4,
+      "negative": 18,
+      "neutral": 8,
+      "total": 30,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "size",
+      "positive": 15,
+      "negative": 7,
+      "neutral": 2,
+      "total": 24,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "performance",
+      "positive": 13,
+      "negative": 7,
+      "neutral": 3,
+      "total": 23,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "quality",
+      "positive": 16,
+      "negative": 7,
+      "neutral": 0,
+      "total": 23,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "speed",
+      "positive": 18,
+      "negative": 2,
+      "neutral": 1,
+      "total": 21,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "applications",
+      "positive": 11,
+      "negative": 1,
+      "neutral": 6,
+      "total": 18,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "memory",
+      "positive": 6,
+      "negative": 6,
+      "neutral": 6,
+      "total": 18,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "graphics",
+      "positive": 14,
+      "negative": 2,
+      "neutral": 1,
+      "total": 17,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "runs",
+      "positive": 15,
+      "negative": 2,
+      "neutral": 0,
+      "total": 17,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "motherboard",
+      "positive": 0,
+      "negative": 11,
+      "neutral": 5,
+      "total": 16,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "system",
+      "positive": 5,
+      "negative": 6,
+      "neutral": 3,
+      "total": 14,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "vista",
+      "positive": 0,
+      "negative": 12,
+      "neutral": 2,
+      "total": 14,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "windows 7",
+      "positive": 11,
+      "negative": 0,
+      "neutral": 3,
+      "total": 14,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "charge",
+      "positive": 2,
+      "negative": 9,
+      "neutral": 2,
+      "total": 13,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "design",
+      "positive": 10,
+      "negative": 3,
+      "neutral": 0,
+      "total": 13,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "gaming",
+      "positive": 5,
+      "negative": 3,
+      "neutral": 5,
+      "total": 13,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "keys",
+      "positive": 3,
+      "negative": 8,
+      "neutral": 2,
+      "total": 13,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "program",
+      "positive": 11,
+      "negative": 0,
+      "neutral": 2,
+      "total": 13,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "works",
+      "positive": 12,
+      "negative": 1,
+      "neutral": 0,
+      "total": 13,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "power supply",
+      "positive": 1,
+      "negative": 9,
+      "neutral": 2,
+      "total": 12,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "speakers",
+      "positive": 3,
+      "negative": 9,
+      "neutral": 0,
+      "total": 12,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "display",
+      "positive": 8,
+      "negative": 3,
+      "neutral": 0,
+      "total": 11,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "operating system",
+      "positive": 7,
+      "negative": 1,
+      "neutral": 3,
+      "total": 11,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "service",
+      "positive": 4,
+      "negative": 6,
+      "neutral": 1,
+      "total": 11,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "value",
+      "positive": 10,
+      "negative": 1,
+      "neutral": 0,
+      "total": 11,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "warrenty",
+      "positive": 1,
+      "negative": 8,
+      "neutral": 2,
+      "total": 11,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "games",
+      "positive": 1,
+      "negative": 2,
+      "neutral": 7,
+      "total": 10,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "processor",
+      "positive": 6,
+      "negative": 2,
+      "neutral": 2,
+      "total": 10,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "touchpad",
+      "positive": 4,
+      "negative": 5,
+      "neutral": 1,
+      "total": 10,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "extended warranty",
+      "positive": 1,
+      "negative": 2,
+      "neutral": 6,
+      "total": 9,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "fan",
+      "positive": 2,
+      "negative": 5,
+      "neutral": 2,
+      "total": 9,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "iphoto",
+      "positive": 8,
+      "negative": 0,
+      "neutral": 1,
+      "total": 9,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "look",
+      "positive": 9,
+      "negative": 0,
+      "neutral": 0,
+      "total": 9,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "mouse",
+      "positive": 1,
+      "negative": 4,
+      "neutral": 4,
+      "total": 9,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "os",
+      "positive": 6,
+      "negative": 0,
+      "neutral": 3,
+      "total": 9,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "shipping",
+      "positive": 4,
+      "negative": 5,
+      "neutral": 0,
+      "total": 9,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "work",
+      "positive": 1,
+      "negative": 8,
+      "neutral": 0,
+      "total": 9,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "carry",
+      "positive": 5,
+      "negative": 2,
+      "neutral": 1,
+      "total": 8,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "hardware",
+      "positive": 0,
+      "negative": 6,
+      "neutral": 2,
+      "total": 8,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "power",
+      "positive": 6,
+      "negative": 1,
+      "neutral": 1,
+      "total": 8,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "ram",
+      "positive": 4,
+      "negative": 2,
+      "neutral": 2,
+      "total": 8,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "cost",
+      "positive": 3,
+      "negative": 4,
+      "neutral": 0,
+      "total": 7,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "garageband",
+      "positive": 4,
+      "negative": 0,
+      "neutral": 3,
+      "total": 7,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "itunes",
+      "positive": 6,
+      "negative": 0,
+      "neutral": 1,
+      "total": 7,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "iwork",
+      "positive": 3,
+      "negative": 2,
+      "neutral": 2,
+      "total": 7,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "screen size",
+      "positive": 3,
+      "negative": 2,
+      "neutral": 2,
+      "total": 7,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "tech support",
+      "positive": 1,
+      "negative": 4,
+      "neutral": 2,
+      "total": 7,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "trackpad",
+      "positive": 5,
+      "negative": 2,
+      "neutral": 0,
+      "total": 7,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "webcam",
+      "positive": 1,
+      "negative": 4,
+      "neutral": 2,
+      "total": 7,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "weight",
+      "positive": 3,
+      "negative": 3,
+      "neutral": 1,
+      "total": 7,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "windows 7 starter",
+      "positive": 2,
+      "negative": 2,
+      "neutral": 3,
+      "total": 7,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "bios",
+      "positive": 0,
+      "negative": 6,
+      "neutral": 0,
+      "total": 6,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "boot up",
+      "positive": 1,
+      "negative": 4,
+      "neutral": 1,
+      "total": 6,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "drivers",
+      "positive": 1,
+      "negative": 3,
+      "neutral": 2,
+      "total": 6,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "feature",
+      "positive": 6,
+      "negative": 0,
+      "neutral": 0,
+      "total": 6,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "internet",
+      "positive": 1,
+      "negative": 2,
+      "neutral": 3,
+      "total": 6,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "sound",
+      "positive": 1,
+      "negative": 5,
+      "neutral": 0,
+      "total": 6,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "touch pad",
+      "positive": 3,
+      "negative": 1,
+      "neutral": 2,
+      "total": 6,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "bluetooth",
+      "positive": 0,
+      "negative": 4,
+      "neutral": 1,
+      "total": 5,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "buttons",
+      "positive": 0,
+      "negative": 4,
+      "neutral": 1,
+      "total": 5,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "cd drive",
+      "positive": 0,
+      "negative": 4,
+      "neutral": 1,
+      "total": 5,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "edges",
+      "positive": 0,
+      "negative": 5,
+      "neutral": 0,
+      "total": 5,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "hinge",
+      "positive": 0,
+      "negative": 3,
+      "neutral": 2,
+      "total": 5,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "ilife",
+      "positive": 4,
+      "negative": 0,
+      "neutral": 1,
+      "total": 5,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "imovie",
+      "positive": 4,
+      "negative": 0,
+      "neutral": 1,
+      "total": 5,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "mousepad",
+      "positive": 1,
+      "negative": 2,
+      "neutral": 2,
+      "total": 5,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "navigate",
+      "positive": 4,
+      "negative": 1,
+      "neutral": 0,
+      "total": 5,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "portability",
+      "positive": 5,
+      "negative": 0,
+      "neutral": 0,
+      "total": 5,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "space",
+      "positive": 3,
+      "negative": 2,
+      "neutral": 0,
+      "total": 5,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "specs",
+      "positive": 3,
+      "negative": 1,
+      "neutral": 1,
+      "total": 5,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "built",
+      "positive": 4,
+      "negative": 0,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "case",
+      "positive": 1,
+      "negative": 2,
+      "neutral": 1,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "charger",
+      "positive": 0,
+      "negative": 4,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "cords",
+      "positive": 1,
+      "negative": 3,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "customer service",
+      "positive": 2,
+      "negative": 2,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "customer support",
+      "positive": 2,
+      "negative": 2,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "delivery",
+      "positive": 3,
+      "negative": 1,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "drive",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 2,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "dvd burner",
+      "positive": 1,
+      "negative": 3,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "feel",
+      "positive": 3,
+      "negative": 1,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "hd",
+      "positive": 3,
+      "negative": 1,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "monitor",
+      "positive": 1,
+      "negative": 2,
+      "neutral": 1,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "mother board",
+      "positive": 0,
+      "negative": 3,
+      "neutral": 1,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "ms office",
+      "positive": 1,
+      "negative": 2,
+      "neutral": 1,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "operation",
+      "positive": 1,
+      "negative": 3,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "pages",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 3,
+      "total": 4,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "repair depot",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 3,
+      "total": 4,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "resolution",
+      "positive": 2,
+      "negative": 2,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "run",
+      "positive": 2,
+      "negative": 1,
+      "neutral": 1,
+      "total": 4,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "safari",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 2,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "service center",
+      "positive": 0,
+      "negative": 3,
+      "neutral": 1,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "set up",
+      "positive": 4,
+      "negative": 0,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "support",
+      "positive": 1,
+      "negative": 3,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "usb ports",
+      "positive": 1,
+      "negative": 2,
+      "neutral": 1,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "web browsing",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 2,
+      "total": 4,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "appearance",
+      "positive": 2,
+      "negative": 1,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "batteries",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 1,
+      "total": 3,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "boots up",
+      "positive": 3,
+      "negative": 0,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "browser",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 1,
+      "total": 3,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "budget",
+      "positive": 3,
+      "negative": 0,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "colors",
+      "positive": 3,
+      "negative": 0,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "components",
+      "positive": 2,
+      "negative": 1,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "cooling system",
+      "positive": 1,
+      "negative": 2,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "external mouse",
+      "positive": 0,
+      "negative": 0,
+      "neutral": 3,
+      "total": 3,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "firefox",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 2,
+      "total": 3,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "functions",
+      "positive": 3,
+      "negative": 0,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "graphics card",
+      "positive": 2,
+      "negative": 1,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "hard disk",
+      "positive": 0,
+      "negative": 0,
+      "neutral": 3,
+      "total": 3,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "hard drives",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 2,
+      "total": 3,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "keynote",
+      "positive": 0,
+      "negative": 0,
+      "neutral": 3,
+      "total": 3,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "loads",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 1,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "mac os",
+      "positive": 3,
+      "negative": 0,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "mic",
+      "positive": 0,
+      "negative": 3,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "microsoft office",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 2,
+      "total": 3,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "mouse pad",
+      "positive": 1,
+      "negative": 2,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "office",
+      "positive": 1,
+      "negative": 2,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "os x",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 1,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "photoshop",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 1,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "shipped",
+      "positive": 1,
+      "negative": 2,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "specifications",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 1,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "staff",
+      "positive": 0,
+      "negative": 3,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "storage",
+      "positive": 3,
+      "negative": 0,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "windows 7 home premium",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 2,
+      "total": 3,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "windows vista",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 1,
+      "total": 3,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "word",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 1,
+      "total": 3,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "word processing",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 2,
+      "total": 3,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "3 year warranty",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "antivirus software",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "apple applications",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "apple care",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "appleworks",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "apps",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "backlit keyboard",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "bluetooth mouse",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "boot",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "bootcamp",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "booting up",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "brand",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "browsing",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "build",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "build quality",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "built in camera",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "built-in webcam",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "call center",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "casing",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "charged",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "charging",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "color",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "company",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "construction quality",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "cooling pad",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "cord",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "costing",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "cpu",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "cursor",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "dc jack",
+      "positive": 0,
+      "negative": 0,
+      "neutral": 2,
+      "total": 2,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "designed",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "disc drive",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "driver",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "drivers/applications dvd",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "dvd drive",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "edge",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "expense",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "extended warranties",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "gui",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "handle",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "hard disc",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "hard drive space",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "hardrive",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "hdmi port",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "headphones",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "ilife software",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "internet connection",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "internet speed",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "iphotos",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "lcd",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "linux",
+      "positive": 0,
+      "negative": 0,
+      "neutral": 2,
+      "total": 2,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "longevity",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "looks",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "mac software",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "memory stick",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "navigation",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "numbers",
+      "positive": 0,
+      "negative": 0,
+      "neutral": 2,
+      "total": 2,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "operate",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "operating systems",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "osx",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "pad",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "paint",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "performs",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "photo booth",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "photobooth",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "picture",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "plug",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "port",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "ports",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "power adapter",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "preloaded software",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "priced",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "processing power",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "quality display",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "ran",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "recovery discs",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "recovery disk",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "recovery dvds",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "right speaker",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "running",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "sata controller",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "security",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "setup",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "shut down",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "sized",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "skype",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "sound card",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "speaker grill",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "start up",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "subwoofer",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "surf the web",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "surfing",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "surfing the web",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "switch",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "techs",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "toshiba customer services",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "touch-pad",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "track pad",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "tutorials",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "twin packing",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "updates",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "usb",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "user interface",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "video",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "video card",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "videocard",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "virus protection",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "watching movies",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "web cam",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "wifi",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "windows 7 ultimate",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "windows update",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "windows xp",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "wireless",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "word processor",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "xp",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    }
+  ],
+  "predicted": [
+    {
+      "aspect": "screen",
+      "positive": 32,
+      "negative": 23,
+      "neutral": 5,
+      "total": 60,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "price",
+      "positive": 47,
+      "negative": 7,
+      "neutral": 2,
+      "total": 56,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "use",
+      "positive": 49,
+      "negative": 3,
+      "neutral": 1,
+      "total": 53,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "battery life",
+      "positive": 33,
+      "negative": 15,
+      "neutral": 4,
+      "total": 52,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "keyboard",
+      "positive": 25,
+      "negative": 19,
+      "neutral": 6,
+      "total": 50,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "battery",
+      "positive": 10,
+      "negative": 33,
+      "neutral": 4,
+      "total": 47,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "programs",
+      "positive": 19,
+      "negative": 10,
+      "neutral": 8,
+      "total": 37,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "features",
+      "positive": 23,
+      "negative": 4,
+      "neutral": 8,
+      "total": 35,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "software",
+      "positive": 10,
+      "negative": 14,
+      "neutral": 9,
+      "total": 33,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "warranty",
+      "positive": 4,
+      "negative": 13,
+      "neutral": 14,
+      "total": 31,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "hard drive",
+      "positive": 3,
+      "negative": 14,
+      "neutral": 13,
+      "total": 30,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "windows",
+      "positive": 1,
+      "negative": 19,
+      "neutral": 10,
+      "total": 30,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "size",
+      "positive": 16,
+      "negative": 6,
+      "neutral": 2,
+      "total": 24,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "performance",
+      "positive": 13,
+      "negative": 7,
+      "neutral": 3,
+      "total": 23,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "quality",
+      "positive": 16,
+      "negative": 7,
+      "neutral": 0,
+      "total": 23,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "speed",
+      "positive": 18,
+      "negative": 2,
+      "neutral": 1,
+      "total": 21,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "applications",
+      "positive": 11,
+      "negative": 1,
+      "neutral": 6,
+      "total": 18,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "memory",
+      "positive": 5,
+      "negative": 6,
+      "neutral": 7,
+      "total": 18,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "graphics",
+      "positive": 13,
+      "negative": 2,
+      "neutral": 2,
+      "total": 17,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "runs",
+      "positive": 15,
+      "negative": 2,
+      "neutral": 0,
+      "total": 17,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "motherboard",
+      "positive": 0,
+      "negative": 11,
+      "neutral": 5,
+      "total": 16,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "system",
+      "positive": 5,
+      "negative": 7,
+      "neutral": 2,
+      "total": 14,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "vista",
+      "positive": 0,
+      "negative": 11,
+      "neutral": 3,
+      "total": 14,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "windows 7",
+      "positive": 11,
+      "negative": 0,
+      "neutral": 3,
+      "total": 14,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "charge",
+      "positive": 3,
+      "negative": 10,
+      "neutral": 0,
+      "total": 13,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "design",
+      "positive": 10,
+      "negative": 3,
+      "neutral": 0,
+      "total": 13,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "gaming",
+      "positive": 5,
+      "negative": 2,
+      "neutral": 6,
+      "total": 13,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "keys",
+      "positive": 3,
+      "negative": 8,
+      "neutral": 2,
+      "total": 13,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "program",
+      "positive": 10,
+      "negative": 0,
+      "neutral": 3,
+      "total": 13,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "works",
+      "positive": 12,
+      "negative": 1,
+      "neutral": 0,
+      "total": 13,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "power supply",
+      "positive": 2,
+      "negative": 8,
+      "neutral": 2,
+      "total": 12,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "speakers",
+      "positive": 4,
+      "negative": 8,
+      "neutral": 0,
+      "total": 12,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "display",
+      "positive": 8,
+      "negative": 3,
+      "neutral": 0,
+      "total": 11,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "operating system",
+      "positive": 6,
+      "negative": 1,
+      "neutral": 4,
+      "total": 11,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "service",
+      "positive": 3,
+      "negative": 7,
+      "neutral": 1,
+      "total": 11,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "value",
+      "positive": 10,
+      "negative": 1,
+      "neutral": 0,
+      "total": 11,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "warrenty",
+      "positive": 1,
+      "negative": 9,
+      "neutral": 1,
+      "total": 11,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "games",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 8,
+      "total": 10,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "processor",
+      "positive": 6,
+      "negative": 2,
+      "neutral": 2,
+      "total": 10,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "touchpad",
+      "positive": 3,
+      "negative": 5,
+      "neutral": 2,
+      "total": 10,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "extended warranty",
+      "positive": 1,
+      "negative": 2,
+      "neutral": 6,
+      "total": 9,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "fan",
+      "positive": 1,
+      "negative": 6,
+      "neutral": 2,
+      "total": 9,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "iphoto",
+      "positive": 8,
+      "negative": 0,
+      "neutral": 1,
+      "total": 9,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "look",
+      "positive": 9,
+      "negative": 0,
+      "neutral": 0,
+      "total": 9,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "mouse",
+      "positive": 3,
+      "negative": 4,
+      "neutral": 2,
+      "total": 9,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "os",
+      "positive": 5,
+      "negative": 0,
+      "neutral": 4,
+      "total": 9,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "shipping",
+      "positive": 4,
+      "negative": 5,
+      "neutral": 0,
+      "total": 9,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "work",
+      "positive": 1,
+      "negative": 8,
+      "neutral": 0,
+      "total": 9,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "carry",
+      "positive": 5,
+      "negative": 2,
+      "neutral": 1,
+      "total": 8,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "hardware",
+      "positive": 0,
+      "negative": 6,
+      "neutral": 2,
+      "total": 8,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "power",
+      "positive": 6,
+      "negative": 1,
+      "neutral": 1,
+      "total": 8,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "ram",
+      "positive": 4,
+      "negative": 2,
+      "neutral": 2,
+      "total": 8,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "cost",
+      "positive": 3,
+      "negative": 4,
+      "neutral": 0,
+      "total": 7,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "garageband",
+      "positive": 4,
+      "negative": 0,
+      "neutral": 3,
+      "total": 7,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "itunes",
+      "positive": 7,
+      "negative": 0,
+      "neutral": 0,
+      "total": 7,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "iwork",
+      "positive": 3,
+      "negative": 2,
+      "neutral": 2,
+      "total": 7,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "screen size",
+      "positive": 3,
+      "negative": 2,
+      "neutral": 2,
+      "total": 7,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "tech support",
+      "positive": 1,
+      "negative": 4,
+      "neutral": 2,
+      "total": 7,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "trackpad",
+      "positive": 5,
+      "negative": 2,
+      "neutral": 0,
+      "total": 7,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "webcam",
+      "positive": 1,
+      "negative": 3,
+      "neutral": 3,
+      "total": 7,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "weight",
+      "positive": 3,
+      "negative": 3,
+      "neutral": 1,
+      "total": 7,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "windows 7 starter",
+      "positive": 3,
+      "negative": 2,
+      "neutral": 2,
+      "total": 7,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "bios",
+      "positive": 0,
+      "negative": 6,
+      "neutral": 0,
+      "total": 6,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "boot up",
+      "positive": 1,
+      "negative": 4,
+      "neutral": 1,
+      "total": 6,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "drivers",
+      "positive": 1,
+      "negative": 2,
+      "neutral": 3,
+      "total": 6,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "feature",
+      "positive": 6,
+      "negative": 0,
+      "neutral": 0,
+      "total": 6,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "internet",
+      "positive": 1,
+      "negative": 2,
+      "neutral": 3,
+      "total": 6,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "sound",
+      "positive": 1,
+      "negative": 5,
+      "neutral": 0,
+      "total": 6,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "touch pad",
+      "positive": 3,
+      "negative": 1,
+      "neutral": 2,
+      "total": 6,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "bluetooth",
+      "positive": 0,
+      "negative": 5,
+      "neutral": 0,
+      "total": 5,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "buttons",
+      "positive": 0,
+      "negative": 4,
+      "neutral": 1,
+      "total": 5,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "cd drive",
+      "positive": 0,
+      "negative": 4,
+      "neutral": 1,
+      "total": 5,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "edges",
+      "positive": 0,
+      "negative": 5,
+      "neutral": 0,
+      "total": 5,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "hinge",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 3,
+      "total": 5,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "ilife",
+      "positive": 4,
+      "negative": 0,
+      "neutral": 1,
+      "total": 5,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "imovie",
+      "positive": 4,
+      "negative": 0,
+      "neutral": 1,
+      "total": 5,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "mousepad",
+      "positive": 1,
+      "negative": 3,
+      "neutral": 1,
+      "total": 5,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "navigate",
+      "positive": 4,
+      "negative": 1,
+      "neutral": 0,
+      "total": 5,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "portability",
+      "positive": 5,
+      "negative": 0,
+      "neutral": 0,
+      "total": 5,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "space",
+      "positive": 3,
+      "negative": 2,
+      "neutral": 0,
+      "total": 5,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "specs",
+      "positive": 3,
+      "negative": 1,
+      "neutral": 1,
+      "total": 5,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "built",
+      "positive": 4,
+      "negative": 0,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "case",
+      "positive": 1,
+      "negative": 2,
+      "neutral": 1,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "charger",
+      "positive": 0,
+      "negative": 4,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "cords",
+      "positive": 0,
+      "negative": 3,
+      "neutral": 1,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "customer service",
+      "positive": 3,
+      "negative": 1,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "customer support",
+      "positive": 2,
+      "negative": 2,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "delivery",
+      "positive": 3,
+      "negative": 1,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "drive",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 3,
+      "total": 4,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "dvd burner",
+      "positive": 1,
+      "negative": 3,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "feel",
+      "positive": 3,
+      "negative": 1,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "hd",
+      "positive": 3,
+      "negative": 1,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "monitor",
+      "positive": 2,
+      "negative": 2,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "mother board",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 2,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "ms office",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 2,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "operation",
+      "positive": 1,
+      "negative": 3,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "pages",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 3,
+      "total": 4,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "repair depot",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 3,
+      "total": 4,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "resolution",
+      "positive": 2,
+      "negative": 2,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "run",
+      "positive": 2,
+      "negative": 1,
+      "neutral": 1,
+      "total": 4,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "safari",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 2,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "service center",
+      "positive": 0,
+      "negative": 4,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "set up",
+      "positive": 4,
+      "negative": 0,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "support",
+      "positive": 1,
+      "negative": 3,
+      "neutral": 0,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "usb ports",
+      "positive": 1,
+      "negative": 2,
+      "neutral": 1,
+      "total": 4,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "web browsing",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 2,
+      "total": 4,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "appearance",
+      "positive": 2,
+      "negative": 1,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "batteries",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 2,
+      "total": 3,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "boots up",
+      "positive": 3,
+      "negative": 0,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "browser",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 1,
+      "total": 3,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "budget",
+      "positive": 3,
+      "negative": 0,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "colors",
+      "positive": 3,
+      "negative": 0,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "components",
+      "positive": 2,
+      "negative": 1,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "cooling system",
+      "positive": 1,
+      "negative": 2,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "external mouse",
+      "positive": 0,
+      "negative": 0,
+      "neutral": 3,
+      "total": 3,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "firefox",
+      "positive": 0,
+      "negative": 0,
+      "neutral": 3,
+      "total": 3,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "functions",
+      "positive": 3,
+      "negative": 0,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "graphics card",
+      "positive": 2,
+      "negative": 1,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "hard disk",
+      "positive": 0,
+      "negative": 0,
+      "neutral": 3,
+      "total": 3,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "hard drives",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 2,
+      "total": 3,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "keynote",
+      "positive": 0,
+      "negative": 0,
+      "neutral": 3,
+      "total": 3,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "loads",
+      "positive": 3,
+      "negative": 0,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "mac os",
+      "positive": 3,
+      "negative": 0,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "mic",
+      "positive": 0,
+      "negative": 3,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "microsoft office",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 2,
+      "total": 3,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "mouse pad",
+      "positive": 1,
+      "negative": 2,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "office",
+      "positive": 1,
+      "negative": 2,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "os x",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 1,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "photoshop",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 1,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "shipped",
+      "positive": 1,
+      "negative": 2,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "specifications",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 1,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "staff",
+      "positive": 0,
+      "negative": 3,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "storage",
+      "positive": 3,
+      "negative": 0,
+      "neutral": 0,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "windows 7 home premium",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 1,
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "windows vista",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 1,
+      "total": 3,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "word",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 1,
+      "total": 3,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "word processing",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 2,
+      "total": 3,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "3 year warranty",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "antivirus software",
+      "positive": 0,
+      "negative": 0,
+      "neutral": 2,
+      "total": 2,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "apple applications",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "apple care",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "appleworks",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "apps",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "backlit keyboard",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "bluetooth mouse",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "boot",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "bootcamp",
+      "positive": 0,
+      "negative": 0,
+      "neutral": 2,
+      "total": 2,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "booting up",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "brand",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "browsing",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "build",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "build quality",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "built in camera",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "built-in webcam",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "call center",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "casing",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "charged",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "charging",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "color",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "company",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "construction quality",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "cooling pad",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "cord",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "costing",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "cpu",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "cursor",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "dc jack",
+      "positive": 0,
+      "negative": 0,
+      "neutral": 2,
+      "total": 2,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "designed",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "disc drive",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "driver",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "drivers/applications dvd",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "dvd drive",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "edge",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "expense",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "extended warranties",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "gui",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "handle",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "hard disc",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "hard drive space",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "hardrive",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "hdmi port",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "headphones",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "ilife software",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "internet connection",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "internet speed",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "iphotos",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "lcd",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "linux",
+      "positive": 0,
+      "negative": 0,
+      "neutral": 2,
+      "total": 2,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "longevity",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "looks",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "mac software",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "memory stick",
+      "positive": 0,
+      "negative": 0,
+      "neutral": 2,
+      "total": 2,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "navigation",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "numbers",
+      "positive": 0,
+      "negative": 0,
+      "neutral": 2,
+      "total": 2,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "operate",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "operating systems",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "osx",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "pad",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "paint",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "performs",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "photo booth",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "photobooth",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "picture",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "plug",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "port",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "ports",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "power adapter",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "preloaded software",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "priced",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "processing power",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "quality display",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "ran",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "recovery discs",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "recovery disk",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "recovery dvds",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "right speaker",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "running",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "sata controller",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "security",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "setup",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "shut down",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "sized",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "skype",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "sound card",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "speaker grill",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "start up",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "subwoofer",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "surf the web",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "surfing",
+      "positive": 0,
+      "negative": 0,
+      "neutral": 2,
+      "total": 2,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "surfing the web",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "switch",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "techs",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "toshiba customer services",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "touch-pad",
+      "positive": 0,
+      "negative": 0,
+      "neutral": 2,
+      "total": 2,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "track pad",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "tutorials",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "twin packing",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "updates",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "usb",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "user interface",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "video",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "video card",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "videocard",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "virus protection",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "watching movies",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "web cam",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "wifi",
+      "positive": 1,
+      "negative": 1,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "windows 7 ultimate",
+      "positive": 0,
+      "negative": 0,
+      "neutral": 2,
+      "total": 2,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "windows update",
+      "positive": 0,
+      "negative": 2,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "windows xp",
+      "positive": 1,
+      "negative": 0,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "wireless",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "word processor",
+      "positive": 0,
+      "negative": 1,
+      "neutral": 1,
+      "total": 2,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "xp",
+      "positive": 2,
+      "negative": 0,
+      "neutral": 0,
+      "total": 2,
+      "majority_sentiment": "positive"
+    }
+  ]
+}

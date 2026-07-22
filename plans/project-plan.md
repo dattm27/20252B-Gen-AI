@@ -79,16 +79,33 @@ Chi tiết: [`docs/Research-Notes.md`](../docs/Research-Notes.md)
 
   Nhận xét: cải thiện rõ so với baseline (Accuracy 0.6211 / Macro-F1 0.4266 — số baseline đo trên bản 4 lớp cũ có `conflict` nên không hoàn toàn tương đồng, cần baseline chạy lại trên data 3 lớp để so sánh chuẩn). `neutral` vẫn là lớp yếu nhất.
 
-  **Còn thiếu**: (1) chạy `notebooks/finetune_bert_semeval_laptop.ipynb` (BERT-base) để so sánh — Sơn đang chạy, sẽ cập nhật kết quả sau; (2) phần "aspect extraction" — hiện đang dùng aspect term gold có sẵn trong XML, chưa tự extract aspect từ câu thô, sẽ cần cho Tuần 5 khi test trên Amazon Reviews (không có gold aspect).
+  **Kết quả BERT-base** (cùng quy trình, lr=2e-5) — chạy bởi Sơn trên Kaggle (`notebooks/finetune_bert_semeval_laptop.ipynb`); kết quả đã chạy: `notebooks-output/finetune_bert_semeval_laptop_output.ipynb`.
+
+  Accuracy trung bình **0.7627 ± 0.0239** | Macro-F1 trung bình **0.7123 ± 0.0324** (seed tốt nhất: seed 44, Macro-F1 0.7452)
+
+  | Label | Precision | Recall | F1 | Support |
+  |---|---|---|---|---|
+  | negative | 0.774 | 0.823 | 0.797 | 132 |
+  | neutral | 0.501 | 0.506 | 0.502 | 54 |
+  | positive | 0.873 | 0.808 | 0.839 | 130 |
+
+  **So sánh DistilBERT vs BERT-base**: BERT tốt hơn ở cả 3 lớp, rõ nhất ở `neutral` (F1 0.502 vs 0.458) — model lớn hơn hiểu ngữ cảnh tốt hơn ở lớp khó nhất. **Chọn BERT-base (seed 44) làm model chính** cho các bước tiếp theo (tổng hợp thống kê, report generation); DistilBERT giữ lại làm phương án nhẹ/nhanh hơn nếu cần.
+
+  **Còn thiếu**: phần "aspect extraction" — hiện đang dùng aspect term gold có sẵn trong XML, chưa tự extract aspect từ câu thô, sẽ cần cho Tuần 5 khi test trên Amazon Reviews (không có gold aspect).
 - [x] Xây bước tổng hợp thống kê theo từng aspect.
 
-  Logic gộp số liệu thuần Python (`src/report/aspect_stats.py`, có test ở `tests/test_aspect_stats.py`, chạy local không cần GPU). Inference + tổng hợp thật chạy trên Kaggle: `notebooks/aspect_stats_semeval_laptop.ipynb`, dùng model DistilBERT (seed 44) qua Kaggle Model `dattm03/distilbert-absa`, chạy trên union train+valid+test (2313 example). Kết quả: `notebooks-output/aspect_stats_semeval_laptop_output.ipynb`, bảng đầy đủ tại `output/aspect_stats.txt`.
+  Logic gộp số liệu thuần Python (`src/report/aspect_stats.py`, có test ở `tests/test_aspect_stats.py`, chạy local không cần GPU). Inference + tổng hợp thật chạy trên Kaggle: `notebooks/aspect_stats_semeval_laptop.ipynb`, chạy trên union train+valid+test (2313 example). Đã chạy 2 lần, giữ cả 2 kết quả để so sánh:
 
-  - 253 aspect có ≥2 lượt nhắc tới.
-  - Majority-sentiment agreement (so kết luận cuối cùng theo aspect giữa gold vs. predicted): **228/253 = 90.12%**.
-  - Top aspect theo số lượt nhắc: `screen` (60, positive), `price` (56, positive), `use` (53, positive), `battery life` (52, positive), `keyboard` (50, positive), `battery` (47, **negative**), `warranty` (31, **neutral**), `hard drive`/`windows` (negative).
-  - Lưu ý: per-example agreement in trong notebook (0.8617) đo trên union train+valid+test nên **cao hơn ảo** so với accuracy thật của model (0.7447, đo trên test set riêng) — không dùng số 0.8617 để so sánh/báo cáo hiệu năng model, chỉ dùng để sanity-check bước tổng hợp.
-  - Bàn giao `aspect_stats.json` (mảng `predicted`) cho bước FLAN-T5 report generation bên dưới.
+  | Model | Majority-sentiment agreement | Notebook đã chạy | File kết quả |
+  |---|---|---|---|
+  | DistilBERT (seed 44) | 228/253 = 90.12% | `notebooks-output/aspect_stats_semeval_laptop_output.ipynb` | `output/aspect_stats.txt` |
+  | **BERT-base (seed 44)** | **236/253 = 93.28%** | `notebooks-output/aspect-level-sentiment-statistics-bert-output.ipynb` | `output/aspect_stats_bert.txt` |
+
+  - 253 aspect có ≥2 lượt nhắc tới (cả 2 lần chạy).
+  - BERT cải thiện agreement so với DistilBERT (93.28% vs 90.12%), khớp với việc BERT có Macro-F1 cao hơn ở bước fine-tune, đặc biệt lớp `neutral`. **Dùng `output/aspect_stats_bert.txt` (BERT) làm bảng chính thức bàn giao**, giữ bản DistilBERT lại chỉ để đối chiếu.
+  - Top aspect theo số lượt nhắc (ổn định ở cả 2 lần chạy): `screen` (60, positive), `price` (56, positive), `use` (53, positive), `battery life` (52, positive), `keyboard` (50, positive), `battery` (47, **negative**), `warranty` (31, **neutral**), `hard drive`/`windows` (negative).
+  - Lưu ý: per-example agreement in trong notebook (0.9421 với BERT, 0.8617 với DistilBERT) đo trên union train+valid+test nên **cao hơn ảo** so với accuracy thật của model (đo trên test set riêng: BERT 0.7627, DistilBERT 0.7447) — không dùng số này để so sánh/báo cáo hiệu năng model, chỉ dùng để sanity-check bước tổng hợp.
+  - Bàn giao `output/aspect_stats_bert.txt` (mảng `predicted`) cho bước FLAN-T5 report generation bên dưới.
 - [ ] Dùng FLAN-T5 sinh báo cáo ngắn từ bảng thống kê.
 - [ ] Xây factual checker đơn giản đối chiếu số liệu trong report với thống kê gốc.
 
