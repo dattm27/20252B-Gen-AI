@@ -1,0 +1,85 @@
+{
+  "report": "screen, price, battery, keyboard, total = 60, positive, negative, neutral",
+  "factual_check": {
+    "passed": false,
+    "claims_checked": 0,
+    "valid_claims": 0,
+    "unparsed_numeric_tokens": 1,
+    "missing_aspects": [
+      "battery",
+      "keyboard",
+      "price",
+      "screen"
+    ],
+    "duplicate_aspects": [],
+    "unexpected_text": "screen, price, battery, keyboard, total = 60, positive, negative, neutral",
+    "checks": []
+  },
+  "accepted": false,
+  "selected_aspects": [
+    "screen",
+    "price",
+    "battery",
+    "keyboard"
+  ],
+  "generation_attempts": 3,
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "report": "screen, price, battery, keyboard, total=50, positive, 25, negative, 20",
+      "factual_check": {
+        "passed": false,
+        "claims_checked": 0,
+        "valid_claims": 0,
+        "unparsed_numeric_tokens": 3,
+        "missing_aspects": [
+          "battery",
+          "keyboard",
+          "price",
+          "screen"
+        ],
+        "duplicate_aspects": [],
+        "unexpected_text": "screen, price, battery, keyboard, total=50, positive, 25, negative, 20",
+        "checks": []
+      }
+    },
+    {
+      "attempt": 2,
+      "report": "screen, price, battery, keyboard, total = 60, positive, negative, neutral",
+      "factual_check": {
+        "passed": false,
+        "claims_checked": 0,
+        "valid_claims": 0,
+        "unparsed_numeric_tokens": 1,
+        "missing_aspects": [
+          "battery",
+          "keyboard",
+          "price",
+          "screen"
+        ],
+        "duplicate_aspects": [],
+        "unexpected_text": "screen, price, battery, keyboard, total = 60, positive, negative, neutral",
+        "checks": []
+      }
+    },
+    {
+      "attempt": 3,
+      "report": "screen, price, battery, keyboard, total = 60, positive, negative, neutral",
+      "factual_check": {
+        "passed": false,
+        "claims_checked": 0,
+        "valid_claims": 0,
+        "unparsed_numeric_tokens": 1,
+        "missing_aspects": [
+          "battery",
+          "keyboard",
+          "price",
+          "screen"
+        ],
+        "duplicate_aspects": [],
+        "unexpected_text": "screen, price, battery, keyboard, total = 60, positive, negative, neutral",
+        "checks": []
+      }
+    }
+  ]
+}

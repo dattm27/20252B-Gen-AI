@@ -1,0 +1,207 @@
+{
+  "report": "Screen attracted the most attention, with 60 mentions: 32 positive, 24 negative, and 4 neutral. Price emerged as the clearest strength, receiving 49 positive mentions out of 56, alongside 4 negative and 3 neutral. In contrast, keyboard was the main concern, with 20 negative mentions out of 50, compared with 25 positive and 5 neutral. Keyboard feedback was the most divided, with 17 positive, 17 negative, and 5 neutral mentions among 39 total.",
+  "factual_check": {
+    "passed": false,
+    "claims_checked": 4,
+    "valid_claims": 3,
+    "unparsed_numeric_tokens": 0,
+    "missing_aspects": [
+      "battery"
+    ],
+    "missing_roles": [],
+    "role_errors": [
+      "strongest_negative: claimed keyboard, expected battery"
+    ],
+    "duplicate_aspects": [
+      "keyboard"
+    ],
+    "unexpected_text": "",
+    "checks": [
+      {
+        "aspect": "screen",
+        "claimed": {
+          "total": 60,
+          "positive": 32,
+          "negative": 24,
+          "neutral": 4
+        },
+        "expected": {
+          "total": 60,
+          "positive": 32,
+          "negative": 24,
+          "neutral": 4
+        },
+        "valid": true,
+        "errors": [],
+        "analytical_role": "most_discussed"
+      },
+      {
+        "aspect": "price",
+        "claimed": {
+          "total": 56,
+          "positive": 49,
+          "negative": 4,
+          "neutral": 3
+        },
+        "expected": {
+          "total": 56,
+          "positive": 49,
+          "negative": 4,
+          "neutral": 3
+        },
+        "valid": true,
+        "errors": [],
+        "analytical_role": "strongest_positive"
+      },
+      {
+        "aspect": "keyboard",
+        "claimed": {
+          "total": 50,
+          "positive": 25,
+          "negative": 20,
+          "neutral": 5
+        },
+        "expected": {
+          "total": 50,
+          "positive": 25,
+          "negative": 20,
+          "neutral": 5
+        },
+        "valid": true,
+        "errors": [],
+        "analytical_role": "strongest_negative"
+      },
+      {
+        "aspect": "keyboard",
+        "claimed": {
+          "total": 39,
+          "positive": 17,
+          "negative": 17,
+          "neutral": 5
+        },
+        "expected": {
+          "total": 50,
+          "positive": 25,
+          "negative": 20,
+          "neutral": 5
+        },
+        "valid": false,
+        "errors": [
+          "total: claimed 39, expected 50",
+          "positive: claimed 17, expected 25",
+          "negative: claimed 17, expected 20"
+        ],
+        "analytical_role": "most_divided"
+      }
+    ]
+  },
+  "accepted": false,
+  "selected_aspects": [
+    "screen",
+    "price",
+    "battery",
+    "keyboard"
+  ],
+  "generation_attempts": 1,
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "report": "Screen attracted the most attention, with 60 mentions: 32 positive, 24 negative, and 4 neutral. Price emerged as the clearest strength, receiving 49 positive mentions out of 56, alongside 4 negative and 3 neutral. In contrast, keyboard was the main concern, with 20 negative mentions out of 50, compared with 25 positive and 5 neutral. Keyboard feedback was the most divided, with 17 positive, 17 negative, and 5 neutral mentions among 39 total.",
+      "factual_check": {
+        "passed": false,
+        "claims_checked": 4,
+        "valid_claims": 3,
+        "unparsed_numeric_tokens": 0,
+        "missing_aspects": [
+          "battery"
+        ],
+        "missing_roles": [],
+        "role_errors": [
+          "strongest_negative: claimed keyboard, expected battery"
+        ],
+        "duplicate_aspects": [
+          "keyboard"
+        ],
+        "unexpected_text": "",
+        "checks": [
+          {
+            "aspect": "screen",
+            "claimed": {
+              "total": 60,
+              "positive": 32,
+              "negative": 24,
+              "neutral": 4
+            },
+            "expected": {
+              "total": 60,
+              "positive": 32,
+              "negative": 24,
+              "neutral": 4
+            },
+            "valid": true,
+            "errors": [],
+            "analytical_role": "most_discussed"
+          },
+          {
+            "aspect": "price",
+            "claimed": {
+              "total": 56,
+              "positive": 49,
+              "negative": 4,
+              "neutral": 3
+            },
+            "expected": {
+              "total": 56,
+              "positive": 49,
+              "negative": 4,
+              "neutral": 3
+            },
+            "valid": true,
+            "errors": [],
+            "analytical_role": "strongest_positive"
+          },
+          {
+            "aspect": "keyboard",
+            "claimed": {
+              "total": 50,
+              "positive": 25,
+              "negative": 20,
+              "neutral": 5
+            },
+            "expected": {
+              "total": 50,
+              "positive": 25,
+              "negative": 20,
+              "neutral": 5
+            },
+            "valid": true,
+            "errors": [],
+            "analytical_role": "strongest_negative"
+          },
+          {
+            "aspect": "keyboard",
+            "claimed": {
+              "total": 39,
+              "positive": 17,
+              "negative": 17,
+              "neutral": 5
+            },
+            "expected": {
+              "total": 50,
+              "positive": 25,
+              "negative": 20,
+              "neutral": 5
+            },
+            "valid": false,
+            "errors": [
+              "total: claimed 39, expected 50",
+              "positive: claimed 17, expected 25",
+              "negative: claimed 17, expected 20"
+            ],
+            "analytical_role": "most_divided"
+          }
+        ]
+      }
+    }
+  ]
+}

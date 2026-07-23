@@ -4,7 +4,7 @@ Kế hoạch thực hiện đề tài **Phân tích cảm xúc theo khía cạnh
 
 > Cập nhật trạng thái bằng cách đổi `[ ]` → `[x]` khi hoàn thành từng việc, và cập nhật bảng tổng quan + dòng "Last updated" bên dưới.
 
-**Last updated:** 2026-07-19
+**Last updated:** 2026-07-22
 
 ## Tổng quan trạng thái
 
@@ -13,7 +13,7 @@ Kế hoạch thực hiện đề tài **Phân tích cảm xúc theo khía cạnh
 | 1 | Nghiên cứu nền tảng | 🟢 Hoàn thành |
 | 2 | Chốt Proposal | 🟢 Hoàn thành |
 | 3 | Data pipeline & baseline | 🟢 Hoàn thành |
-| 4 | Model cải tiến & report generation | 🔴 Chưa bắt đầu |
+| 4 | Model cải tiến & report generation | 🟡 Đang làm |
 | 5 | Đánh giá & phân tích | 🔴 Chưa bắt đầu |
 | 6 | Deliverables | 🔴 Chưa bắt đầu |
 
@@ -89,8 +89,8 @@ Chi tiết: [`docs/Research-Notes.md`](../docs/Research-Notes.md)
   - Top aspect theo số lượt nhắc: `screen` (60, positive), `price` (56, positive), `use` (53, positive), `battery life` (52, positive), `keyboard` (50, positive), `battery` (47, **negative**), `warranty` (31, **neutral**), `hard drive`/`windows` (negative).
   - Lưu ý: per-example agreement in trong notebook (0.8617) đo trên union train+valid+test nên **cao hơn ảo** so với accuracy thật của model (0.7447, đo trên test set riêng) — không dùng số 0.8617 để so sánh/báo cáo hiệu năng model, chỉ dùng để sanity-check bước tổng hợp.
   - Bàn giao `aspect_stats.json` (mảng `predicted`) cho bước FLAN-T5 report generation bên dưới.
-- [ ] Dùng FLAN-T5 sinh báo cáo ngắn từ bảng thống kê.
-- [ ] Xây factual checker đơn giản đối chiếu số liệu trong report với thống kê gốc.
+- [x] Dùng FLAN-T5 sinh báo cáo ngắn từ bảng thống kê thật (`output/aspect_stats.txt`, mảng `predicted`). Fine-tune `flan-t5-small` bằng notebook Colab `notebooks/finetune_flan_t5_report_colab.ipynb`; model sinh đúng 4/4 claim cho `screen`/`price`/`battery`/`keyboard`, kết quả local tại `output/flan_t5_finetuned_report.json` có `accepted: true`.
+- [x] Xây factual checker đơn giản đối chiếu số liệu trong report với thống kê gốc (`src/report/factual_checker.py`, test trong `tests/test_report_generation.py`).
 
 ## Tuần 5 — Đánh giá & phân tích
 

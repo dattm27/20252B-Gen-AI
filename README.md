@@ -164,3 +164,65 @@ python -m pytest tests/ -v
 ```
 
 Tests run against a small hand-built fixture (`tests/fixtures/sample_laptop.xml`, for `test_semeval_loader.py`) and synthetic data (`test_aspect_stats.py`) — neither needs the gated dataset or GPU/transformers.
+
+## FLAN-T5 report generation and factual checking
+
+The end-to-end pipeline reads the real DistilBERT statistics in
+[`output/aspect_stats.txt`](output/aspect_stats.txt). It uses the `predicted` table by default,
+because this is the table available in a real deployment where gold sentiment labels do not exist.
+After installing the requirements, run:
+
+```bash
+python scripts/generate_report.py --output output/flan_t5_report.json
+```
+
+This is equivalent to explicitly running:
+
+```bash
+python scripts/generate_report.py --stats output/aspect_stats.txt --table predicted \
+  --model google/flan-t5-base --max-aspects 4 --max-attempts 3 \
+  --output output/flan_t5_report.json
+```
+
+The default model is `google/flan-t5-base` with deterministic beam search. The pipeline selects a
+popular aspect, a positive strength, a negative weakness, and a divided aspect. A strict few-shot
+copy-transformation prompt explains that all values are mention counts—not prices or product
+specifications—and asks for one auditable sentence per row. The prompt asks for an
+auditable analytical sentences such as `Screen attracted the most attention, with 60 mentions: 32
+positive, 24 negative, and 4 neutral.` The input explicitly labels the most-discussed aspect,
+clearest strength, main concern, and most-divided feedback so FLAN-T5 can explain insights without
+inventing them. The
+checker maps each claim to its source aspect, verifies all four counts, rejects unknown aspects,
+missing/duplicate aspects, extra prose, and numbers outside the auditable format. Failed generations
+are retried up to three times without reloading the model. Every candidate in `attempt_history` is
+an actual FLAN-T5 output. `accepted` is true only when every selected aspect is present and the
+complete report passes the checker. If every attempt fails, the final FLAN-T5 output is returned
+with `accepted: false`; the program never replaces it with a template-generated report.
+
+To check an existing report without running FLAN-T5 again:
+
+```bash
+python scripts/generate_report.py --stats output/aspect_stats.txt --table predicted \
+  --report-file path/to/report.txt
+```
+
+Implementation: `src/report/flan_t5_report.py`, `src/report/factual_checker.py`, and
+`src/report/stats_io.py`. Tests are in `tests/test_report_generation.py`.
+
+The fine-tuned model can be produced with the self-contained Colab notebook
+`notebooks/finetune_flan_t5_report_colab.ipynb` (upload only `output/aspect_stats.txt`).
+
+The notebook prevents evaluation leakage: train, validation, and synthetic test use three mutually
+disjoint synthetic aspect-name pools and independently generated counts. All real `predicted`
+aspect names and counts from `aspect_stats.txt` are reserved exclusively for the final evaluation;
+runtime assertions verify both aspect-level and example-level disjointness.
+
+After extracting the exported model to `models/flan-t5-report`, run:
+
+```bash
+python scripts/generate_report.py --model models/flan-t5-report --max-aspects 4 \
+  --max-attempts 1 --output output/flan_t5_finetuned_report.json
+```
+
+Use the same decoding configuration as the Colab evaluation: deterministic four-beam generation
+without repetition penalties. The recorded real-table run passed all 4/4 claims.
