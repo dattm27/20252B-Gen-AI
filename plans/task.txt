@@ -14,3 +14,19 @@ Xây factual checker đơn giản đối chiếu số liệu trong report với 
 
 
 4. Viết báo cáo + slides
+
+
+Đạt + Sơn
+Xây tổng hợp thống kê theo từng aspect.
+- Thêm top 10 reason, số lần nhắc tới
+
+Aspect extraction -> Sơn đã có
+Xây dựng pipeline: aspect ext -> Sentiment class -> Thống kê
+
+
+
+Hưng + Vinh + Hoàng
+Input stats -> report
+- Check nốt factual checker
+- Đánh giá hiệu quả
+
