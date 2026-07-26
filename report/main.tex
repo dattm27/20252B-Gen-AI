@@ -2,10 +2,13 @@
 % Report for: Phan tich cam xuc theo khia canh va sinh bao cao
 % tong hop tu phan hoi khach hang bang Generative AI (20252B - Gen AI)
 %
-% TODO markers throughout mark content owned by the report-generation /
-% factual-checker team (Hoang, Vinh, Hung) or not-yet-done analysis --
-% fill in once notebooks-output/report_generation_semeval_laptop_output.ipynb
-% and the factual-checker branches are merged, and after error analysis.
+% Scope: single track (Aspect Sentiment Triplet Extraction / T5, domain nha
+% hang). Mot track khac (phan loai sentiment theo aspect da biet truoc,
+% TF-IDF+LogReg/DistilBERT/BERT, domain laptop) van con trong code/notebook
+% (notebooks/finetune_{distilbert,bert}_semeval_laptop.ipynb, ket qua trong
+% plans/project-plan.md) nhu mot buoc khao sat ban dau cua nhom, nhung khong
+% dua vao bao cao nop de giu bao cao tap trung vao mot pipeline hoan chinh,
+% nhat quan.
 %
 % All numeric results/figures below are taken directly from
 % plans/project-plan.md and the executed notebooks in notebooks-output/ --
@@ -30,37 +33,71 @@
 \pgfplotsset{compat=1.17}
 \usetikzlibrary{arrows.meta}
 
-\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+\tikzset{
+  iobox/.style={draw, rounded corners, align=center, minimum height=1.1cm,
+    font=\small, fill=blue!5, text width=3.1cm},
+  ioproc/.style={draw, rounded corners, align=center, minimum height=1.1cm,
+    font=\small, fill=orange!8, text width=3.1cm},
+  ioarr/.style={-{Stealth[length=2mm]}, thick}
+}
 
-\title{Phân tích cảm xúc theo khía cạnh và sinh báo cáo tổng hợp \\
-từ phản hồi khách hàng bằng Generative AI}
-\author{Nhóm 20252B \\ \small Đạt, Sơn, Hoàng, Vinh, Hưng}
-\date{\today}
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
 
 \begin{document}
 
-\maketitle
+% =====================================================================
+% Trang bìa
+% =====================================================================
+\begin{titlepage}
+\centering
+\vspace*{1.5cm}
+{\Large\bfseries BÁO CÁO BÀI TẬP LỚN}\\[0.6cm]
+{\Large\bfseries NỀN TẢNG AI TẠO SINH}\\[1.2cm]
+{\large\bfseries ĐỀ TÀI}\\[0.4cm]
+{\Large\bfseries Phân tích cảm xúc theo khía cạnh và sinh báo cáo tổng hợp\\
+từ phản hồi khách hàng bằng Generative AI}\\[1.8cm]
 
-\begin{abstract}
-Thay vì chỉ phân loại một review là tích cực/tiêu cực, hệ thống trong báo cáo này
-xác định cụ thể khách hàng đang khen/chê điểm nào (khía cạnh -- \emph{aspect}),
-gán sentiment cho từng khía cạnh, rồi tổng hợp thống kê trên nhiều review và dùng
-mô hình sinh văn bản để tạo báo cáo tóm tắt ngắn, kèm một bộ kiểm tra tính xác
-thực (factual checker) để hạn chế mô hình bịa số liệu. Nhóm xây dựng và so sánh
-hai hướng tiếp cận trên hai domain: (1) phân loại sentiment theo khía cạnh đã
-biết trước (TF-IDF+LogReg $\to$ DistilBERT/BERT) trên domain laptop
-(SemEval-2014 Task~4), và (2) trích xuất trực tiếp bộ ba (khía cạnh, ý kiến,
-sentiment) từ câu thô không cần biết trước khía cạnh (họ mô hình T5) trên domain
-nhà hàng (SemEval Restaurant Triplet data). Hướng thứ hai giải quyết luôn bài
-toán trích xuất khía cạnh và cho thêm ``lý do'' (opinion phrase) phục vụ báo
-cáo tốt hơn, đồng thời cho độ nhất quán tổng hợp cao hơn (97.25\% so với
-93.28\%). Nhóm cũng ghi lại một số phát hiện đáng chú ý trong quá trình thực
-nghiệm, trong đó có một kết quả phủ định giả thuyết ban đầu về nguyên nhân
-FLAN-T5-base hoạt động kém trên tác vụ trích xuất.
-\end{abstract}
+{\large Giảng viên hướng dẫn: TS. Dương Quang Huy}\\[0.4cm]
+{\large Nhóm thực hiện: Nhóm 15}\\[0.6cm]
+
+\begin{tabular}{l}
+Trần Hoàng Sơn -- 20252606M \\
+Trần Mạnh Đạt -- 20252607M \\
+Nguyễn Đức Hoàng -- 20252603M \\
+Trần Hữu Vinh -- 20252027M \\
+Phạm Khánh Hưng -- 20252249M \\
+\end{tabular}
+
+\vfill
+{\large Hà Nội, 7/2026}
+\end{titlepage}
 
 \tableofcontents
+\clearpage
 
+% =====================================================================
+\section*{Tóm tắt}
+\addcontentsline{toc}{section}{Tóm tắt}
+% =====================================================================
+
+Thay vì chỉ phân loại một review là tích cực/tiêu cực, hệ thống trong báo cáo này
+xác định cụ thể khách hàng đang khen/chê điểm nào (khía cạnh -- \emph{aspect})
+\textbf{trực tiếp từ câu thô, không cần biết trước khía cạnh}, kèm luôn ``lý do''
+(\emph{opinion}) cho mỗi nhận định, rồi tổng hợp thống kê trên nhiều review và
+dùng mô hình sinh văn bản để tạo báo cáo tóm tắt ngắn, kèm một bộ kiểm tra tính
+xác thực (factual checker) để hạn chế mô hình bịa số liệu.
+
+Nhóm sinh trực tiếp bộ ba (khía cạnh, ý kiến, sentiment) từ câu thô -- bài toán
+\textbf{Aspect Sentiment Triplet Extraction} (ASTE) -- trên domain nhà hàng
+(SemEval Restaurant Triplet data, 14res+15res+16res), so sánh một baseline tra
+cứu tần suất tự xây với ba checkpoint T5-family (T5-small, T5-base,
+FLAN-T5-base) cùng hyperparameter. T5-base cải thiện gần gấp đôi triplet-F1 so
+với baseline (0.3736 $\to$ 0.7442) và được chọn làm model chính. Nhóm cũng ghi
+lại một số phát hiện đáng chú ý trong quá trình thực nghiệm, trong đó có việc
+FLAN-T5-base chưa hội tụ trong ngân sách 20 epoch được cấp, gợi ý khoảng cách
+hiệu năng đo được có thể phản ánh tốc độ hội tụ chứ không hẳn năng lực model.
+
+\clearpage
 % =====================================================================
 \section{Giới thiệu}
 % =====================================================================
@@ -69,25 +106,24 @@ FLAN-T5-base hoạt động kém trên tác vụ trích xuất.
 
 Các hệ thống phân tích cảm xúc truyền thống thường chỉ đưa ra một nhãn
 tích cực/tiêu cực duy nhất cho toàn bộ review, trong khi một review thực tế
-thường đề cập nhiều khía cạnh khác nhau với sentiment khác nhau. Với người bán
-hàng hay quản lý nhà hàng, một con số tổng quát (``70\% review tích cực'')
-không đủ để biết \emph{nên cải thiện điểm gì} -- họ cần biết cụ thể khía cạnh
-nào đang được khen, khía cạnh nào đang bị chê, và vì sao. Đây chính là động lực
-của bài toán \emph{Aspect-Based Sentiment Analysis} (ABSA), minh hoạ qua ví dụ:
+thường đề cập nhiều khía cạnh khác nhau với sentiment khác nhau. Với người quản
+lý nhà hàng, một con số tổng quát (``70\% review tích cực'') không đủ để biết
+\emph{nên cải thiện điểm gì} -- họ cần biết cụ thể khía cạnh nào đang được
+khen, khía cạnh nào đang bị chê, và vì sao. Đây chính là động lực của bài toán
+\emph{Aspect-Based Sentiment Analysis} (ABSA), minh hoạ qua ví dụ:
 
 \begin{quote}
-\emph{"Máy có màn hình đẹp, giao hàng nhanh nhưng pin yếu."}
+\emph{``The food was great but the service was slow.''}
 \end{quote}
 
 \begin{table}[h]
 \centering
-\begin{tabular}{ll}
+\begin{tabular}{lll}
 \toprule
-Khía cạnh & Sentiment \\
+Khía cạnh & Sentiment & Lý do (opinion) \\
 \midrule
-Màn hình & Tích cực \\
-Giao hàng & Tích cực \\
-Pin & Tiêu cực \\
+food & Tích cực & great \\
+service & Tiêu cực & slow \\
 \bottomrule
 \end{tabular}
 \caption{Ví dụ phân tích cảm xúc theo khía cạnh (Aspect-Based Sentiment Analysis).}
@@ -98,9 +134,9 @@ không khả thi. Nhóm hướng tới một hệ thống tự động hoá toà
 review thô, tự tổng hợp và sinh ra một đoạn báo cáo dạng:
 
 \begin{quote}
-\emph{"Khách hàng đánh giá tích cực về màn hình và tốc độ giao hàng. Tuy
-nhiên, pin là khía cạnh có nhiều phản hồi tiêu cực nhất và cần được ưu
-tiên cải thiện."}
+\emph{``Khách hàng đánh giá tích cực về food (đa số nhắc `great', `delicious')
+và price. Tuy nhiên, service là khía cạnh có nhiều phản hồi tiêu cực nhất
+(thường bị chê `slow') và cần được ưu tiên cải thiện.''}
 \end{quote}
 
 Một rủi ro lớn khi dùng mô hình sinh văn bản (generative model) cho bước cuối
@@ -108,39 +144,102 @@ là hiện tượng \emph{hallucination} -- mô hình có thể bịa ra số li
 định không khớp với dữ liệu gốc. Vì vậy pipeline của nhóm có thêm một bước
 kiểm tra tính xác thực (factual checker) trước khi xuất báo cáo cuối cùng.
 
+\subsection{Vì sao chọn hướng tiếp cận generative}
+\label{sec:whygenerative}
+
+Các phương pháp ABSA truyền thống xử lý theo hướng \emph{discriminative}
+(phân loại) -- với mỗi bài toán con (trích aspect, phân loại sentiment,
+...), thiết kế một mạng phân loại riêng, dùng chỉ số lớp (class index) làm
+nhãn huấn luyện. Zhang et al.~\cite{genabsa} chỉ ra cách này có hai hạn
+chế: (1) bỏ qua ngữ nghĩa tự nhiên của nhãn (\emph{label semantics}) --
+ví dụ hiểu nghĩa cụm ``food quality'' giúp mô hình liên kết tốt hơn với
+aspect cụ thể như ``pizza'', so với chỉ dùng một chỉ số lớp trừu tượng
+không mang thông tin; (2) mỗi bài toán ABSA cần một kiến trúc/thiết kế
+riêng, khó tái sử dụng giữa các bài toán.
+
+\textbf{Giải pháp -- khung GAS (Generative Aspect-based Sentiment
+analysis)}: nhóm tác giả bài báo ``Towards Generative Aspect-Based
+Sentiment Analysis'' (Zhang, Li, Deng, Bing, Lam -- ACL 2021)~\cite{genabsa}
+đề xuất chuyển toàn bộ các bài toán ABSA thành bài toán sinh văn bản (text
+generation), dùng chung một mô hình seq2seq (\textbf{T5-base}), với hai
+kiểu định dạng target (\emph{paradigm}):
+\begin{itemize}
+    \item \textbf{Annotation-style}: chèn nhãn trực tiếp vào ngay trong
+        câu gốc, bọc trong ngoặc vuông \texttt{[aspect | opinion |
+        polarity]}. Ví dụ (task AOPE): input \emph{``Salads were
+        fantastic, our server was also very helpful.''} $\to$ target
+        \emph{``[Salads | fantastic] were fantastic here, our [server |
+        helpful] was also helpful.''}
+    \item \textbf{Extraction-style}: sinh trực tiếp các cặp/bộ ba dưới
+        dạng \texttt{(aspect, opinion, polarity)}, tách nhau bởi dấu
+        \texttt{;}. Cùng ví dụ trên $\to$ target \texttt{(Salads,
+        fantastic); (server, helpful)}.
+\end{itemize}
+Đây chính là cơ sở cho định dạng target nhóm dùng ở Mục~4.2
+(\texttt{aspect: X | opinion: Y | sentiment: Z ; ...}) -- một biến thể gần
+với extraction-style, có thêm nhãn trường tường minh
+(\texttt{aspect:}/\texttt{opinion:}/\texttt{sentiment:}) để dễ parse bằng
+regex hơn là chỉ dựa vào thứ tự vị trí trong ngoặc.
+
+\textbf{Bốn bài toán ABSA được bài báo thử nghiệm}:
+\begin{itemize}
+    \item \textbf{AOPE} (Aspect Opinion Pair Extraction) -- trích cặp
+        (aspect, opinion), chưa có sentiment.
+    \item \textbf{UABSA} (Unified ABSA, còn gọi End-to-End ABSA) -- trích
+        đồng thời (aspect, sentiment), không cần biết trước aspect.
+    \item \textbf{ASTE} (Aspect Sentiment Triplet Extraction) -- trích bộ
+        ba (aspect, opinion, sentiment) -- đầy đủ nhất trong 4 task về số
+        thành phần trích xuất.
+    \item \textbf{TASD} (Target Aspect Sentiment Detection) -- trích bộ ba
+        (aspect, category, sentiment), trong đó category thuộc một tập cố
+        định định trước (ví dụ ``food quality'', ``restaurant general''),
+        có xử lý cả trường hợp aspect ẩn (implicit, gán nhãn \texttt{null}).
+\end{itemize}
+
+\textbf{Vì sao nhóm chọn ASTE}: so với 3 task còn lại, ASTE khớp nhất với
+động lực đã nêu ở Mục~1.1 -- vừa giải quyết bài toán trích xuất aspect từ
+câu thô (giống UABSA/AOPE, không cần biết trước aspect như ABSA truyền
+thống), vừa cho thêm trường \emph{opinion} (giống AOPE, mà UABSA không có)
+để làm ``lý do'' phục vụ trực tiếp bước sinh báo cáo
+(Mục~\ref{sec:flant5report}) -- đúng nhu cầu báo cáo cần giải thích được
+\emph{lý do}, không chỉ đưa ra con số. TASD tuy đầy đủ nhất về mặt phân
+loại (aspect category cố định) nhưng lại đòi hỏi một tập category định sẵn
+theo domain -- không phù hợp với mục tiêu trích xuất khía cạnh \emph{tự
+do}, không giới hạn trước của nhóm. Nhóm chọn
+\textbf{IsakZhang/Generative-ABSA}~\cite{genabsa} -- code đi kèm bài báo
+trên -- làm repo nền để kế thừa ý tưởng (chi tiết ở Mục~2.2).
+
 \subsection{Pipeline tổng quan}
 
-Hình~\ref{fig:pipeline} minh hoạ toàn bộ pipeline. Từ review thô, nhóm đi theo
-hai nhánh xử lý song song (Track~1 và Track~2, xem Mục~\ref{sec:problem}),
-kết quả của cả hai nhánh đều đổ về cùng một bước tổng hợp thống kê, sau đó
-sinh báo cáo và kiểm tra tính xác thực.
+Hình~\ref{fig:pipeline} minh hoạ toàn bộ pipeline: một model duy nhất
+(T5-base fine-tune cho ASTE) đọc câu thô và sinh trực tiếp cả ba thông tin
+(aspect, opinion, sentiment) -- không cần một bước trích xuất aspect riêng
+biệt như cách tiếp cận ABSA truyền thống (phân loại sentiment khi đã biết
+trước aspect).
 
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}[
-  box/.style={draw, rounded corners, align=center, minimum width=4.6cm,
+  box/.style={draw, rounded corners, align=center, minimum width=7.2cm,
     minimum height=1.1cm, font=\small, fill=blue!5},
-  chkbox/.style={draw, rounded corners, align=center, minimum width=4.6cm,
+  chkbox/.style={draw, rounded corners, align=center, minimum width=7.2cm,
     minimum height=1.1cm, font=\small, fill=orange!10, dashed},
   arr/.style={-{Stealth[length=2.2mm]}, thick}
 ]
-\node[box] (input) at (2.3,7.6) {Review khách hàng (văn bản thô)};
-\node[box] (t1) at (-2.6,5.6) {\textbf{Track 1}: TF-IDF/BERT\\(aspect biết trước) $\to$ sentiment};
-\node[box] (t2) at (7.2,5.6) {\textbf{Track 2}: T5-ASTE\\(câu thô) $\to$ (aspect, opinion, sentiment)};
-\node[box] (agg) at (2.3,3.6) {Tổng hợp thống kê theo aspect\\+ top-10 lý do phổ biến nhất};
-\node[box] (rep) at (2.3,1.6) {FLAN-T5: sinh báo cáo văn bản};
-\node[chkbox] (chk) at (2.3,-0.4) {Factual checker\\(đối chiếu số liệu với thống kê gốc)};
-\draw[arr] (input) -- (t1);
-\draw[arr] (input) -- (t2);
-\draw[arr] (t1) -- (agg);
-\draw[arr] (t2) -- (agg);
+\node[box] (input) at (0,8.4) {Review khách hàng\\(câu thô, không có gold aspect)};
+\node[box] (t5) at (0,6.4) {T5-base (fine-tuned ASTE)\\$\to$ (aspect, opinion, sentiment)};
+\node[box] (agg) at (0,4.4) {Tổng hợp thống kê theo aspect\\+ top-10 lý do phổ biến nhất};
+\node[box] (rep) at (0,2.4) {FLAN-T5: sinh báo cáo văn bản};
+\node[chkbox] (chk) at (0,0.2) {Factual checker\\(đối chiếu số liệu với thống kê gốc)};
+\draw[arr] (input) -- (t5);
+\draw[arr] (t5) -- (agg);
 \draw[arr] (agg) -- (rep);
 \draw[arr] (rep) -- (chk);
 \end{tikzpicture}
-\caption{Pipeline tổng quan. Track~1 (domain laptop) cần biết trước aspect;
-Track~2 (domain nhà hàng, hướng bổ sung) tự trích xuất luôn aspect và cho
-thêm trường \emph{opinion} làm ``lý do''. Khối nét đứt (factual checker) là
-phần do nhóm Hoàng/Vinh/Hưng phụ trách.}
+\caption{Pipeline tổng quan. Một model duy nhất (T5-base fine-tune cho ASTE)
+đọc câu thô và sinh trực tiếp cả 3 thông tin (aspect, opinion, sentiment) --
+không cần bước trích xuất aspect riêng biệt. Khối nét đứt (factual checker)
+là phần do nhóm Hoàng/Vinh/Hưng phụ trách.}
 \label{fig:pipeline}
 \end{figure}
 
@@ -150,27 +249,26 @@ Nhóm xây dựng và so sánh nhiều phương pháp theo từng bước của 
 được trình bày chi tiết ở Mục~\ref{sec:methods}:
 
 \begin{itemize}
-    \item \textbf{Baseline TF-IDF + Logistic Regression} -- mốc so sánh
-        đơn giản, không cần GPU (domain laptop).
-    \item \textbf{DistilBERT / BERT fine-tuned} -- phân loại sentiment
-        theo khía cạnh đã biết trước, hiểu ngữ cảnh tốt hơn TF-IDF
-        (domain laptop).
     \item \textbf{Baseline tra cứu tần suất (AsteLookupBaseline)} -- mốc
-        so sánh phi-neural cho bài toán trích xuất bộ ba (domain nhà hàng).
-    \item \textbf{T5-small / T5-base / FLAN-T5-base fine-tuned cho ASTE}
-        (Aspect Sentiment Triplet Extraction) -- sinh trực tiếp bộ ba
-        (khía cạnh, ý kiến, sentiment) từ câu thô, không cần biết trước
-        khía cạnh (domain nhà hàng).
-    \item \textbf{FLAN-T5 sinh báo cáo} từ bảng thống kê khía cạnh.
-        \todo{Hoàng/Vinh/Hưng -- bổ sung chi tiết method sau khi merge
-        branch report-generation.}
-    \item \textbf{Factual checker} đối chiếu số liệu trong báo cáo sinh
-        ra với bảng thống kê gốc.
-        \todo{Hoàng/Vinh/Hưng -- bổ sung chi tiết method + kết quả đánh
-        giá sau khi merge.}
+        so sánh phi-neural cho bài toán trích xuất bộ ba.
+    \item \textbf{T5-small / T5-base / FLAN-T5-base fine-tuned cho ASTE} --
+        sinh trực tiếp bộ ba (khía cạnh, ý kiến, sentiment) từ câu thô.
+    \item \textbf{FLAN-T5 sinh báo cáo} (đã fine-tune) từ bảng thống kê +
+        reason khía cạnh (Mục~\ref{sec:flant5report}).
+    \item \textbf{Factual checker} đối chiếu số liệu và reason trong báo
+        cáo sinh ra với bảng thống kê gốc (Mục~\ref{sec:factualchecker}).
 \end{itemize}
 
+\emph{Về phạm vi báo cáo}: nhóm còn khảo sát một hướng khác (phân loại
+sentiment theo khía cạnh đã biết trước, TF-IDF+LogReg $\to$ DistilBERT/BERT,
+domain laptop, SemEval-2014 Task~4) như một bước thăm dò ban đầu -- code,
+notebook và kết quả vẫn còn trong repo (\texttt{notebooks/finetune\_%
+\{distilbert,bert\}\_semeval\_laptop.ipynb}, \texttt{plans/project-plan.md})
+nhưng không đưa vào báo cáo này để giữ báo cáo tập trung vào một pipeline
+hoàn chỉnh, nhất quán.
 
+
+\clearpage
 % =====================================================================
 \section{Công trình liên quan}
 % =====================================================================
@@ -179,101 +277,81 @@ Nhóm xây dựng và so sánh nhiều phương pháp theo từng bước của 
 
 ABSA thường được chia thành các bài toán con: \emph{Aspect Term Extraction}
 (tìm cụm từ chỉ khía cạnh trong câu), \emph{Aspect Term Polarity} (phân loại
-sentiment cho từng aspect term), \emph{Aspect Category Detection} và
-\emph{Aspect Category Polarity} (với các domain có category cố định, ví dụ
-FOOD/SERVICE/PRICE cho nhà hàng)~\cite{semeval2014}. Domain Laptop trong
-SemEval-2014 chỉ gán nhãn cho hai bài toán con đầu (aspect term + polarity,
-không có category cố định) -- phù hợp với hướng ``trích xuất khía cạnh tự
-do'' mà nhóm theo đuổi thay vì phân loại vào một tập category định sẵn.
+sentiment cho từng aspect term đã tìm được), và ở mức chi tiết hơn --
+\emph{opinion term extraction} (tìm cụm từ diễn đạt lý do)~\cite{semeval2014}.
+Aspect Sentiment Triplet Extraction (ASTE) là bài toán hợp nhất cả ba: sinh ra
+bộ ba (aspect, opinion, sentiment) trong một bước duy nhất, thay vì pipeline
+nhiều bước tách rời.
 
-\subsection{Repo nền: BERT-E2E-ABSA}
+\subsection{Repo nền: Generative-ABSA}
 
-Nhóm chọn \textbf{lixin4ever/BERT-E2E-ABSA}~\cite{berte2eabsa} làm repo nền
-để kế thừa ý tưởng. Repo này thực hiện ABSA \emph{end-to-end}: một model
-BERT duy nhất vừa trích xuất aspect term vừa phân loại sentiment, dùng
-unified tagging scheme (BIEOS/BIO/OT) thay vì tách thành hai model rời rạc,
-và có sẵn dataset \texttt{laptop14} (chính là SemEval-2014 Laptop).
+Nhóm chọn \textbf{IsakZhang/Generative-ABSA}~\cite{genabsa} -- code cho bài
+báo \textbf{``Towards Generative Aspect-Based Sentiment Analysis''} (Zhang,
+Li, Deng, Bing, Lam -- ACL 2021) -- làm repo nền để kế thừa ý tưởng. Động
+lực chọn hướng generative, khung GAS (2 paradigm annotation-style/
+extraction-style), 4 bài toán ABSA bài báo thử nghiệm (AOPE/UABSA/ASTE/
+TASD), và lý do nhóm chọn cụ thể ASTE trong 4 bài toán đó đã trình bày ở
+Mục~\ref{sec:whygenerative}.
 
-Hai lựa chọn khác từng được khảo sát nhưng không chọn:
-\begin{itemize}
-    \item \texttt{songyouwei/ABSA-PyTorch} -- chỉ phân loại sentiment khi
-        \emph{đã biết trước} aspect term, không tự trích xuất được, phải
-        ghép thêm một model riêng cho bước trích xuất.
-    \item \texttt{ScalaConsultants/Aspect-Based-Sentiment-Analysis} -- thư
-        viện đóng gói sẵn, khó chỉnh sửa sâu để thể hiện phần cải tiến của
-        nhóm.
-\end{itemize}
+Đáng chú ý: hyperparameter mặc định của repo này (\texttt{lr=3e-4},
+\texttt{batch\_size=16}, \texttt{20 epoch}) trùng khớp với config nhóm đã
+chọn độc lập cho các notebook fine-tune T5 -- một tín hiệu cho thấy lựa
+chọn hyperparameter của nhóm phù hợp với chuẩn đã được kiểm chứng trong
+literature.
 
-\textbf{Điểm cải tiến của nhóm so với repo nền}: (1) thêm bước tổng hợp
-thống kê aspect-sentiment trên \emph{nhiều} review thay vì chỉ dừng ở một
-câu; (2) thêm module sinh report bằng FLAN-T5 từ bảng thống kê; (3) thêm một
-factual checker để kiểm tra report có bịa số liệu hay không -- cả ba bước
-này đều không có trong repo nền.
+\textbf{Điểm khác của nhóm so với repo nền}: Generative-ABSA dừng lại ở việc
+sinh bộ ba cho từng câu riêng lẻ (đúng phạm vi một bài báo NLP). Nhóm mở rộng
+thêm: (1) bước tổng hợp thống kê + xếp hạng top-10 lý do phổ biến nhất theo
+tần suất trên \emph{nhiều} review; (2) một baseline tra cứu tần suất tự xây
+(không có trong bài báo gốc) làm mốc so sánh phi-neural; (3) module sinh
+report bằng FLAN-T5 từ bảng thống kê; (4) một factual checker để kiểm tra
+report có bịa số liệu hay không; (5) một demo quy mô lớn trên dữ liệu Yelp
+thực tế, không có gold label.
 
-\subsection{Aspect Sentiment Triplet Extraction (ASTE)}
+\subsection{Dataset: SemEval Restaurant Triplet data}
 
-Ngoài hướng phân loại sentiment khi biết trước aspect, nhóm còn tìm hiểu
-hướng \emph{Aspect Sentiment Triplet Extraction} -- sinh đồng thời bộ ba
-(aspect, opinion, sentiment) từ câu thô, không cần biết trước aspect. Nhóm
-dùng bộ dữ liệu SemEval Restaurant Triplet
+Nhóm dùng bộ dữ liệu SemEval Restaurant Triplet
 data~\cite{peng2020aste,xu2020aste}, cụ thể phiên bản
 \texttt{ASTE-Data-V1-AAAI2020}, với cách gán nhãn theo nhóm token (mỗi
 aspect gán một mã nhóm, opinion tương ứng gán mã nhóm cùng độ dài dạng
-\texttt{S...S}) để một câu có thể chứa nhiều bộ ba độc lập. Cách tiếp cận
-sinh văn bản trực tiếp (thay vì tagging từng token) cho phép tái sử dụng
-kiến trúc encoder-decoder có sẵn (T5) mà không cần thiết kế lại tầng CRF/
-tagging scheme như repo nền.
+\texttt{S...S}) để một câu có thể chứa nhiều bộ ba độc lập.
 
 \subsection{Mô hình sinh văn bản: T5 và FLAN-T5}
 
 \textbf{T5}~\cite{t5} (Text-to-Text Transfer Transformer) đóng khung mọi
 tác vụ NLP dưới dạng text-to-text, phù hợp tự nhiên với bài toán sinh bộ ba
-có cấu trúc từ câu thô (Mục~\ref{sec:methods}). \textbf{FLAN-T5}~\cite{flant5}
-là phiên bản T5 đã được instruction-tuned trên nhiều tác vụ đa dạng, đã cho
-kết quả tốt trên các benchmark table-to-text/data-to-text như
-ToTTo~\cite{t5totto} mà không cần fine-tune sâu -- đây là lý do nhóm chọn
-FLAN-T5 (thay vì T5 gốc) cho bước sinh báo cáo cuối, dù kết quả thực nghiệm
-lại cho thấy FLAN-T5-base \emph{không} phải lựa chọn tốt hơn T5-base cho
-bước trích xuất bộ ba (Mục~\ref{sec:findings}) -- một phát hiện thú vị được
-thảo luận riêng.
+có cấu trúc từ câu thô. \textbf{FLAN-T5}~\cite{flant5} là phiên bản T5 đã
+được instruction-tuned trên nhiều tác vụ đa dạng, đã cho kết quả tốt trên
+các benchmark table-to-text/data-to-text như ToTTo~\cite{t5totto} mà không
+cần fine-tune sâu -- đây là lý do nhóm chọn FLAN-T5 (thay vì T5 gốc) cho
+bước sinh báo cáo cuối, dù kết quả thực nghiệm lại cho thấy FLAN-T5-base
+\emph{không} phải lựa chọn tốt hơn T5-base cho bước trích xuất bộ ba
+(Mục~\ref{sec:findings}) -- một phát hiện thú vị được thảo luận riêng.
 
 \subsection{Kiểm tra tính xác thực (factual checking)}
 
 Trong literature có nhiều hướng phức tạp để kiểm tra tính nhất quán của văn
-bản sinh ra so với nguồn dữ liệu gốc, ví dụ FactCC~\cite{factcc} hay các
-phương pháp dùng model riêng để đối chiếu (ConFactCheck và các hướng liên
-quan~\cite{consistency2024}). Các hướng này vượt quá phạm vi môn học, nên
-nhóm chọn cách tiếp cận rule-based đơn giản hơn: trích số liệu (\%, số
-lượng) và tên aspect xuất hiện trong report bằng regex, đối chiếu trực tiếp
-với bảng thống kê gốc.
-\todo{Hoàng/Vinh/Hưng -- bổ sung mô tả cụ thể cách làm thực tế sau khi
-merge, và so sánh ngắn với các hướng phức tạp hơn nêu trên.}
+bản sinh ra so với nguồn dữ liệu gốc, ví dụ FactCC~\cite{factcc} (train một
+classifier riêng để phát hiện câu không nhất quán với văn bản nguồn) hay các
+phương pháp dùng model riêng để đối chiếu theo từng claim (ConFactCheck và
+các hướng liên quan~\cite{consistency2024}). Các hướng này cần huấn luyện
+thêm một model kiểm tra riêng, vượt quá phạm vi và thời gian của môn học.
+Nhóm chọn cách tiếp cận rule-based nhẹ hơn nhưng vẫn xử lý được văn xuôi tự
+do (không ép một mẫu câu cố định): trích mọi con số xuất hiện trong report
+bằng regex, gán mỗi con số về đúng aspect được nhắc gần nó nhất, rồi đối
+chiếu trực tiếp với bảng thống kê gốc -- chi tiết cụ thể ở
+Mục~\ref{sec:factualchecker}.
 
 
+\clearpage
 % =====================================================================
 \section{Bài toán}
 \label{sec:problem}
 % =====================================================================
 
-Nhóm giải quyết bài toán trên hai domain song song, với hai định dạng
-input/output khác nhau tương ứng hai hướng tiếp cận.
-
-\subsection{Track 1 -- Phân loại sentiment theo khía cạnh (domain laptop)}
-
 \begin{itemize}
-    \item \textbf{Input}: một câu review (tiếng Anh) \emph{và} một khía
-        cạnh (aspect term) đã biết trước, nằm trong câu đó.
-    \item \textbf{Output}: nhãn sentiment cho khía cạnh đó -- một trong
-        \{\texttt{positive}, \texttt{negative}, \texttt{neutral}\}.
-    \item \textbf{Dataset}: SemEval-2014 Task~4 (Laptop reviews), có sẵn
-        nhãn aspect term + polarity gốc trong dữ liệu.
-\end{itemize}
-
-\subsection{Track 2 -- Trích xuất bộ ba khía cạnh--ý kiến--sentiment (domain nhà hàng)}
-
-\begin{itemize}
-    \item \textbf{Input}: một câu review thô, \emph{không} có thông tin
-        khía cạnh đi kèm.
+    \item \textbf{Input}: một câu review thô (tiếng Anh), \emph{không} có
+        thông tin khía cạnh đi kèm.
     \item \textbf{Output}: danh sách bộ ba
         (\emph{aspect}, \emph{opinion}, \emph{sentiment}), ví dụ:
         \begin{quote}
@@ -285,10 +363,11 @@ input/output khác nhau tương ứng hai hướng tiếp cận.
         15res + 16res).
 \end{itemize}
 
-\subsection{Bước tổng hợp và sinh báo cáo (chung cho cả 2 track)}
+\textbf{Bước tổng hợp và sinh báo cáo} (sau khi có bộ ba trên toàn bộ tập
+review):
 
 \begin{itemize}
-    \item \textbf{Input}: danh sách (aspect, sentiment[, opinion]) trên
+    \item \textbf{Input}: danh sách (aspect, opinion, sentiment) trên
         toàn bộ tập review.
     \item \textbf{Output}: (1) bảng thống kê theo từng aspect (số lượt
         positive/negative/neutral, top-10 lý do phổ biến nhất mỗi
@@ -297,61 +376,35 @@ input/output khác nhau tương ứng hai hướng tiếp cận.
 \end{itemize}
 
 
+\clearpage
 % =====================================================================
 \section{Phương pháp}
 \label{sec:methods}
 % =====================================================================
 
-\subsection{Baseline -- TF-IDF + Logistic Regression (domain laptop)}
+\subsection{Baseline tra cứu tần suất -- AsteLookupBaseline}
 
-Baseline đơn giản nhất được dùng làm mốc so sánh, không cần GPU, giúp định
-lượng mức độ cải thiện khi chuyển sang model hiểu ngữ cảnh (BERT). Câu
-review được đánh dấu vị trí aspect term bằng token \texttt{\$T\$}, sau đó
-vector hoá bằng TF-IDF (n-gram 1--2) trên cả câu lẫn riêng aspect term rồi
-ghép hai vector lại làm đặc trưng đầu vào. Bộ phân loại là Logistic
-Regression đa lớp của scikit-learn, dùng
-\texttt{class\_weight="balanced"} để bù lệch lớp (positive/negative chiếm
-đa số so với neutral). Tại thời điểm dự đoán, một vector TF-IDF cho ra xác
-suất từng lớp sentiment.
+ASTE không có một baseline TF-IDF/Logistic-Regression tương đương (bài toán
+cần tự tìm aspect, không phải phân loại khi đã biết trước) -- nhóm xây một
+baseline phi-neural để làm mốc so sánh: không cần train gradient, chỉ ghi
+nhớ (a) tập các cụm aspect và (b) sentiment phổ biến nhất của từng cụm
+opinion, cả hai đều thống kê trực tiếp từ tập train. Ở câu test, thuật toán
+tra cứu nguyên văn các cụm đã thấy trong câu (khớp n-gram dài nhất trước,
+tối đa 3 từ, quét trái sang phải không chồng lấn), rồi ghép mỗi aspect tìm
+được với opinion \emph{gần nhất} trên câu (theo khoảng cách token).
 
-Hạn chế lớn nhất của cách tiếp cận này là không tự trích xuất được aspect
-term (bắt buộc phải biết trước) và không nắm được ngữ cảnh xa trong câu
-(phủ định, mệnh đề đối lập kiểu ``pin yếu nhưng màn hình đẹp''). Cài đặt:
-\texttt{src/baseline/tfidf\_logreg.py}, chạy qua
-\texttt{scripts/train\_baseline.py}.
-
-\subsection{DistilBERT / BERT fine-tuned (domain laptop)}
-
-Để khắc phục hạn chế về ngữ cảnh của baseline, nhóm fine-tune hai model
-BERT-family theo kiểu \emph{sentence-pair classification} (BERT-SPC): input
-là cặp \texttt{[CLS] sentence [SEP] aspect\_term [SEP]}, tokenize bằng
-WordPiece, để model tự học mối liên hệ giữa câu và aspect term thông qua
-cơ chế self-attention thay vì chỉ dựa vào tần suất từ như TF-IDF.
-
-Nhóm fine-tune \texttt{distilbert-base-uncased} (lr=3e-5) và
-\texttt{bert-base-uncased} (lr=2e-5), mỗi model chạy 3 seed (42/43/44)
-$\times$ tối đa 20 epoch với early stopping (kiên nhẫn 3 epoch theo Macro-F1
-trên tập valid) để tránh overfit khi budget epoch dư thừa. Hàm loss là
-cross-entropy có trọng số lớp (tính theo tần suất nghịch đảo trên tập
-train) để bù lệch giữa \texttt{positive}/\texttt{negative} và
-\texttt{neutral}. Kết quả cuối được báo cáo dưới dạng trung bình $\pm$ độ
-lệch chuẩn trên 3 seed, đo trên tập test giữ riêng.
-
-Việc fine-tune chạy hoàn toàn trên Kaggle GPU miễn phí (không cần cài
-transformers/torch ở máy local) -- notebook:
-\texttt{notebooks/finetune\_\{distilbert,bert\}\_semeval\_laptop.ipynb}.
-
-\subsection{Baseline tra cứu tần suất -- AsteLookupBaseline (domain nhà hàng)}
-
-Baseline TF-IDF+LogReg ở trên không áp dụng được cho bài toán trích xuất bộ
-ba vì nó cần biết trước aspect -- ASTE thì ngược lại, phải tự tìm aspect.
-Nhóm xây một baseline phi-neural khác, phù hợp hơn: không cần train
-gradient, chỉ ghi nhớ (a) tập các cụm aspect và (b) sentiment phổ biến nhất
-của từng cụm opinion, cả hai đều thống kê trực tiếp từ tập train. Ở câu
-test, thuật toán tra cứu nguyên văn các cụm đã thấy trong câu (khớp n-gram
-dài nhất trước, tối đa 3 từ, quét trái sang phải không chồng lấn), rồi ghép
-mỗi aspect tìm được với opinion \emph{gần nhất} trên câu (theo khoảng cách
-token).
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+\node[iobox] (in) at (0,0) {Câu test\\\texttt{"food was great"}};
+\node[ioproc] (proc) at (3.6,0) {Tra cứu n-gram\\trong vocab train +\\ghép opinion gần nhất};
+\node[iobox] (out) at (7.2,0) {Output\\\texttt{(food, great,}\\\texttt{positive)}};
+\draw[ioarr] (in) -- (proc);
+\draw[ioarr] (proc) -- (out);
+\end{tikzpicture}
+\caption{Luồng input/output của AsteLookupBaseline: không có bước học
+gradient, chỉ tra cứu + ghép cặp theo thống kê từ tập train.}
+\end{figure}
 
 Baseline này có recall thấp theo thiết kế: bất kỳ cách diễn đạt aspect hay
 opinion nào khác với những gì đã thấy trong tập train đều bị bỏ sót hoàn
@@ -359,25 +412,87 @@ toàn -- đây chính là ``sàn'' để đo mức độ cải thiện thực s�
 biết tổng quát hoá. Cài đặt: \texttt{src/baseline/aste\_lookup\_baseline.py},
 chạy hoàn toàn local (không cần GPU) qua \texttt{scripts/eval\_aste\_baseline.py}.
 
-\subsection{T5-small / T5-base / FLAN-T5-base fine-tuned cho ASTE (domain nhà hàng)}
+\subsection{T5-small / T5-base / FLAN-T5-base fine-tuned cho ASTE}
 
-Thay vì tagging từng token như repo nền, nhóm sinh trực tiếp bộ ba (aspect,
-opinion, sentiment) bằng một mô hình text-to-text: câu thô được thêm một
-prefix hướng dẫn cố định (\texttt{"extract aspect sentiment triplets: "})
-làm input, target text có định dạng
-\texttt{"aspect: X | opinion: Y | sentiment: Z ; ..."} (nối nhiều bộ ba
-bằng dấu \texttt{;} nếu câu có nhiều aspect). Cách này vừa giải quyết được
-bài toán trích xuất aspect (không cần gán nhãn trước), vừa cho thêm trường
-\emph{opinion} làm ``lý do'' phục vụ bước sinh báo cáo -- điều mà pipeline
-tagging kiểu Track~1 không có sẵn.
+\textbf{T5 là gì}: T5 (Text-to-Text Transfer Transformer)~\cite{t5} là một
+kiến trúc Transformer dạng \emph{encoder-decoder}, được tiền huấn luyện
+(pretrain) trên corpus C4 bằng mục tiêu \emph{denoising} kiểu điền-chỗ-trống
+(che ngẫu nhiên các đoạn văn bản, model học sinh lại đúng đoạn đã bị che).
+Điểm khác biệt của T5 so với các model chỉ-encoder như BERT là T5 đóng
+khung \emph{mọi} tác vụ NLP (dịch, tóm tắt, phân loại, trích xuất, ...)
+dưới dạng ``văn bản vào $\to$ văn bản ra'', nên có thể tái sử dụng cùng
+một kiến trúc cho bài toán sinh bộ ba có cấu trúc như ASTE mà không cần
+thiết kế tầng đầu ra riêng (khác với model phân loại cần một lớp softmax
+cố định số lớp).
+
+\textbf{T5-small vs.\ T5-base -- khác nhau về quy mô}: cả hai cùng kiến
+trúc, cùng cách pretrain, chỉ khác kích thước (Bảng~\ref{tab:t5-sizes}).
+T5-base có nhiều tầng và chiều ẩn hơn T5-small gần 4 lần về số tham số,
+nên có năng lực biểu diễn (representational capacity) lớn hơn, thường học
+được các mẫu hình phức tạp/mơ hồ tốt hơn nhưng cần nhiều bộ nhớ GPU và
+thời gian train hơn.
+
+\textbf{FLAN-T5-base khác gì T5-base}: FLAN-T5~\cite{flant5} \emph{không}
+phải một kiến trúc khác -- FLAN-T5-base khởi tạo từ đúng checkpoint
+T5-base (cùng 220M tham số), nhưng được huấn luyện thêm một giai đoạn
+\emph{instruction tuning}: fine-tune trên hơn 1800 tác vụ khác nhau được
+viết dưới dạng chỉ dẫn ngôn ngữ tự nhiên (Flan collection), trước khi
+nhóm fine-tune tiếp cho ASTE. Mục tiêu ban đầu của giai đoạn này là giúp
+model hiểu chỉ dẫn tốt hơn ở chế độ zero-shot/few-shot (lý do nhóm chọn
+FLAN-T5 cho bước sinh báo cáo, Mục~4.4) -- nhưng cũng chính vì đã quen với
+văn phong đối thoại/chỉ dẫn tự nhiên, FLAN-T5-base cần nhiều epoch hơn để
+``quên'' bớt thói quen đó và thích nghi với định dạng trích xuất terse của
+ASTE (\texttt{aspect: X | opinion: Y | ...}) -- đúng như quan sát ở
+Mục~\ref{sec:findings}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccl}
+\toprule
+Model & Tham số & Số tầng & $d_{\text{model}}$ & Pretrain thêm \\
+\midrule
+T5-small & 60M & 6 & 512 & không \\
+T5-base & 220M & 12 & 768 & không \\
+FLAN-T5-base & 220M & 12 & 768 & instruction tuning (Flan) \\
+\bottomrule
+\end{tabular}
+\caption{So sánh 3 checkpoint T5-family nhóm dùng cho ASTE. Số liệu kiến
+trúc theo Raffel et al.~\cite{t5}; FLAN-T5-base cùng kiến trúc T5-base,
+chỉ khác ở việc được huấn luyện thêm giai đoạn instruction tuning trước
+khi nhóm fine-tune cho ASTE.}
+\label{tab:t5-sizes}
+\end{table}
+
+Nhóm sinh trực tiếp bộ ba (aspect, opinion, sentiment) bằng một mô hình
+text-to-text: câu thô được thêm một prefix hướng dẫn cố định
+(\texttt{"extract aspect sentiment triplets: "}) làm input, target text có
+định dạng \texttt{"aspect: X | opinion: Y | sentiment: Z ; ..."} (nối nhiều
+bộ ba bằng dấu \texttt{;} nếu câu có nhiều aspect).
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+\node[iobox] (in) at (0,0) {Input\\\texttt{"extract aspect}\\\texttt{sentiment triplets:}\\\texttt{food was great"}};
+\node[ioproc] (t5) at (4,0) {T5 encoder--decoder\\(small / base /\\FLAN-base)};
+\node[iobox] (out) at (8,0) {Output text\\\texttt{"aspect: food |}\\\texttt{opinion: great |}\\\texttt{sentiment: positive"}};
+\node[ioproc] (parse) at (8,-2.2) {Parse bằng regex};
+\node[iobox] (triplet) at (8,-4.4) {Danh sách triplet\\có cấu trúc};
+\draw[ioarr] (in) -- (t5);
+\draw[ioarr] (t5) -- (out);
+\draw[ioarr] (out) -- (parse);
+\draw[ioarr] (parse) -- (triplet);
+\end{tikzpicture}
+\caption{Luồng input/output khi fine-tune T5-family cho ASTE: cả 3
+checkpoint dùng chung định dạng input/output, chỉ khác nhau ở kiến trúc
+bên trong (Bảng~\ref{tab:t5-sizes}); chuỗi văn bản sinh ra được parse
+bằng regex thành danh sách bộ ba có cấu trúc.}
+\end{figure}
 
 Ba checkpoint T5-family được fine-tune với \emph{cùng} hyperparameter (20
 epoch, lr=3e-4, effective batch size 16 -- riêng T5-base dùng batch nhỏ hơn
 kèm gradient accumulation lớn hơn để giữ effective batch không đổi do cần
 nhiều bộ nhớ GPU hơn) để so sánh công bằng, chỉ đổi checkpoint:
-\texttt{t5-small}, \texttt{t5-base}, \texttt{google/flan-t5-base}. Ở phần
-dự đoán, chuỗi văn bản model sinh ra được parse bằng regex thành danh sách
-bộ ba có cấu trúc.
+\texttt{t5-small}, \texttt{t5-base}, \texttt{google/flan-t5-base}.
 
 Metric đánh giá là \emph{triplet-F1}: Precision/Recall/F1 theo phép giao
 tập hợp (set overlap) giữa bộ ba dự đoán và bộ ba gốc (đã chuẩn hoá chữ
@@ -389,9 +504,8 @@ flan-t5-base\}-for-aste-*.ipynb}.
 
 \subsection{Tổng hợp thống kê theo khía cạnh + top-10 lý do}
 
-Ở cả hai track, bước tổng hợp gộp các cặp (aspect, sentiment) theo aspect,
-đếm số lượt mỗi sentiment và lấy sentiment đa số. Với track nhà hàng (có
-thêm trường opinion), bước này được mở rộng: trong mỗi nhóm
+Bước tổng hợp gộp các bộ ba (aspect, opinion, sentiment) theo aspect: đếm
+số lượt mỗi sentiment và lấy sentiment đa số; trong mỗi nhóm
 (aspect, sentiment), các cụm \emph{opinion} được xếp hạng theo tần suất, giữ
 lại top-10 làm ví dụ ``lý do'' minh hoạ cho sentiment đó -- ví dụ aspect
 \texttt{food} với sentiment \texttt{positive} có thể có lý do phổ biến nhất
@@ -404,72 +518,167 @@ test local (\texttt{src/report/aspect\_stats.py}, kiểm thử ở
 nguyên văn vào notebook để đảm bảo đúng kết quả như bản đã kiểm thử local.
 
 \subsection{Sinh báo cáo bằng FLAN-T5}
+\label{sec:flant5report}
 
-\todo{Hoàng/Vinh/Hưng -- mô tả input representation (cách serialize
-bảng thống kê thành prompt), cách dùng FLAN-T5 (few-shot/prompt-based
-hay có fine-tune), và ví dụ input/output cụ thể. Tham khảo
-\texttt{notebooks-output/report\_generation\_semeval\_laptop\_output.ipynb}
-(branch \texttt{feat/report-generation-semeval-laptop-output}) và branch
-\texttt{flan-t5-report-generation}.}
+\textbf{Chọn aspect đưa vào báo cáo.} Từ bảng tổng hợp (Mục~4.3), hàm
+\texttt{select\_report\_rows} chọn ra 4 aspect đại diện để đưa vào một báo
+cáo ngắn (đưa hết vài trăm aspect vào một đoạn văn là vô nghĩa): (1) aspect
+được nhắc nhiều nhất, (2) aspect có tỉ lệ positive/total cao nhất trong số
+30 aspect được nhắc nhiều nhất (điểm mạnh rõ nhất), (3) aspect có tỉ lệ
+negative/total cao nhất (điểm yếu rõ nhất), (4) aspect có
+$|\text{positive} - \text{negative}| / \text{total}$ nhỏ nhất (ý kiến chia
+rẽ nhất) -- chọn theo \emph{tỉ lệ} chứ không theo số tuyệt đối để tránh việc
+luôn chọn trùng các aspect có tổng lượt nhắc lớn nhất cho cả 4 vai trò.
 
-\subsection{Factual checker}
-
-\todo{Hoàng/Vinh/Hưng -- mô tả cụ thể cách đối chiếu số liệu trong báo
-cáo sinh ra với bảng thống kê gốc (rule-based, regex trích số liệu +
-tên aspect, so khớp). Tham khảo \texttt{output/flan\_t5\_natural\_report.json}
-làm ví dụ output thực tế (report + kết quả factual\_check).}
-
-
-% =====================================================================
-\section{Kết quả và đánh giá}
-% =====================================================================
-
-\subsection{Track 1 -- Phân loại sentiment theo khía cạnh (domain laptop)}
-
-\begin{table}[h]
-\centering
-\begin{tabular}{lcc}
-\toprule
-Model & Accuracy & Macro-F1 \\
-\midrule
-Baseline TF-IDF+LogReg (3 lớp, cùng split BERT) & 0.6171 & 0.5581 \\
-DistilBERT (3 seed) & $0.7447 \pm 0.0159$ & $0.6861 \pm 0.0235$ \\
-\textbf{BERT-base (3 seed)} & $\mathbf{0.7627 \pm 0.0239}$ & $\mathbf{0.7123 \pm 0.0324}$ \\
-\bottomrule
-\end{tabular}
-\caption{Track laptop: baseline vs.\ model cải tiến, đo trên cùng test
-split (316 example, 3 lớp positive/negative/neutral).}
-\label{tab:laptop-results}
-\end{table}
+\textbf{Prompt.} Bảng 4 aspect đã chọn được serialize thành các dòng dạng
+\texttt{aspect=food | total=827 | positive=621 | negative=164 | neutral=42 |
+positive\_reasons=great (109), good (100) | negative\_reasons=mediocre (10),
+bad (7)}, kèm chỉ dẫn yêu cầu model viết \textbf{một đoạn văn phân tích tự
+nhiên} (không ép đúng một mẫu câu cố định), so sánh các aspect, chỉ được
+dùng đúng số liệu và reason đã cho, không được bịa thêm sự kiện/phần
+trăm/tên món ăn/thương hiệu nào khác
+(\texttt{build\_reasoned\_prompt} trong \texttt{src/report/flan\_t5\_report.py}).
 
 \begin{figure}[h]
 \centering
 \begin{tikzpicture}
-\begin{axis}[
-    ybar, bar width=22pt,
-    width=9.5cm, height=6.5cm,
-    symbolic x coords={Baseline,DistilBERT,BERT-base},
-    xtick=data,
-    ymin=0, ymax=0.85,
-    ylabel={Macro-F1},
-    nodes near coords,
-    nodes near coords align={vertical},
-    every node near coord/.append style={font=\small},
-    enlarge x limits=0.3,
-]
-\addplot[fill=blue!30] coordinates {(Baseline,0.5581) (DistilBERT,0.6861) (BERT-base,0.7123)};
-\end{axis}
+\node[iobox] (in) at (0,0) {4 dòng aspect\\đã chọn (count +\\top reason)};
+\node[ioproc] (prompt) at (3.6,0) {Serialize thành\\prompt + chỉ dẫn};
+\node[ioproc] (flant5) at (7.2,0) {FLAN-T5-base\\(đã fine-tune)};
+\node[iobox] (out) at (10.8,0) {Đoạn văn báo\\cáo tự nhiên};
+\draw[ioarr] (in) -- (prompt);
+\draw[ioarr] (prompt) -- (flant5);
+\draw[ioarr] (flant5) -- (out);
 \end{tikzpicture}
-\caption{Macro-F1 track laptop qua từng bước cải tiến.}
-\label{fig:laptop-bar}
+\caption{Luồng input/output khi sinh báo cáo: bảng thống kê $\to$ prompt
+$\to$ FLAN-T5 $\to$ đoạn văn, sau đó đưa tiếp qua factual checker
+(Mục~\ref{sec:factualchecker}).}
 \end{figure}
 
-BERT-base cải thiện +14.6 điểm Accuracy, +15.4 điểm Macro-F1 so với
-baseline (đã chạy lại baseline trên đúng split 3 lớp để so sánh công
-bằng -- xem thảo luận về nhãn \texttt{conflict} ở Mục~\ref{sec:findings}).
-Lớp \texttt{neutral} là lớp yếu nhất ở cả hai mô hình.
+\textbf{Model.} Nhóm fine-tune \texttt{google/flan-t5-base} trực tiếp trên
+chính định dạng bảng reason này (notebook Colab tự chứa
+\texttt{notebooks/finetune\_flan\_t5\_reasoned\_report\_colab.ipynb}, dữ
+liệu train/valid là các bảng aspect tổng hợp), sinh bằng deterministic beam
+search (\texttt{num\_beams=4}, \texttt{do\_sample=False}) để kết quả tái
+lập được. Nếu factual checker (Mục~\ref{sec:factualchecker}) từ chối kết
+quả, hệ thống sinh lại tối đa 3 lần (không cần load lại model), thêm một
+câu nhắc ``kết quả trước chưa đủ căn cứ, hãy sửa lại'' vào đầu prompt cho
+các lần retry.
 
-\subsection{Track 2 -- Trích xuất bộ ba (domain nhà hàng)}
+\textbf{CLI}: \texttt{python scripts/generate\_report.py --model
+models/flan-t5-reasoned-report --output output/flan\_t5\_reasoned\_report.json}
+(mặc định đọc \texttt{output/aspect\_reasons\_restaurant.json}, mảng
+\texttt{predicted} -- bảng do chính T5-base ở Mục~4.2 sinh ra, không dùng
+gold, đúng kịch bản triển khai thực tế).
+
+\subsection{Factual checker}
+\label{sec:factualchecker}
+
+Vì báo cáo giờ là văn xuôi tự do (không theo một mẫu câu cố định), checker
+(\texttt{check\_reasoned\_report} trong \texttt{src/report/factual\_checker.py})
+không thể chỉ regex-match một khuôn câu như cách tiếp cận rule-based đơn
+giản ban đầu (Mục~2.5) -- nhóm thực hiện theo 4 bước:
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+\node[iobox] (rep) at (0,0) {Đoạn văn\\báo cáo};
+\node[iobox] (src) at (0,-1.6) {Bảng thống kê\\gốc};
+\node[ioproc] (chk) at (4,-0.8) {4 bước đối chiếu\\(Mục~4.5)};
+\node[iobox] (pass) at (8,0.4) {\texttt{passed: true}};
+\node[iobox] (fail) at (8,-2) {\texttt{passed: false}\\+ danh sách lỗi};
+\draw[ioarr] (rep) -- (chk);
+\draw[ioarr] (src) -- (chk);
+\draw[ioarr] (chk) -- (pass);
+\draw[ioarr] (chk) -- (fail);
+\end{tikzpicture}
+\caption{Luồng input/output của factual checker: nhận cả report lẫn bảng
+thống kê gốc làm input, trả về kết quả pass/fail kèm lý do cụ thể cho
+từng lỗi (dùng để sinh lại report nếu fail, Mục~4.4).}
+\end{figure}
+
+\begin{enumerate}
+    \item \textbf{Tách đoạn văn thành các mệnh đề} (theo dấu câu và các
+        liên từ tương phản \texttt{whereas/while/but}), vì một câu có thể
+        nói về nhiều aspect cùng lúc (ví dụ \emph{``Indian food was
+        praised... whereas dessert received 16 negative...''}).
+    \item \textbf{Gán mỗi mệnh đề cho đúng aspect} bằng khớp cụm từ, ưu
+        tiên cụm dài hơn trước để tránh đếm nhầm substring (vd.\
+        \texttt{food} không được ``ăn'' luôn phần nhắc tới
+        \texttt{Indian food}).
+    \item \textbf{Đối chiếu số liệu}: mọi con số xuất hiện trong mệnh đề
+        của một aspect phải nằm trong tập số liệu \emph{cho phép} của
+        đúng aspect đó (total/positive/negative/neutral hoặc số đếm đi
+        kèm reason phrase) -- số liệu đúng nhưng gán nhầm sang aspect
+        khác vẫn bị coi là sai.
+    \item \textbf{Đối chiếu reason}: mỗi aspect phải trích ít nhất một
+        reason phrase thật sự thuộc về aspect đó trong bảng gốc; nếu
+        đoạn văn dùng một reason phrase vốn thuộc aspect khác (``mượn''
+        reason) thì bị gắn cờ \texttt{reasons belong to another aspect}.
+\end{enumerate}
+
+Báo cáo chỉ được coi là \texttt{passed: true} khi cả 4 aspect bắt buộc đều
+xuất hiện, mọi mệnh đề hợp lệ, và không còn con số nào ``trôi nổi'' không
+gán được nguồn (\texttt{unattributed\_numbers}).
+
+\subsection{Triển khai}
+
+\textbf{Ngôn ngữ và thư viện}: toàn bộ code viết bằng Python~3.9+.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+Thành phần & Thư viện / công cụ \\
+\midrule
+Fine-tune \& inference T5-family & \texttt{transformers} (HuggingFace), \texttt{torch}, \texttt{sentencepiece} \\
+Baseline, tổng hợp thống kê & \texttt{scikit-learn}, \texttt{numpy}, \texttt{scipy} \\
+Kiểm thử & \texttt{pytest} (45 test, xem bên dưới) \\
+Hạ tầng chạy nặng & Kaggle notebook (GPU miễn phí) \\
+\bottomrule
+\end{tabular}
+\caption{Ngôn ngữ và thư viện sử dụng.}
+\end{table}
+
+\textbf{Hạ tầng}: tách rõ hai môi trường. Mọi bước cần GPU (fine-tune ba
+checkpoint T5-family; suy luận T5-base để tổng hợp aspect+reason; sinh
+report bằng FLAN-T5) chạy trên notebook Kaggle (GPU miễn phí). Mọi logic
+còn lại (parser dữ liệu, baseline tra cứu, hàm tổng hợp thống kê, factual
+checker, toàn bộ test suite) chạy local, không cần GPU -- được viết và
+test đầy đủ ở local trước, sau đó mới inline nguyên văn vào notebook để
+chạy trên Kaggle, đảm bảo logic đã qua kiểm thử mới lên GPU.
+
+\textbf{Dựa trên code có sẵn nào, nhóm sửa đổi gì}: như đã nêu ở
+Mục~2.2, nhóm không fork/clone trực tiếp repo nền
+IsakZhang/Generative-ABSA, mà tự cài đặt lại ý tưởng đóng khung ASTE dưới
+dạng sinh văn bản text-to-text bằng T5 (Mục~4.2), dùng chung dataset và
+hyperparameter mặc định của repo đó để so sánh công bằng. Các phần nhóm
+tự xây thêm, không có trong repo nền: baseline tra cứu tần suất
+(AsteLookupBaseline), bước tổng hợp thống kê + top-10 reason, module sinh
+report bằng FLAN-T5, factual checker, và demo quy mô lớn trên Yelp --
+liệt kê chi tiết ở Mục~2.2.
+
+\textbf{Cấu trúc repo và kiểm thử}:
+
+\begin{verbatim}
+src/                  module Python tai su dung, co test
+|-- data/             parser XML / triplet format
+|-- baseline/         TF-IDF+LogReg (tham do ban dau), AsteLookupBaseline
+|-- report/           tong hop thong ke, sinh report FLAN-T5, factual checker
+scripts/              CLI chay local (train/eval baseline, sinh report)
+notebooks/            template san sang chay tren Kaggle
+notebooks-output/     ban da chay, co ket qua that
+tests/                45 test pytest, toan bo chay local (khong can GPU)
+output/, results/     ket qua / metrics da ghi lai, dung lam so lieu bao cao
+\end{verbatim}
+
+
+\clearpage
+% =====================================================================
+\section{Kết quả và đánh giá}
+% =====================================================================
+
+\subsection{So sánh baseline vs 3 model T5}
 
 \begin{table}[h]
 \centering
@@ -480,12 +689,10 @@ Model & Triplet-F1 & Precision & Recall \\
 AsteLookupBaseline (phi-neural) & 0.3736 & 0.3222 & 0.4446 \\
 T5-small & 0.7240 & 0.7238 & 0.7243 \\
 \textbf{T5-base} & \textbf{0.7442} & 0.7609 & 0.7282 \\
-FLAN-T5-base (lr=3e-4) & 0.5898 & 0.5910 & 0.5887 \\
-FLAN-T5-base (lr=1e-4, thử lại) & 0.4159 & 0.4185 & 0.4133 \\
+FLAN-T5-base & 0.5898 & 0.5910 & 0.5887 \\
 \bottomrule
 \end{tabular}
-\caption{Track nhà hàng: baseline vs.\ 3 model T5 so sánh, đo trên cùng
-test split (1134 câu, 14res+15res+16res).}
+\caption{So sánh trên cùng test split (1134 câu, 14res+15res+16res).}
 \label{tab:aste-results}
 \end{table}
 
@@ -520,52 +727,31 @@ test split (1134 câu, 14res+15res+16res).}
 (13,0.6499) (14,0.6628) (15,0.6660) (16,0.6771) (17,0.6881) (18,0.6820)
 (19,0.6795) (20,0.6801)
 };
-\addlegendentry{flan-t5-base (lr=3e-4)}
-\addplot[color=orange!90!black, mark=diamond*, mark size=1.3pt] coordinates {
-(1,0.2436) (2,0.2977) (3,0.3027) (4,0.2980) (5,0.2915) (6,0.3322)
-(7,0.3359) (8,0.3542) (9,0.4046) (10,0.4093) (11,0.4168) (12,0.4228)
-(13,0.4561) (14,0.4505) (15,0.4594) (16,0.4701) (17,0.4683) (18,0.4742)
-(19,0.4734) (20,0.4703)
-};
-\addlegendentry{flan-t5-base (lr=1e-4)}
+\addlegendentry{flan-t5-base}
 \end{axis}
 \end{tikzpicture}
-\caption{Dev triplet-F1 theo epoch, cả 4 lần chạy (số liệu lấy trực tiếp từ
+\caption{Dev triplet-F1 theo epoch, cả 3 lần chạy (số liệu lấy trực tiếp từ
 log training trong \texttt{notebooks-output/}). t5-small và t5-base hội tụ
-và bão hoà rõ trong khoảng epoch 10--15; cả hai đường flan-t5-base vẫn đang
-tăng dần đều tới hết epoch 20, chưa hề bão hoà -- minh chứng trực quan cho
-phát hiện ở Mục~\ref{sec:findings}: vấn đề là cần nhiều epoch hơn, không
-phải learning rate.}
+và bão hoà rõ trong khoảng epoch 10--15; đường flan-t5-base vẫn đang tăng
+dần đều tới hết epoch 20, chưa hề bão hoà -- minh chứng trực quan cho
+phát hiện ở Mục~\ref{sec:findings}: vấn đề là cần nhiều epoch hơn.}
 \label{fig:triplet-f1-curves}
 \end{figure}
 
 T5-base cải thiện gần gấp đôi triplet-F1 so với baseline tra cứu
-(0.3736 $\to$ 0.7442) và được chọn làm model chính cho track này.
-Hình~\ref{fig:triplet-f1-curves} cho thấy rõ lý do FLAN-T5-base thua kém:
-không phải nó ``kém hơn'' về bản chất mà đơn giản là chưa hội tụ trong ngân
-sách 20 epoch đã cấp cho cả 4 lần chạy. Xem Mục~\ref{sec:findings} để phân
-tích sâu hơn.
+(0.3736 $\to$ 0.7442) và được chọn làm model chính. Hình~\ref{fig:triplet-f1-curves}
+cho thấy rõ lý do FLAN-T5-base thua kém: không phải nó ``kém hơn'' về bản
+chất mà đơn giản là chưa hội tụ trong ngân sách 20 epoch đã cấp cho cả 4
+lần chạy. Xem Mục~\ref{sec:findings} để phân tích sâu hơn.
 
 \subsection{Chất lượng bảng tổng hợp aspect + lý do}
 
-\begin{table}[h]
-\centering
-\begin{tabular}{lcc}
-\toprule
-& Track laptop (BERT) & Track nhà hàng (T5-base) \\
-\midrule
-Majority-sentiment agreement & 93.28\% & 97.25\% \\
-(gold vs.\ predicted, cùng aspect) & (236/253) & (531/546) \\
-\bottomrule
-\end{tabular}
-\caption{Độ khớp giữa kết luận sentiment đa số (gold) và kết luận từ
-model (predicted) trên cùng một aspect.}
-\label{tab:agreement}
-\end{table}
-
-Track nhà hàng có agreement cao hơn hẳn -- model dự đoán đồng thời cả
-aspect/opinion/sentiment thay vì chỉ suy luận sentiment cho aspect đã
-biết trước.
+Trên tập SemEval Restaurant có nhãn (4550 câu, train+dev+test), model
+T5-base cho \textbf{majority-sentiment agreement 97.25\% (531/546)} giữa
+bảng tổng hợp từ gold triplets và bảng tổng hợp từ triplets model dự đoán
+(cùng một aspect, kết luận sentiment đa số có khớp không) -- một mức tin
+cậy cao cho việc dùng bảng tổng hợp từ model làm input cho bước sinh báo
+cáo.
 
 \subsection{Demo quy mô lớn -- Yelp Restaurant Reviews}
 
@@ -585,65 +771,140 @@ aspect \texttt{ice cream} (765 lượt, positive), \texttt{place} (633),
 
 \subsection{Đánh giá factual checker}
 
-\todo{Hoàng/Vinh/Hưng -- báo cáo \% số liệu/aspect trong report khớp
-với bảng thống kê gốc, trên bao nhiêu report được sinh ra, có ví dụ cụ
-thể (report bị factual checker gắn cờ + lý do).}
+Trên lượt chạy demo thật (bảng \texttt{predicted} của
+\texttt{output/aspect\_reasons\_restaurant.json}, model FLAN-T5-base đã
+fine-tune trên định dạng reason), báo cáo sinh ra so sánh 4 aspect
+\texttt{food}/\texttt{indian food}/\texttt{dessert}/\texttt{waiter}, và
+\textbf{factual checker chấp nhận toàn bộ 4/4 claim (\texttt{passed: true})}
+-- không có aspect thiếu, không có số liệu ``trôi nổi'' không rõ nguồn.
+Đây là một lượt chạy demo minh hoạ (chưa phải một benchmark định lượng
+trên hàng trăm report), do khối lượng biên dịch báo cáo còn hạn chế trong
+thời gian làm đồ án.
+
+Để bù lại, checker được kiểm chứng ở mức đơn vị khá kỹ: 16 test case
+trong \texttt{tests/test\_report\_generation.py} phủ các tình huống lỗi
+cụ thể -- số liệu bịa (\emph{hallucinated number}), thiếu một aspect bắt
+buộc, reason bị ``mượn'' từ một aspect khác, câu văn thừa không có căn cứ
+số liệu. Một ví dụ đối chứng rõ ràng: cùng một bảng thống kê track laptop
+thăm dò ban đầu (\texttt{output/aspect\_stats.txt}), bản \textbf{chưa
+fine-tune} (\texttt{google/flan-t5-base} zero-shot,
+\texttt{output/flan\_t5\_natural\_report.json}) bị checker từ chối
+(\texttt{accepted: false}) vì gán nhầm vai trò ``mối lo ngại lớn nhất''
+cho \texttt{keyboard} thay vì \texttt{battery} và lặp \texttt{keyboard}
+hai lần; trong khi bản \textbf{đã fine-tune} trên đúng bảng đó
+(\texttt{output/flan\_t5\_finetuned\_report.json}) sinh đúng 4/4 claim.
+Kết quả này cho thấy factual checker hoạt động đúng như thiết kế -- bắt
+được lỗi thật khi model chưa được huấn luyện đủ, và không ``quá tay'' từ
+chối khi model đã bám sát nguồn.
 
 \subsection{Error analysis}
+\label{sec:erroranalysis}
 
-\todo{Chưa làm (Tuần 5). Gợi ý phân tích: (1) so sánh lỗi phổ biến của
-BERT trên lớp \texttt{neutral} (F1 thấp nhất) -- loại câu nào hay bị
-nhầm; (2) các bộ ba T5-base dự đoán sai trên tập test (dùng
-\texttt{test\_predictions.csv} lưu trong mỗi model checkpoint); (3) các
-aspect noise trong demo Yelp (vd.\ \texttt{extract} -- 196 lượt, nhiều
-khả năng model trích cụt từ ``vanilla extract'').}
+Phân tích dưới đây dựa trực tiếp trên
+\texttt{output/aspect\_reasons\_restaurant.json} (bảng gold vs.\ predicted,
+T5-base, 4550 câu) và \texttt{output/aspect\_reasons\_yelp\_demo.json} --
+không cần chạy lại model.
+
+\textbf{(1) 15 case majority-sentiment lệch giữa gold và predicted đều là
+các aspect ``sát nút'', không lệch hệ thống.} Trong 546 aspect xuất hiện ở
+cả hai bảng, 531 khớp kết luận sentiment cuối cùng (97.25\%, Mục~5.2); 15
+case còn lại gần như luôn là những aspect có số lượt positive/negative gần
+bằng nhau, chỉ cần lệch 1 câu là đổi phe đa số -- ví dụ \texttt{cheese}
+(gold: 3 positive/6 negative $\to$ negative; predicted: 5/4 $\to$
+positive), \texttt{dish} (gold 6/7 $\to$ negative; predicted 8/7 $\to$
+positive), \texttt{noodles} (gold 0/1 trên 2 câu $\to$ negative; predicted
+1/1 $\to$ positive), \texttt{japanese food} (gold 3/4 $\to$ negative;
+predicted 4/3 $\to$ positive). Không có case nào lệch mạnh (đa số rõ ràng
+ở gold nhưng đảo ngược hoàn toàn ở predicted) -- cho thấy model không hề
+có thiên lệch sentiment hệ thống, sai số chỉ nằm ở các aspect vốn dĩ gây
+tranh cãi ngay cả với annotator.
+
+\textbf{(2) Model bỏ sót nhiều aspect hiếm, và có xu hướng đếm thiếu (dưới)
+trên hầu hết aspect phổ biến -- khớp với Precision $>$ Recall đã thấy ở
+Mục~5.1.} 73 aspect chỉ có trong gold, không hề xuất hiện trong predicted
+-- toàn bộ đều là aspect tần suất thấp ($\leq 6$ lượt nhắc, ví dụ
+\texttt{bathroom}, \texttt{flavor}, \texttt{ceiling}, \texttt{eggplant}),
+phần lớn tên món ăn hiếm/đặc thù mà model có thể chưa gặp đủ nhiều lúc
+train để tự tin trích ra. Ngược lại, trên các aspect phổ biến xuất hiện ở
+cả hai bảng, tổng lượt nhắc của predicted gần như luôn \emph{thấp hơn}
+gold: \texttt{prices} (gold 69 $\to$ predicted 46, $-23$), \texttt{place}
+(278 $\to$ 258, $-20$), \texttt{food} (840 $\to$ 827, $-13$),
+\texttt{service} (568 $\to$ 562, $-6$). Đây là bằng chứng thứ hai, độc lập
+với Mục~5.1, cho cùng một hiện tượng: T5-base có Precision (0.7609) cao
+hơn Recall (0.7282) ở mức triplet -- model ``thận trọng'', thà bỏ sót một
+số triplet mơ hồ còn hơn đoán bừa.
+
+\textbf{(3) Aggregation theo chuỗi ký tự nguyên văn (exact-string) làm
+tách một aspect thành nhiều biến thể khác nhau -- hạn chế của bước tổng
+hợp, không phải của model ASTE.} Ví dụ rõ nhất: gold có aspect
+\texttt{rice to fish ration} (lỗi chính tả có sẵn trong review gốc), trong
+khi predicted trích đúng chính tả \texttt{rice to fish ratio} -- vì bước
+tổng hợp (Mục~4.3) gom nhóm theo \texttt{aspect.strip().lower()} nguyên
+văn, hai chuỗi chỉ khác 1 ký tự này bị tính là 2 aspect hoàn toàn tách
+biệt thay vì được gộp làm một. Hiện tượng tương tự lặp lại ở dạng số
+ít/số nhiều: track nhà hàng có \texttt{place} (278 lượt, đã tính ở trên)
+tách biệt khỏi \texttt{places} (3 lượt, chỉ xuất hiện ở predicted); demo
+Yelp cho thấy mẫu hình này rõ hơn nhiều vì tập dữ liệu lớn hơn --
+\texttt{donuts} (189 lượt) tách khỏi \texttt{donut} (68 lượt),
+\texttt{cupcakes} (111) tách khỏi \texttt{cupcake} (59). Đây là hạn chế
+thật của cách tổng hợp (không lemmatize/chuẩn hoá hình thái), không phải
+lỗi của bước sinh triplet.
+
+\textbf{(4) Aspect noise trong demo Yelp: \texttt{extract} (196 lượt, hạng
+6) -- kiểm tra lại giả thuyết ban đầu.} Ghi chú trước đó trong
+\texttt{plans/project-plan.md} suy đoán đây là phần bị cắt cụt từ
+``vanilla extract''. Kiểm tra trực tiếp các reason phrase gắn với aspect
+\texttt{extract} cho thấy giả thuyết này \textbf{không đứng vững}: reason
+phổ biến nhất là \texttt{good}(8), \texttt{worth}(6), \texttt{try}(5),
+\texttt{best}(3) -- hoàn toàn chung chung, không có phrase nào liên quan
+tới vani/hương liệu, và một số reason còn vô nghĩa ở dạng cô lập
+(\texttt{4.}, \texttt{huh}, \texttt{won't be coming back}). Nguyên nhân
+nhiều khả năng là model nhầm lẫn trên các câu ngắn/rời rạc, đặc thù của
+review Yelp quán tráng miệng (câu kiểu ``Must try!'', ``Worth it.'') khi
+bị tách câu -- model không tìm được aspect thật trong câu và ``bám'' vào
+một token gần giống định dạng huấn luyện.
 
 
+\clearpage
 % =====================================================================
 \section{Khám phá mới / Thảo luận}
 \label{sec:findings}
 % =====================================================================
 
 \begin{enumerate}
-    \item \textbf{Macro-F1 rất nhạy với một lớp thiểu số học kém.} Baseline
-        đo trên bản dataset 4 lớp cũ (có thêm \texttt{conflict}, chỉ
-        chiếm $<0.3\%$ dữ liệu) cho Macro-F1 chỉ 0.4266 -- thấp hơn hẳn
-        so với 0.5581 khi đo trên đúng 3 lớp hiện tại, dù Accuracy gần
-        như không đổi (0.6211 vs.\ 0.6171). Nguyên nhân: baseline không
-        bao giờ đoán đúng lớp \texttt{conflict}, kéo trung bình không
-        trọng số (macro) xuống rất nặng dù lớp đó gần như không ảnh
-        hưởng accuracy. Bài học: khi so sánh hai mô hình đo trên hai
-        schema nhãn khác nhau, Macro-F1 cần được đối chiếu lại trên
-        cùng schema mới kết luận công bằng được.
-
-    \item \textbf{Đừng vội kết luận nguyên nhân từ một hyperparameter.}
-        FLAN-T5-base thua kém rõ rệt so với T5-base cùng kích thước khi
-        train với cùng lr=3e-4 (0.5898 vs.\ 0.7442 triplet-F1). Giả
-        thuyết ban đầu: lr quá cao khiến loss ban đầu bất ổn (xấp xỉ
-        22, so với hai model kia ổn định ngay từ đầu). Thử lại với
-        lr=1e-4 (giảm 10 lần) để kiểm chứng -- nhưng kết quả \emph{tệ
-        hơn} (0.4159), và Hình~\ref{fig:triplet-f1-curves} cho thấy
-        \texttt{eval\_triplet\_f1} của cả hai lần chạy flan-t5-base vẫn
-        tăng dần đều tới hết epoch 20, chưa hề bão hoà -- trong khi
-        t5-small/t5-base đã bão hoà rõ từ epoch 10--15. Kết luận đúng:
-        lr thấp hơn chỉ làm hội tụ chậm hơn, không giải quyết được gì --
-        nguyên nhân thực sự nhiều khả năng là FLAN-T5-base (đã
+    \item \textbf{Đường cong chưa bão hoà không đồng nghĩa với model kém
+        hơn.} FLAN-T5-base thua kém rõ rệt so với T5-base cùng kích thước
+        trong cùng ngân sách 20 epoch, lr=3e-4 (0.5898 vs.\ 0.7442
+        triplet-F1). Tuy nhiên Hình~\ref{fig:triplet-f1-curves} cho thấy
+        \texttt{eval\_triplet\_f1} của flan-t5-base vẫn tăng dần đều tới
+        hết epoch 20, chưa hề bão hoà -- trong khi t5-small/t5-base đã
+        bão hoà rõ từ epoch 10--15. Nhiều khả năng nguyên nhân không phải
+        FLAN-T5-base ``kém hơn'' về bản chất, mà là model này (đã
         instruction-tuned trên nhiều task đa dạng) cần nhiều epoch hơn
-        hẳn để thích nghi lại với định dạng trích xuất terse này, không
-        phải vấn đề learning rate.
+        hẳn để thích nghi lại với định dạng trích xuất terse này -- ngân
+        sách 20 epoch đủ cho t5-small/t5-base nhưng nhiều khả năng chưa
+        đủ cho flan-t5-base. Bài học: khoảng cách hiệu năng đo tại một
+        điểm dừng cố định có thể phản ánh tốc độ hội tụ khác nhau hơn là
+        năng lực thực sự của model.
 
-    \item \textbf{Sinh trực tiếp bộ ba giải quyết luôn bài toán trích
-        xuất aspect, và cho kết quả tổng hợp đáng tin hơn.} So với
-        pipeline cần biết trước aspect (track laptop), pipeline T5-ASTE
-        (track nhà hàng) không chỉ tự tìm được aspect mà còn cho
-        majority-sentiment agreement cao hơn hẳn (97.25\% vs.\ 93.28\%)
-        khi tổng hợp thống kê -- gợi ý rằng học đồng thời cả ba thông
-        tin (aspect, opinion, sentiment) trong một lần sinh giúp mô
-        hình nhất quán hơn so với suy luận sentiment riêng lẻ cho từng
-        aspect.
+    \item \textbf{Baseline tra cứu: precision thấp hơn recall -- dấu
+        hiệu lỗi nằm ở bước ghép cặp, không phải bước tra cứu.}
+        AsteLookupBaseline có Precision 0.3222 thấp hơn hẳn Recall
+        0.4446 -- ngược với trực giác thông thường về một baseline tra
+        cứu nguyên văn (thường kỳ vọng precision cao, recall thấp: cái
+        gì đã ``chắc chắn thấy'' thì đúng, chỉ là bỏ sót nhiều). Khả năng
+        cao nguyên nhân nằm ở bước ghép cặp ``aspect gần opinion nhất
+        theo khoảng cách token'': trong câu có nhiều aspect/opinion xen
+        kẽ, heuristic này dễ ghép nhầm một opinion với aspect không thực
+        sự liên quan (dù bản thân aspect và opinion đều là cụm từ ``đã
+        biết'' từ tập train), tạo ra nhiều bộ ba sai dạng false-positive.
+        Mục~\ref{sec:erroranalysis} xác nhận đây thực sự là kiểu lỗi phổ
+        biến ở mức aspect: nhiều aspect có tổng lượt nhắc bị đếm thiếu ở
+        model T5-base cũng theo đúng hướng thận trọng-hơn-là-bịa này.
 \end{enumerate}
 
 
+\clearpage
 % =====================================================================
 \section{Hạn chế}
 % =====================================================================
@@ -654,56 +915,86 @@ khả năng model trích cụt từ ``vanilla extract'').}
         thức chuẩn hoá ngữ nghĩa nào (đồng nghĩa, biến thể hình thái).
         Recall 0.4446 phần lớn phản ánh giới hạn này hơn là độ khó thực sự
         của bài toán.
-    \item \textbf{Không dùng POS tagging thật} cho baseline ASTE (chỉ tra
-        cứu + ghép theo khoảng cách token) -- một baseline rule-based
+    \item \textbf{Không dùng POS tagging thật} cho baseline (chỉ tra cứu
+        + ghép theo khoảng cách token) -- một baseline rule-based
         ``chuẩn'' hơn trong literature thường dùng POS tagger để tìm ứng
         viên danh từ/tính từ trước khi ghép cặp; nhóm bỏ qua để tránh thêm
         dependency (NLTK/spaCy) không cần thiết cho một baseline tham
         chiếu.
-    \item \textbf{Track nhà hàng và track laptop không dùng chung domain}
-        -- kết quả hai track không so sánh chéo được (khác dataset, khác
-        task). Việc BERT (track laptop) và T5-base (track nhà hàng) đều
-        ``tốt hơn baseline'' không có nghĩa hai track tương đương nhau về
-        độ khó.
     \item \textbf{Demo Yelp không có gold label} -- độ tin cậy của bảng
         thống kê trên dữ liệu này chỉ được suy luận gián tiếp từ agreement
         97.25\% đo trên dữ liệu có nhãn cùng domain (SemEval Restaurant),
         không phải đo trực tiếp trên chính dữ liệu Yelp.
-    \item \textbf{Factual checker rule-based, không xử lý được diễn đạt
-        tự do}: cách đối chiếu bằng regex (theo kế hoạch ở
-        Mục~\ref{sec:methods}) sẽ bỏ sót các trường hợp báo cáo diễn đạt
-        đúng ý nhưng không dùng đúng định dạng số liệu kỳ vọng.
-        \todo{Hoàng/Vinh/Hưng -- xác nhận/bổ sung hạn chế thực tế sau khi
-        có kết quả đánh giá.}
+    \item \textbf{Factual checker mới kiểm chứng ở quy mô demo}: kết quả
+        4/4 claim hợp lệ (Mục~5.4) đến từ một lượt chạy minh hoạ, chưa
+        phải benchmark định lượng trên hàng trăm report -- cần chạy trên
+        nhiều mẫu hơn để có số liệu \% đáng tin cậy hơn (xem đề xuất ở
+        Mục~\ref{sec:conclusion}). Checker cũng vẫn là rule-based: dựa
+        vào việc gán mệnh đề cho aspect bằng khớp cụm từ, nên có thể
+        nhầm lẫn với các câu văn phức tạp hơn (nhiều aspect lồng nhau,
+        câu dài nhiều mệnh đề phụ) so với các ví dụ demo hiện tại.
+    \item \textbf{Bước tổng hợp gom nhóm theo chuỗi ký tự nguyên văn,
+        không chuẩn hoá hình thái} (phát hiện ở error analysis,
+        Mục~\ref{sec:erroranalysis}): các biến thể chính tả/số ít-số
+        nhiều của cùng một aspect (\texttt{rice to fish ration}/%
+        \texttt{rice to fish ratio}, \texttt{donuts}/\texttt{donut}) bị
+        tính thành các aspect tách biệt trong bảng thống kê, làm phân
+        mảnh số liệu và ảnh hưởng gián tiếp tới độ chính xác của báo cáo
+        sinh ra.
 \end{itemize}
 
 
+\clearpage
 % =====================================================================
 \section{Kết luận}
+\label{sec:conclusion}
 % =====================================================================
 
-Nhóm đã xây dựng và so sánh đầy đủ pipeline baseline--đến--model cải tiến
-trên hai track: (1) phân loại sentiment theo khía cạnh đã biết trước, domain
-laptop (TF-IDF+LogReg $\to$ DistilBERT $\to$ BERT-base, cải thiện Macro-F1
-+15.4 điểm), và (2) trích xuất trực tiếp bộ ba khía cạnh--ý kiến--sentiment
-từ câu thô, domain nhà hàng (AsteLookupBaseline $\to$ T5-small $\to$
-T5-base, cải thiện triplet-F1 gần gấp đôi). Hướng thứ hai là một bổ sung
-quan trọng: vừa giải quyết được bài toán trích xuất aspect mà track đầu
-không làm được, vừa cho thêm trường \emph{opinion} làm ``lý do'' phục vụ
-bước sinh báo cáo, vừa cho độ nhất quán tổng hợp cao hơn hẳn (97.25\% so
-với 93.28\%). Nhóm khuyến nghị dùng T5-base (track nhà hàng) làm nguồn dữ
-liệu chính cho bước sinh báo cáo cuối cùng.
+Nhóm đã xây dựng một pipeline hoàn chỉnh sinh trực tiếp bộ ba khía
+cạnh--ý kiến--sentiment từ câu thô (AsteLookupBaseline $\to$ T5-small
+$\to$ T5-base, cải thiện triplet-F1 gần gấp đôi: 0.3736 $\to$ 0.7442),
+giải quyết đồng thời bài toán trích xuất aspect (không cần gán nhãn
+trước) và cho thêm trường \emph{opinion} làm ``lý do'' phục vụ trực tiếp
+bước sinh báo cáo -- với độ nhất quán tổng hợp cao (97.25\%
+majority-sentiment agreement). T5-base là model được khuyến nghị dùng
+cho bước sinh báo cáo cuối cùng.
 
-\todo{Bổ sung sau khi có đủ kết quả factual checker + error analysis: (1)
-tỉ lệ báo cáo bị factual checker gắn cờ và loại lỗi phổ biến nhất; (2)
-tổng kết ngắn gọn insight từ error analysis; (3) hướng phát triển tiếp
-nếu có thêm thời gian (vd.\ mở rộng track nhà hàng sang aspect-category
-cố định, hoặc thử fine-tune FLAN-T5-base với epoch budget lớn hơn để
-kiểm chứng giả thuyết ở Mục~\ref{sec:findings}).}
+Bước sinh báo cáo và kiểm tra tính xác thực cũng cho một tín hiệu tích
+cực: trên lượt demo thật, FLAN-T5-base đã fine-tune sinh đúng 4/4 claim
+có căn cứ (Mục~5.4), và factual checker phân biệt được rõ ràng giữa
+model đã fine-tune (chấp nhận) và model chỉ prompt zero-shot (từ chối
+đúng lỗi gán nhầm vai trò) -- cho thấy cả hai thành phần hoạt động đúng
+như thiết kế, dù mới kiểm chứng trên quy mô demo, chưa phải benchmark
+định lượng lớn.
+
+Error analysis (Mục~\ref{sec:erroranalysis}) không phát hiện thiên lệch
+hệ thống nào trong 3\% case sentiment lệch -- toàn bộ đều là các aspect
+vốn đã sát nút giữa gold và predicted -- và xác nhận sai số chính của
+model nằm ở \textbf{recall trên aspect hiếm và đếm thiếu trên aspect phổ
+biến} (khớp với Precision $>$ Recall đã đo ở Mục~5.1), chứ không phải ở
+việc suy luận sentiment sai. Phân tích cũng chỉ ra một hạn chế cụ thể, có
+thể sửa được ở bước tổng hợp (gộp aspect theo chuỗi ký tự nguyên văn thay
+vì theo hình thái), và đính chính một giả thuyết ban đầu sai
+(\texttt{extract} trong demo Yelp không phải do cắt cụt ``vanilla
+extract'' mà là model nhầm lẫn trên câu ngắn/rời rạc) -- một ví dụ cho
+thấy tầm quan trọng của việc kiểm chứng giả thuyết bằng dữ liệu thật thay
+vì suy đoán.
+
+\textbf{Hướng phát triển tiếp nếu có thêm thời gian}: (1) chuẩn hoá hình
+thái (lemmatize) ở bước tổng hợp aspect để gộp các biến thể chính tả/số
+ít-số nhiều, giảm phân mảnh số liệu; (2) thử fine-tune FLAN-T5-base cho
+ASTE với epoch budget lớn hơn 20 để kiểm chứng trực tiếp giả thuyết ``cần
+nhiều epoch hơn'' ở Mục~\ref{sec:findings}; (3) chạy factual checker trên
+số lượng report lớn hơn để có số liệu tỉ lệ pass/fail đáng tin cậy thay
+vì một lượt demo; (4) cải tiến \texttt{AsteLookupBaseline} bằng POS
+tagging thật để tách rõ hạn chế do thiếu ngữ pháp khỏi hạn chế do từ
+vựng giới hạn.
 
 
+\clearpage
 % =====================================================================
 \section*{Phân công nhóm}
+\addcontentsline{toc}{section}{Phân công nhóm}
 % =====================================================================
 
 \begin{table}[h]
@@ -722,6 +1013,7 @@ Viết báo cáo + slides (Tuần 6) & \todo{phân công} \\
 \end{table}
 
 
+\clearpage
 % =====================================================================
 \appendix
 \section{Phụ lục}
@@ -731,27 +1023,24 @@ Viết báo cáo + slides (Tuần 6) & \todo{phân công} \\
 
 \begin{table}[h]
 \centering
-\small
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccc}
 \toprule
-Model & Epoch & LR & Batch (effective) & Seed & Early stopping \\
+Model & Epoch & LR & Batch (effective) & Seed \\
 \midrule
-DistilBERT & $\leq$20 & 3e-5 & 16 & 42/43/44 & patience=3 (Macro-F1) \\
-BERT-base & $\leq$20 & 2e-5 & 16 & 42/43/44 & patience=3 (Macro-F1) \\
-T5-small (ASTE) & 20 & 3e-4 & 16 & 42 & không \\
-T5-base (ASTE) & 20 & 3e-4 & 16 & 42 & không \\
-FLAN-T5-base (ASTE) & 20 & 3e-4 rồi 1e-4 & 16 & 42 & không \\
+T5-small (ASTE) & 20 & 3e-4 & 16 & 42 \\
+T5-base (ASTE) & 20 & 3e-4 & 16 & 42 \\
+FLAN-T5-base (ASTE) & 20 & 3e-4 & 16 & 42 \\
 \bottomrule
 \end{tabular}
-\caption{Hyperparameter đầy đủ cho các model fine-tune. Chi tiết từng
-notebook nằm ở \texttt{notebooks/}.}
+\caption{Hyperparameter khớp với config mặc định của repo nền
+Generative-ABSA~\cite{genabsa} (\texttt{lr=3e-4}, \texttt{batch=16},
+\texttt{epoch=20}).}
 \end{table}
 
-\subsection{Ví dụ output thực tế -- Track nhà hàng}
+\subsection{Ví dụ output thực tế}
 
 Ví dụ một hàng trong bảng tổng hợp (\texttt{output/aspect\_reasons\_%
-restaurant.json}), aspect \texttt{food} (827 lượt nhắc, T5-base, domain
-nhà hàng):
+restaurant.json}), aspect \texttt{food} (827 lượt nhắc, T5-base):
 
 \begin{quote}
 \texttt{positive} (621 lượt): lý do phổ biến nhất --
@@ -761,19 +1050,50 @@ nhà hàng):
 \texttt{mediocre}(10), \texttt{bad}(7), \texttt{overpriced}(5).
 \end{quote}
 
-\subsection{Ví dụ output thực tế -- Track laptop / báo cáo sinh tự động}
+\subsection{Ví dụ báo cáo tự động sinh ra}
 
-\todo{Hoàng/Vinh/Hưng -- dán 1--2 ví dụ report thật (input bảng thống kê
-+ report sinh ra + kết quả factual\_check) từ
-\texttt{output/flan\_t5\_natural\_report.json} vào đây.}
+Input (4 dòng trích từ \texttt{output/aspect\_reasons\_restaurant.json},
+mảng \texttt{predicted}, rút gọn reason):
+
+\begin{quote}
+\small
+\texttt{aspect=food | total=827 | positive=621 | negative=164 | neutral=42 |
+positive\_reasons=great (109), good (100)} \\
+\texttt{aspect=indian food | total=22 | positive=21 | negative=1 |
+neutral=0 | positive\_reasons=great (5)} \\
+\texttt{aspect=dessert | total=26 | positive=8 | negative=16 | neutral=2 |
+negative\_reasons=not inspired (4)} \\
+\texttt{aspect=waiter | total=42 | positive=24 | negative=18 | neutral=0 |
+positive\_reasons=attentive (6) | negative\_reasons=snobby (4)}
+\end{quote}
+
+Output của FLAN-T5-base (đã fine-tune) --
+\texttt{output/flan\_t5\_reasoned\_report.json}:
+
+\begin{quote}
+\emph{``The strongest takeaway is the contrast between Indian food and
+dessert. Indian food was praised in 21 of 22 mentions, especially for
+being great, whereas dessert received 16 negative comments out of 26,
+largely citing not inspired. At the same time, food remained the most
+visible topic, appearing 827 times with 621 positive mentions and great
+as a recurring reason. Feedback on waiter was less settled: 24 positive
+versus 18 negative reactions across 42 mentions, with experiences
+ranging from attentive to snobby.''}
+\end{quote}
+
+Kết quả factual checker: \texttt{passed: true}, \texttt{claims\_checked:
+4}, \texttt{valid\_claims: 4}, \texttt{missing\_aspects: []},
+\texttt{unattributed\_numbers: []}.
 
 
+\clearpage
+\addcontentsline{toc}{section}{Tài liệu tham khảo}
 % =====================================================================
 \begin{thebibliography}{99}
 
 \bibitem{semeval2014} Pontiki, M., Galanis, D., Pavlopoulos, J., Papageorgiou, H., Androutsopoulos, I., \& Manandhar, S. (2014). \emph{SemEval-2014 Task 4: Aspect Based Sentiment Analysis}. \url{https://alt.qcri.org/semeval2014/task4/}
 
-\bibitem{berte2eabsa} Li, X., Bing, L., Zhang, W., \& Lam, W. (2019). \emph{Exploiting BERT for End-to-End Aspect-Based Sentiment Analysis}. \url{https://github.com/lixin4ever/BERT-E2E-ABSA}
+\bibitem{genabsa} Zhang, W., Li, X., Deng, Y., Bing, L., \& Lam, W. (2021). \emph{Towards Generative Aspect-Based Sentiment Analysis}. ACL-IJCNLP 2021. \url{https://github.com/IsakZhang/Generative-ABSA}
 
 \bibitem{peng2020aste} Peng, H., Xu, L., Bing, L., Huang, F., Lu, W., \& Si, L. (2020). \emph{Knowing What, How and Why: A Near Complete Solution for Aspect-Based Sentiment Analysis}. AAAI 2020.
 
@@ -788,10 +1108,6 @@ nhà hàng):
 \bibitem{factcc} Kryscinski, W., McCann, B., Xiong, C., \& Socher, R. (2020). \emph{Evaluating the Factual Consistency of Abstractive Text Summarization} (FactCC).
 
 \bibitem{consistency2024} \emph{Consistency Is the Key: Improving Factuality via Consistency-based Checking}. arXiv:2511.12236.
-
-\bibitem{devlin2019bert} Devlin, J., Chang, M.-W., Lee, K., \& Toutanova, K. (2019). \emph{BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding}. NAACL 2019.
-
-\bibitem{sanh2019distilbert} Sanh, V., Debut, L., Chaumond, J., \& Wolf, T. (2019). \emph{DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter}. arXiv:1910.01108.
 
 \end{thebibliography}
 
