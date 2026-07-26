@@ -1,0 +1,10 @@
+{
+  "model": "AsteLookupBaseline",
+  "train_sentences": 2735,
+  "test_sentences": 1134,
+  "aspect_vocab_size": 870,
+  "opinion_lexicon_size": 1146,
+  "triplet_precision": 0.322153991497402,
+  "triplet_recall": 0.4445893089960887,
+  "triplet_f1": 0.37359627499315257
+}

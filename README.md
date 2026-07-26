@@ -33,11 +33,13 @@ See [`docs/Proposal.md`](docs/Proposal.md) for the full proposal, [`docs/Require
 │   │   ├── preprocess.py         # Flattens sentences into (context, aspect, polarity) examples
 │   │   └── aste_loader.py        # Parses the ASTE triplet tag format (aspect, opinion, sentiment)
 │   ├── baseline/
-│   │   └── tfidf_logreg.py       # TF-IDF + Logistic Regression baseline model
+│   │   ├── tfidf_logreg.py            # TF-IDF + Logistic Regression baseline (Laptop classification)
+│   │   └── aste_lookup_baseline.py    # Frequency-lookup baseline (Restaurant ASTE — no known aspect needed)
 │   └── report/
 │       └── aspect_stats.py       # Per-aspect summary tables: sentiment counts, + top-N reason phrases
 ├── scripts/
-│   ├── train_baseline.py         # CLI: train + evaluate the baseline
+│   ├── train_baseline.py         # CLI: train + evaluate the Laptop baseline
+│   ├── eval_aste_baseline.py     # CLI: train + evaluate the ASTE lookup baseline (local, no GPU)
 │   └── split_dataset.py          # CLI: split the train XML into train/valid/test XML files
 ├── notebooks/
 │   ├── baseline_semeval_laptop.ipynb              # Baseline template (Kaggle-ready)
@@ -48,23 +50,30 @@ See [`docs/Proposal.md`](docs/Proposal.md) for the full proposal, [`docs/Require
 │   ├── train-t5-small-for-aste-on-14res-15res-16res.ipynb      # ASTE: fine-tune t5-small (Kaggle-ready)
 │   ├── train-t5-base-for-aste-on-14res-15res-16res.ipynb       # ASTE: fine-tune t5-base (Kaggle-ready)
 │   ├── train-flan-t5-base-for-aste-on-14res-15res-16res.ipynb  # ASTE: fine-tune flan-t5-base (Kaggle-ready)
-│   └── aste_aspect_reasons_restaurant.ipynb                    # ASTE: t5-base inference + aspect/reasons aggregation (Kaggle-ready)
+│   ├── aste_aspect_reasons_restaurant.ipynb                    # ASTE: t5-base inference + aspect/reasons aggregation (Kaggle-ready)
+│   └── aste_aspect_reasons_yelp_demo.ipynb                     # ASTE: same, large-scale demo on unlabeled Yelp reviews (Kaggle-ready, Tuần 5)
 ├── notebooks-output/              # Executed copies of the notebooks above, with real Kaggle results
 │   ├── finetune_distilbert_semeval_laptop_output.ipynb
 │   ├── aspect_stats_semeval_laptop_output.ipynb
 │   ├── train-t5-small-for-aste-on-14res-15res-16res-output.ipynb
 │   ├── train-t5-base-for-aste-on-14res-15res-16res-output.ipynb
-│   └── train-flan-t5-base-for-aste-on-14res-15res-16r-output.ipynb
+│   ├── train-flan-t5-base-for-aste-on-14res-15res-16r-output.ipynb
+│   ├── train-flan-t5-base-for-aste-on-14res-15res-16r-1-e-4.ipynb
+│   └── aste_aspect_reasons_yelp_demo_output.ipynb
 ├── tests/
 │   ├── fixtures/sample_laptop.xml  # Hand-built fixture matching the official XML schema
 │   ├── test_semeval_loader.py
 │   ├── test_aspect_stats.py
-│   └── test_aste_loader.py
+│   ├── test_aste_loader.py
+│   └── test_aste_lookup_baseline.py
 ├── results/
-│   └── baseline_metrics.json     # Recorded baseline results (Tuần 3)
+│   ├── baseline_metrics.json          # Recorded baseline results (Tuần 3, 4-class dataset — historical)
+│   ├── baseline_metrics_3class.json   # Baseline re-run on the current 3-class split, for a fair BERT comparison (Tuần 5)
+│   └── aste_baseline_metrics.json     # AsteLookupBaseline results (Tuần 5)
 ├── output/
 │   ├── aspect_stats.txt                    # Per-aspect sentiment stats (Laptop/BERT track, gold + predicted)
-│   └── aspect_reasons_restaurant.json      # Per-aspect sentiment + top-10 reasons (Restaurant/t5-base ASTE track)
+│   ├── aspect_reasons_restaurant.json      # Per-aspect sentiment + top-10 reasons (Restaurant/t5-base ASTE track)
+│   └── aspect_reasons_yelp_demo.json       # Same, large-scale demo on unlabeled Yelp Restaurant Reviews (Tuần 5)
 └── requirements.txt
 ```
 
@@ -112,7 +121,7 @@ python scripts/train_baseline.py --train data/raw/train/Laptop_Train_v2.xml --te
 
 A Kaggle-ready, self-contained version of the same baseline is in [`notebooks/baseline_semeval_laptop.ipynb`](notebooks/baseline_semeval_laptop.ipynb) (add the `charitarth/semeval-2014-task-4-aspectbasedsentimentanalysis` Kaggle dataset as input and Run All). The executed copy with actual results is [`notebooks/baseline_semeval_laptop_kaggle_run.ipynb`](notebooks/baseline_semeval_laptop_kaggle_run.ipynb).
 
-**Current result** (dev split, seed=42): Accuracy **0.6211**, Macro-F1 **0.4266** — see [`results/baseline_metrics.json`](results/baseline_metrics.json) and the "Kết Quả Baseline" section in [`docs/Proposal.md`](docs/Proposal.md).
+**Current result** (dev split, seed=42): Accuracy **0.6211**, Macro-F1 **0.4266** — see [`results/baseline_metrics.json`](results/baseline_metrics.json) and the "Kết Quả Baseline" section in [`docs/Proposal.md`](docs/Proposal.md). That run predates the dataset dropping the `conflict` label; for a fair comparison against the 3-label DistilBERT/BERT results below, the baseline was re-run on the same `data/processed/laptop/{train,test}.xml` split (`python scripts/train_baseline.py --train data/processed/laptop/train.xml --test data/processed/laptop/test.xml`): Accuracy **0.6171**, Macro-F1 **0.5581** — see [`results/baseline_metrics_3class.json`](results/baseline_metrics_3class.json). Macro-F1 jumps a lot just from dropping `conflict` (a class the baseline never got right, which tanks an unweighted macro average even at <0.3% of the data) — the original 4-class number isn't a fair reference point for the BERT comparison below.
 
 ## Fine-tuning DistilBERT/BERT
 
@@ -204,10 +213,22 @@ span doubles as a **reason/rationale** the report-generation step can quote (e.g
 
 | Model | Test triplet-F1 | Test P / R | Test exact match | Executed notebook |
 |---|---|---|---|---|
+| [`AsteLookupBaseline`](src/baseline/aste_lookup_baseline.py) (non-neural) | 0.3736 | 0.3222 / 0.4446 | — | `python scripts/eval_aste_baseline.py` (local) |
 | t5-small | 0.7240 | 0.7238 / 0.7243 | 0.6358 | [`notebooks-output/train-t5-small-for-aste-on-14res-15res-16res-output.ipynb`](notebooks-output/train-t5-small-for-aste-on-14res-15res-16res-output.ipynb) |
 | **t5-base** | **0.7442** | 0.7609 / 0.7282 | **0.6481** | [`notebooks-output/train-t5-base-for-aste-on-14res-15res-16res-output.ipynb`](notebooks-output/train-t5-base-for-aste-on-14res-15res-16res-output.ipynb) |
 | flan-t5-base (lr=3e-4) | 0.5898 | 0.5910 / 0.5887 | 0.4877 | [`notebooks-output/train-flan-t5-base-for-aste-on-14res-15res-16r-output.ipynb`](notebooks-output/train-flan-t5-base-for-aste-on-14res-15res-16r-output.ipynb) |
 | flan-t5-base (lr=1e-4, retry) | 0.4159 | 0.4185 / 0.4133 | 0.3210 | [`notebooks-output/train-flan-t5-base-for-aste-on-14res-15res-16r-1-e-4.ipynb`](notebooks-output/train-flan-t5-base-for-aste-on-14res-15res-16r-1-e-4.ipynb) |
+
+`AsteLookupBaseline` is the non-neural reference point for this track (the Laptop track's
+TF-IDF+LogReg baseline can't do ASTE — it needs a known aspect term up front). No training beyond
+frequency counting: it memorizes aspect phrases and each opinion phrase's majority sentiment from
+train, then at test time looks for exact phrase matches and pairs each aspect with its nearest
+opinion match. Evaluated with the same corpus-level triplet-F1 (`src/data/aste_loader.py::corpus_triplet_prf`,
+tested in `tests/test_aste_loader.py`) on the real `ASTE-Data-V1-AAAI2020` split (2735 train /
+1134 test sentences, matching the T5 notebooks exactly) via `scripts/eval_aste_baseline.py` — runs
+locally, no GPU. t5-base nearly doubles its triplet-F1 (0.3736 → 0.7442); the baseline's weak
+recall (0.4446) is expected — any aspect/opinion phrased differently than training is missed
+entirely, which is exactly the kind of generalization a fine-tuned model provides.
 
 **t5-base wins on every metric — it's the chosen model** for this track. flan-t5-base was tried
 at two learning rates and both lose decisively, so no further tuning was invested. Notably, the
@@ -249,10 +270,39 @@ positive reasons `great`(109)/`good`(100)/`delicious`(39)/...; negative reasons
 `mediocre`(10)/`bad`(7)/`overpriced`(5)/... Full table:
 [`output/aspect_reasons_restaurant.json`](output/aspect_reasons_restaurant.json).
 
+## Large-scale demo (Yelp Restaurant Reviews, Tuần 5)
+
+Same pipeline as above, pointed at real, **unlabeled** reviews instead of the labeled SemEval set
+— the Tuần 5 "test report generation at scale" requirement. Originally planned to use Amazon
+Reviews (`docs/Proposal.md`), swapped to [Yelp Restaurant
+Reviews](https://www.kaggle.com/datasets/farukalam/yelp-restaurant-reviews): Amazon Reviews
+(Electronics category) is a different domain than what t5-base was fine-tuned on (restaurant
+triplets) and would likely produce meaningless extractions, while Yelp is the same domain.
+
+[`notebooks/aste_aspect_reasons_yelp_demo.ipynb`](notebooks/aste_aspect_reasons_yelp_demo.ipynb) —
+adds one extra step versus the notebook above: real Yelp reviews are full multi-sentence
+paragraphs (the model was fine-tuned on single short sentences), so each sampled review is split
+into sentences (simple regex heuristic, no new NLP dependency) before inference. No gold labels,
+so only a `predicted` table is produced — trustworthiness rests on the 97.25% agreement already
+validated on labeled same-domain data above.
+
+**Kaggle setup**: add `farukalam/yelp-restaurant-reviews` and the t5-base ASTE model as inputs,
+GPU accelerator. `SAMPLE_SIZE` (default 2000 reviews) caps runtime for a first pass — raise it for
+a bigger demo.
+
+**Current result**: 2000 sampled reviews (seed=42) → 14285 sentences (7.1/review) → 14700
+triplets → 1224 aspects with ≥2 mentions. The sample skewed toward dessert/bakery shops: top
+aspects `ice cream` (765 mentions, positive), `place` (633), `flavors` (237), plus
+`staff`/`service`/`donuts`/`pastries`/`bakery`/`cookies`/`macarons` — plausible, on-domain
+results. Some extraction noise is visible too (e.g. `extract`, 196 mentions — likely a truncated
+"vanilla extract"), worth flagging in error analysis. Executed notebook:
+[`notebooks-output/aste_aspect_reasons_yelp_demo_output.ipynb`](notebooks-output/aste_aspect_reasons_yelp_demo_output.ipynb);
+full table: [`output/aspect_reasons_yelp_demo.json`](output/aspect_reasons_yelp_demo.json).
+
 ## Tests
 
 ```bash
 python -m pytest tests/ -v
 ```
 
-Tests run against a small hand-built fixture (`tests/fixtures/sample_laptop.xml`, for `test_semeval_loader.py`) and synthetic/hand-written data (`test_aspect_stats.py`, `test_aste_loader.py`) — none need the gated dataset or GPU/transformers.
+Tests run against a small hand-built fixture (`tests/fixtures/sample_laptop.xml`, for `test_semeval_loader.py`) and synthetic/hand-written data (`test_aspect_stats.py`, `test_aste_loader.py`, `test_aste_lookup_baseline.py`) — none need the gated dataset or GPU/transformers.
