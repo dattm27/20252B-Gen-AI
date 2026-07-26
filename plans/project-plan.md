@@ -132,9 +132,38 @@ Chi tiết: [`docs/Research-Notes.md`](../docs/Research-Notes.md)
 
 ## Tuần 5 — Đánh giá & phân tích
 
-- [ ] So sánh baseline vs model cải tiến theo các metric đã chốt.
-- [ ] Test report generation trên Amazon Reviews để demo quy mô lớn.
-- [ ] Đánh giá hiệu quả của factual checker.
+- [x] So sánh baseline vs model cải tiến theo các metric đã chốt.
+
+  **Track Laptop (aspect sentiment classification, gold aspect term)** — baseline gốc (Tuần 3) đo trên bản dataset 4 lớp cũ (có `conflict`), không apple-to-apple với BERT/DistilBERT (đo trên bản 3 lớp hiện tại). Đã **chạy lại baseline trên đúng `data/processed/laptop/{train,test}.xml`** — cùng split 3 lớp BERT/DistilBERT dùng (test set giống hệt: 132 negative/54 neutral/130 positive) — để so sánh công bằng: `results/baseline_metrics_3class.json` (giữ nguyên `results/baseline_metrics.json` gốc làm record lịch sử Tuần 3).
+
+  | Model | Accuracy | Macro-F1 |
+  |---|---|---|
+  | Baseline 4 lớp cũ (record Tuần 3, không apple-to-apple) | 0.6211 | 0.4266 |
+  | **Baseline 3 lớp (cùng split, so sánh công bằng)** | 0.6171 | 0.5581 |
+  | DistilBERT (3 seed) | 0.7447 ± 0.0159 | 0.6861 ± 0.0235 |
+  | **BERT-base (3 seed)** | **0.7627 ± 0.0239** | **0.7123 ± 0.0324** |
+
+  Điều bất ngờ: bỏ lớp `conflict` khiến Macro-F1 baseline **tăng vọt** (0.4266 → 0.5581, +13 điểm) dù Accuracy gần như không đổi — vì `conflict` là lớp baseline không bao giờ đoán đúng (0/6 example), kéo Macro-F1 (trung bình không trọng số qua các lớp) xuống rất nặng dù chỉ chiếm <0.3% dữ liệu. **So với baseline 3 lớp (số đúng để so sánh)**, BERT-base cải thiện +14.6 điểm Accuracy, **+15.4 điểm Macro-F1** — vẫn rõ rệt nhưng khiêm tốn hơn nhiều so với con số +28.6 điểm tưởng ban đầu (vốn một phần là ảo do so sánh lệch chuẩn). Per-label baseline 3 lớp: negative F1 0.63, neutral F1 0.30, positive F1 0.74 — `neutral` vẫn là lớp yếu nhất ở cả baseline lẫn BERT, đúng như dự đoán ban đầu.
+
+  **Track Restaurant (ASTE, sinh triplet trực tiếp từ câu thô)** — baseline TF-IDF+LogReg cũ không áp dụng được cho task này (cần biết trước aspect, ASTE thì phải tự tìm aspect luôn). Đã xây baseline khác phù hợp hơn: **`AsteLookupBaseline`** (`src/baseline/aste_lookup_baseline.py`, có test — `tests/test_aste_lookup_baseline.py`) — baseline phi-neural, không cần train gradient: ghi nhớ tập aspect + sentiment phổ biến nhất của từng opinion phrase từ tập train, rồi ở câu test tra cứu nguyên văn cụm từ đã thấy + ghép aspect với opinion gần nhất trên câu. Evaluate bằng `scripts/eval_aste_baseline.py` trên đúng data thật (`ASTE-Data-V1-AAAI2020`, 14res+15res+16res, 2735 câu train / 1134 câu test — khớp chính xác số liệu 3 notebook train T5) — dùng chung metric triplet-F1 (`corpus_triplet_prf` trong `src/data/aste_loader.py`, micro-average giống hệt cách 3 notebook T5 đã tính) nên so sánh trực tiếp được:
+
+  | Model | Test triplet-F1 | Test P / R |
+  |---|---|---|
+  | AsteLookupBaseline (lookup, phi-neural) | 0.3736 | 0.3222 / 0.4446 |
+  | t5-small | 0.7240 | 0.7238 / 0.7243 |
+  | **t5-base** | **0.7442** | 0.7609 / 0.7282 |
+  | flan-t5-base (2 lr đã thử) | 0.4159 – 0.5898 | — |
+
+  t5-base cải thiện **gần gấp đôi** triplet-F1 so với baseline lookup (0.3736 → 0.7442, +99%) — baseline yếu chủ yếu do recall thấp (0.4446): bất kỳ aspect/opinion nào diễn đạt khác với train (không match nguyên văn) đều bị bỏ sót hoàn toàn, đúng bản chất "floor" của một baseline tra cứu đơn giản. Chi tiết đầy đủ (per-label, per-seed, phân tích flan-t5-base) đã ghi ở Tuần 3/4 phía trên.
+
+- [x] Test report generation trên **Yelp Restaurant Reviews** (đổi từ Amazon Reviews) để demo quy mô lớn.
+
+  **Lý do đổi dataset**: model ASTE chính (t5-base) train trên domain **nhà hàng** (SemEval Restaurant Triplet). Amazon Reviews (dự kiến dùng category Electronics theo `docs/Proposal.md`) lệch domain hoàn toàn với model này — không có "food"/"service"/"staff", rủi ro kết quả không chính xác/vô nghĩa. [Yelp Restaurant Reviews](https://www.kaggle.com/datasets/farukalam/yelp-restaurant-reviews) cùng domain nhà hàng nên phù hợp hơn nhiều để demo. Vẫn giữ đúng vai trò ban đầu của dataset phụ trong `docs/Proposal.md`: chỉ demo quy mô lớn, không có gold label nên không dùng để benchmark.
+
+  Notebook: `notebooks/aste_aspect_reasons_yelp_demo.ipynb` — lấy cột review text (cột thật trong file là `Review Text`, code tự dò case-insensitive nên chạy đúng không cần sửa), tách câu (model train trên câu đơn lẻ, review Yelp thường dài nhiều câu/đoạn), chạy t5-base, tổng hợp giống `aste_aspect_reasons_restaurant.ipynb` nhưng không có gold nên chỉ có bảng `predicted`. Đã chạy — không lỗi: `notebooks-output/aste_aspect_reasons_yelp_demo_output.ipynb`, kết quả `output/aspect_reasons_yelp_demo.json`.
+
+  **Kết quả**: 2000 review mẫu (seed=42) → 14285 câu (7.1 câu/review) → 14700 triplet → 1224 aspect (≥2 lượt nhắc). Mẫu Yelp lấy ngẫu nhiên rơi nhiều vào nhóm quán tráng miệng/bakery: top aspect `ice cream` (765 lượt, positive), `place` (633), `flavors` (237), `staff`/`service`/`donuts`/`pastries`/`bakery`/`cookies`/`macarons`... — kết quả hợp lý, đúng domain nhà hàng như kỳ vọng. Có 1 vài aspect noise đáng chú ý cho phần error analysis (vd `extract` — 196 lượt, nhiều khả năng model trích cụt từ "vanilla extract").
+- [ ] Đánh giá hiệu quả của factual checker. *(chờ nhóm Hoàng/Vinh/Hưng push phần checker)*
 - [ ] Error analysis, rút ra insight/khám phá mới.
 
 ## Tuần 6 — Deliverables

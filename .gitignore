@@ -18,7 +18,9 @@ data/processed/*
 # Downloaded model checkpoints (large binaries — re-download from the Kaggle training run's Output tab)
 models/*
 
-# Generated results (baseline_metrics.json is committed as a record of the reported run)
+# Generated results (these specific metrics files are committed as records of reported runs)
 results/*
 !results/.gitkeep
 !results/baseline_metrics.json
+!results/baseline_metrics_3class.json
+!results/aste_baseline_metrics.json

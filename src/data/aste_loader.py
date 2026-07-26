@@ -98,3 +98,29 @@ def load_aste_file(path: str | Path) -> list[AsteSentence]:
             if item is not None:
                 sentences.append(item)
     return sentences
+
+
+def _normalize_triplet_set(triplets: list[AsteTriplet]) -> set[tuple[str, str, str]]:
+    return {(t.aspect.strip().lower(), t.opinion.strip().lower(), t.sentiment) for t in triplets}
+
+
+def corpus_triplet_prf(
+    pred_triplets_per_sentence: list[list[AsteTriplet]],
+    gold_triplets_per_sentence: list[list[AsteTriplet]],
+) -> tuple[float, float, float]:
+    """Micro-averaged precision/recall/F1 via set overlap of normalized (aspect, opinion,
+    sentiment) triples, aggregated across the whole corpus (not averaged per-sentence) — the
+    same triplet-level metric used to evaluate the T5 ASTE models (see the training notebooks'
+    `triplet_prf`), so scores are directly comparable across baselines and models.
+    """
+    tp = pred_total = gold_total = 0
+    for preds, golds in zip(pred_triplets_per_sentence, gold_triplets_per_sentence):
+        pred_set = _normalize_triplet_set(preds)
+        gold_set = _normalize_triplet_set(golds)
+        tp += len(pred_set & gold_set)
+        pred_total += len(pred_set)
+        gold_total += len(gold_set)
+    precision = tp / pred_total if pred_total else 0.0
+    recall = tp / gold_total if gold_total else 0.0
+    f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
+    return precision, recall, f1

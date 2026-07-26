@@ -1,4 +1,4 @@
-from src.data.aste_loader import AsteTriplet, parse_aste_line, triplets_to_text
+from src.data.aste_loader import AsteTriplet, corpus_triplet_prf, parse_aste_line, triplets_to_text
 
 ONE_TRIPLET_LINE = (
     "The food is good . #### "
@@ -52,3 +52,42 @@ def test_triplets_to_text_formats_and_handles_empty():
         "aspect: service | opinion: slow | sentiment: negative"
     )
     assert triplets_to_text([]) == "no triplet"
+
+
+def test_corpus_triplet_prf_perfect_match():
+    gold = [[AsteTriplet(aspect="food", opinion="good", sentiment="positive")]]
+    assert corpus_triplet_prf(gold, gold) == (1.0, 1.0, 1.0)
+
+
+def test_corpus_triplet_prf_partial_overlap_is_micro_averaged():
+    # sentence 1: 1 correct out of 1 predicted, 1 gold; sentence 2: 0 correct out of 1 predicted, 2 gold
+    preds = [
+        [AsteTriplet(aspect="food", opinion="good", sentiment="positive")],
+        [AsteTriplet(aspect="staff", opinion="rude", sentiment="negative")],
+    ]
+    golds = [
+        [AsteTriplet(aspect="food", opinion="good", sentiment="positive")],
+        [
+            AsteTriplet(aspect="service", opinion="slow", sentiment="negative"),
+            AsteTriplet(aspect="price", opinion="high", sentiment="negative"),
+        ],
+    ]
+    # tp=1, pred_total=2, gold_total=3
+    precision, recall, f1 = corpus_triplet_prf(preds, golds)
+    assert precision == 0.5
+    assert recall == 1 / 3
+    assert f1 == 2 * 0.5 * (1 / 3) / (0.5 + 1 / 3)
+
+
+def test_corpus_triplet_prf_normalizes_case_and_whitespace():
+    preds = [[AsteTriplet(aspect=" Food ", opinion="GOOD", sentiment="positive")]]
+    golds = [[AsteTriplet(aspect="food", opinion="good", sentiment="positive")]]
+    assert corpus_triplet_prf(preds, golds) == (1.0, 1.0, 1.0)
+
+
+def test_corpus_triplet_prf_handles_no_predictions_or_no_gold():
+    empty = [[]]
+    non_empty = [[AsteTriplet(aspect="food", opinion="good", sentiment="positive")]]
+    assert corpus_triplet_prf(empty, non_empty) == (0.0, 0.0, 0.0)
+    assert corpus_triplet_prf(non_empty, empty) == (0.0, 0.0, 0.0)
+    assert corpus_triplet_prf(empty, empty) == (0.0, 0.0, 0.0)
