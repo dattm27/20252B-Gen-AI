@@ -206,17 +206,18 @@ span doubles as a **reason/rationale** the report-generation step can quote (e.g
 |---|---|---|---|---|
 | t5-small | 0.7240 | 0.7238 / 0.7243 | 0.6358 | [`notebooks-output/train-t5-small-for-aste-on-14res-15res-16res-output.ipynb`](notebooks-output/train-t5-small-for-aste-on-14res-15res-16res-output.ipynb) |
 | **t5-base** | **0.7442** | 0.7609 / 0.7282 | **0.6481** | [`notebooks-output/train-t5-base-for-aste-on-14res-15res-16res-output.ipynb`](notebooks-output/train-t5-base-for-aste-on-14res-15res-16res-output.ipynb) |
-| flan-t5-base | 0.5898 | 0.5910 / 0.5887 | 0.4877 | [`notebooks-output/train-flan-t5-base-for-aste-on-14res-15res-16r-output.ipynb`](notebooks-output/train-flan-t5-base-for-aste-on-14res-15res-16r-output.ipynb) |
+| flan-t5-base (lr=3e-4) | 0.5898 | 0.5910 / 0.5887 | 0.4877 | [`notebooks-output/train-flan-t5-base-for-aste-on-14res-15res-16r-output.ipynb`](notebooks-output/train-flan-t5-base-for-aste-on-14res-15res-16r-output.ipynb) |
+| flan-t5-base (lr=1e-4, retry) | 0.4159 | 0.4185 / 0.4133 | 0.3210 | [`notebooks-output/train-flan-t5-base-for-aste-on-14res-15res-16r-1-e-4.ipynb`](notebooks-output/train-flan-t5-base-for-aste-on-14res-15res-16r-1-e-4.ipynb) |
 
-**t5-base wins on every metric — it's the chosen model** for this track going forward.
-flan-t5-base's low score is very likely a **learning-rate artifact, not a capability gap** — its
-training loss starts at ~22 (vs. a stable start for the other two) and never fully recovers in 20
-epochs, the classic sign that lr=3e-4 (fine for vanilla T5) is too aggressive for an already
-instruction-tuned checkpoint.
-[`notebooks/train-flan-t5-base-for-aste-on-14res-15res-16res.ipynb`](notebooks/train-flan-t5-base-for-aste-on-14res-15res-16res.ipynb)
-now retries at `lr=1e-4` (10x lower, still fixed — no schedule/warmup added) with everything else
-unchanged, to confirm before ruling it out. This doesn't block downstream work, which proceeds
-with t5-base.
+**t5-base wins on every metric — it's the chosen model** for this track. flan-t5-base was tried
+at two learning rates and both lose decisively, so no further tuning was invested. Notably, the
+initial "lr=3e-4 is too high" hypothesis was **wrong**: dropping to `lr=1e-4` made results *worse*
+(0.4159 vs 0.5898), and its training log shows `eval_triplet_f1` still climbing steadily through
+epoch 20 (0.244 → 0.470) with no sign of plateauing — the lower lr just converges slower, it
+doesn't fix anything. The likely real explanation: flan-t5-base (already instruction-tuned across
+many diverse tasks) needs substantially more epochs to re-specialize on this terse structured
+extraction format, not a different lr — a useful cautionary finding for the report (don't
+conclude root cause from tuning a single hyperparameter).
 
 ## Aspect + top-10-reasons (t5-base)
 
