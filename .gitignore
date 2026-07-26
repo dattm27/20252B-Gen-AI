@@ -27,3 +27,7 @@ results/*
 !results/baseline_metrics.json
 !results/baseline_metrics_3class.json
 !results/aste_baseline_metrics.json
+
+# Generated Word report (binary; regenerate from report/main.md via `pandoc main.md -o main.docx ...`)
+
+report/~$main.docx

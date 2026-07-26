@@ -4,7 +4,7 @@ Kế hoạch thực hiện đề tài **Phân tích cảm xúc theo khía cạnh
 
 > Cập nhật trạng thái bằng cách đổi `[ ]` → `[x]` khi hoàn thành từng việc, và cập nhật bảng tổng quan + dòng "Last updated" bên dưới.
 
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-26
 
 ## Tổng quan trạng thái
 
@@ -13,9 +13,9 @@ Kế hoạch thực hiện đề tài **Phân tích cảm xúc theo khía cạnh
 | 1 | Nghiên cứu nền tảng | 🟢 Hoàn thành |
 | 2 | Chốt Proposal | 🟢 Hoàn thành |
 | 3 | Data pipeline & baseline | 🟢 Hoàn thành |
-| 4 | Model cải tiến & report generation | 🟡 Đang làm |
-| 5 | Đánh giá & phân tích | 🔴 Chưa bắt đầu |
-| 6 | Deliverables | 🔴 Chưa bắt đầu |
+| 4 | Model cải tiến & report generation | 🟢 Hoàn thành |
+| 5 | Đánh giá & phân tích | 🟡 Đang làm (còn error analysis) |
+| 6 | Deliverables | 🟡 Đang làm (README.txt xong; báo cáo .md/.docx đang hoàn thiện, .tex/slides chưa) |
 
 Chú thích: 🔴 Chưa bắt đầu · 🟡 Đang làm · 🟢 Hoàn thành
 
@@ -162,9 +162,20 @@ Chi tiết: [`docs/Research-Notes.md`](../docs/Research-Notes.md)
 
   Notebook: `notebooks/aste_aspect_reasons_yelp_demo.ipynb` — lấy cột review text (cột thật trong file là `Review Text`, code tự dò case-insensitive nên chạy đúng không cần sửa), tách câu (model train trên câu đơn lẻ, review Yelp thường dài nhiều câu/đoạn), chạy t5-base, tổng hợp giống `aste_aspect_reasons_restaurant.ipynb` nhưng không có gold nên chỉ có bảng `predicted`. Đã chạy — không lỗi: `notebooks-output/aste_aspect_reasons_yelp_demo_output.ipynb`, kết quả `output/aspect_reasons_yelp_demo.json`.
 
-  **Kết quả**: 2000 review mẫu (seed=42) → 14285 câu (7.1 câu/review) → 14700 triplet → 1224 aspect (≥2 lượt nhắc). Mẫu Yelp lấy ngẫu nhiên rơi nhiều vào nhóm quán tráng miệng/bakery: top aspect `ice cream` (765 lượt, positive), `place` (633), `flavors` (237), `staff`/`service`/`donuts`/`pastries`/`bakery`/`cookies`/`macarons`... — kết quả hợp lý, đúng domain nhà hàng như kỳ vọng. Có 1 vài aspect noise đáng chú ý cho phần error analysis (vd `extract` — 196 lượt, nhiều khả năng model trích cụt từ "vanilla extract").
-- [ ] Đánh giá hiệu quả của factual checker. *(chờ nhóm Hoàng/Vinh/Hưng push phần checker)*
-- [ ] Error analysis, rút ra insight/khám phá mới.
+  **Kết quả**: 2000 review mẫu (seed=42) → 14285 câu (7.1 câu/review) → 14700 triplet → 1224 aspect (≥2 lượt nhắc). Mẫu Yelp lấy ngẫu nhiên rơi nhiều vào nhóm quán tráng miệng/bakery: top aspect `ice cream` (765 lượt, positive), `place` (633), `flavors` (237), `staff`/`service`/`donuts`/`pastries`/`bakery`/`cookies`/`macarons`... — kết quả hợp lý, đúng domain nhà hàng như kỳ vọng. Có 1 vài aspect noise đáng chú ý cho phần error analysis (vd `extract` — 196 lượt; xem kiểm chứng ở mục Error analysis bên dưới).
+- [x] Đánh giá hiệu quả của factual checker. *(merge từ branch `flan-t5-report-generation` của Hoàng/Vinh/Hưng, 26/07)*
+
+  **Pipeline hiện dùng (reason-aware, track Restaurant)**: input `output/aspect_reasons_restaurant.json` (mảng `predicted`), chọn 4 aspect theo `select_report_rows` (aspect nhắc nhiều nhất + 2 aspect tương phản theo tỉ lệ positive/negative + aspect "chia rẽ" nhất theo `|positive-negative|/total` nhỏ nhất), sinh 1 đoạn văn tự do (không ép template câu) bằng model `flan-t5-base` đã fine-tune trên chính bảng reason (`notebooks/finetune_flan_t5_reasoned_report_colab.ipynb` → `models/flan-t5-reasoned-report`). `check_reasoned_report` (`src/report/factual_checker.py`) tách câu/mệnh đề, gán mỗi đoạn cho đúng aspect (tránh nhầm substring, vd. `food` vs `Indian food`), rồi validate: (a) mọi số xuất hiện phải nằm trong tập số liệu cho phép (total/positive/negative/neutral hoặc số đếm reason) của đúng aspect đó, (b) phải có `total` count, (c) phải trích ít nhất 1 reason phrase thật sự thuộc về aspect đó (không mượn reason của aspect khác), (d) không được bỏ sót aspect nào trong 4 aspect đã chọn.
+
+  **Kết quả demo thật** (`output/flan_t5_reasoned_report.json`, chạy trên `aspect_reasons_restaurant.json`): report sinh ra so sánh `food` (827 lượt, positive, reason "great"), `indian food` (21/22 positive, reason "great"), `dessert` (16/26 negative, reason "not inspired"), `waiter` (24 positive/18 negative trên 42, reason "attentive"/"snobby") — **factual checker: 4/4 claim hợp lệ, `passed: true`, không có aspect thiếu hay số liệu không gán được nguồn**. Đây là một lượt chạy demo thật (chưa phải benchmark trên nhiều report), nhưng bộ 16 unit test trong `tests/test_report_generation.py` xác nhận checker bắt đúng từng loại lỗi cụ thể: số bịa (hallucinated number), thiếu aspect bắt buộc, reason mượn từ aspect khác, câu văn thừa không có nguồn số liệu (`unexpected_text`).
+
+  Pipeline cũ hơn (fixed-template, track Laptop, `output/aspect_stats.txt`) vẫn còn trong code làm mốc so sánh — model fine-tune (`flan-t5-small`) sinh đúng 4/4 claim (`output/flan_t5_finetuned_report.json`, `accepted: true`), còn bản zero-shot `google/flan-t5-base` không fine-tune thì sai (`output/flan_t5_natural_report.json`, `accepted: false` — nhầm `keyboard` thay vì `battery` cho vai trò "mối lo ngại lớn nhất", và lặp lại `keyboard` 2 lần) — một minh chứng rõ fine-tuning giúp model bám sát số liệu nguồn hơn hẳn so với chỉ prompt.
+
+- [x] Error analysis, rút ra insight/khám phá mới. Full nội dung ở `report/main.md` Mục 5.5, tóm tắt:
+  - 15/546 case majority-sentiment lệch giữa gold/predicted đều là aspect "sát nút" (số lượt positive/negative gần bằng nhau) — không có thiên lệch hệ thống.
+  - 73 aspect chỉ có trong gold (toàn tần suất thấp, ≤6 lượt — model bỏ sót aspect hiếm); trên các aspect phổ biến, tổng lượt predicted gần như luôn thấp hơn gold (`prices` -23, `place` -20, `food` -13) — khớp với Precision (0.7609) > Recall (0.7282) đã đo ở mức triplet.
+  - Aggregation theo chuỗi ký tự nguyên văn tách 1 aspect thành nhiều biến thể: gold `rice to fish ration` (lỗi chính tả gốc) vs. predicted `rice to fish ratio` (đúng chính tả) bị tính là 2 aspect khác nhau; số ít/nhiều cũng bị tách (`donuts` 189 lượt vs `donut` 68 lượt trong demo Yelp) — hạn chế của bước tổng hợp (không lemmatize), không phải lỗi model ASTE.
+  - **Đính chính giả thuyết cũ**: `extract` (196 lượt trong demo Yelp) **không phải** bị cắt cụt từ "vanilla extract" như suy đoán ban đầu — kiểm tra reason phrase thật (`good`, `worth`, `try`, `best`, và vài phrase vô nghĩa như `4.`, `huh`) cho thấy đây là model bị nhầm lẫn trên câu ngắn/rời rạc sau khi tách câu, không liên quan tới "vanilla extract".
 
 ## Tuần 6 — Deliverables
 

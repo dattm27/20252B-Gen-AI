@@ -294,8 +294,11 @@ a bigger demo.
 triplets → 1224 aspects with ≥2 mentions. The sample skewed toward dessert/bakery shops: top
 aspects `ice cream` (765 mentions, positive), `place` (633), `flavors` (237), plus
 `staff`/`service`/`donuts`/`pastries`/`bakery`/`cookies`/`macarons` — plausible, on-domain
-results. Some extraction noise is visible too (e.g. `extract`, 196 mentions — likely a truncated
-"vanilla extract"), worth flagging in error analysis. Executed notebook:
+results. Some extraction noise is visible too (e.g. `extract`, 196 mentions — checked its reason phrases
+in error analysis; they're generic/incoherent (`good`, `worth`, `try`, `4.`, `huh`), not
+consistently about "vanilla extract" as first guessed — more likely the model latching onto a
+stray token on short/fragmentary sentences after sentence-splitting). Full error analysis:
+`report/main.md` §5.5 / `plans/project-plan.md` Tuần 5. Executed notebook:
 [`notebooks-output/aste_aspect_reasons_yelp_demo_output.ipynb`](notebooks-output/aste_aspect_reasons_yelp_demo_output.ipynb);
 full table: [`output/aspect_reasons_yelp_demo.json`](output/aspect_reasons_yelp_demo.json).
 
