@@ -382,7 +382,7 @@ review):
 \label{sec:methods}
 % =====================================================================
 
-\subsection{Baseline tra cứu tần suất -- AsteLookupBaseline}
+\subsection{Hai baseline so sánh: AsteLookupBaseline và GTS-BERT}
 
 ASTE không có một baseline TF-IDF/Logistic-Regression tương đương (bài toán
 cần tự tìm aspect, không phải phân loại khi đã biết trước) -- nhóm xây một
@@ -411,6 +411,50 @@ opinion nào khác với những gì đã thấy trong tập train đều bị b
 toàn -- đây chính là ``sàn'' để đo mức độ cải thiện thực sự của một model
 biết tổng quát hoá. Cài đặt: \texttt{src/baseline/aste\_lookup\_baseline.py},
 chạy hoàn toàn local (không cần GPU) qua \texttt{scripts/eval\_aste\_baseline.py}.
+
+\textbf{Baseline neural thứ hai -- GTS-BERT.} AsteLookupBaseline là sàn
+phi-neural; để có thêm một mốc so sánh \emph{neural nhưng không
+generative} (khác hẳn cách tiếp cận T5), nhóm cài đặt lại Grid Tagging
+Scheme (GTS, Wu et al., Findings of EMNLP 2020)~\cite{gts}: với câu có $n$
+từ, gán nhãn cho mọi cặp từ $(w_i, w_j)$, $i \leq j$, một trong 6 nhãn
+$\{$\texttt{N}, \texttt{A}, \texttt{O}, \texttt{POS}, \texttt{NEU},
+\texttt{NEG}$\}$ -- \texttt{A}/\texttt{O} đánh dấu hai từ cùng thuộc một
+aspect/opinion span, \texttt{POS}/\texttt{NEU}/\texttt{NEG} đánh dấu một
+từ thuộc aspect, từ kia thuộc opinion, và cặp đó mang sentiment tương
+ứng. BERT-base-uncased encode câu, một MLP phân loại mọi cặp token thành
+lưới $n \times n$; bộ ba được giải mã lại bằng cách đọc các đoạn liên tục
+cùng nhãn trên đường chéo (aspect/opinion span), rồi biểu quyết đa số nhãn
+sentiment giữa các ô nối mỗi cặp span. Đây là bản cài đặt lại độc lập dựa
+theo mô tả trong bài báo (không phải code gốc của tác giả) -- cách xây
+biểu diễn cặp $r_{ij}$ cụ thể (\texttt{concat}$(h_i, h_j, h_i \odot h_j)$
+qua MLP) là lựa chọn của nhóm vì bài báo không mô tả đủ chi tiết công thức
+attention layer của họ. Hyperparameter: 20 epoch, lr=2e-5 (mức chuẩn để
+fine-tune toàn bộ BERT, khác hẳn lr=3e-4 dùng cho T5 -- không dùng chung
+vì hai kiến trúc cần tốc độ học khác nhau), batch size 16.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+\node[iobox] (in) at (0,0) {Câu test\\\texttt{"food was}\\\texttt{great"}};
+\node[ioproc] (bert) at (3.6,0) {BERT + MLP\\phân loại cặp\\token};
+\node[iobox] (grid) at (7.2,0) {Lưới $n\times n$\\nhãn N/A/O/\\POS/NEU/NEG};
+\node[ioproc] (decode) at (10.8,0) {Giải mã span +\\biểu quyết đa số};
+\node[iobox] (out) at (10.8,-2.2) {Output\\\texttt{(food, great,}\\\texttt{positive)}};
+\draw[ioarr] (in) -- (bert);
+\draw[ioarr] (bert) -- (grid);
+\draw[ioarr] (grid) -- (decode);
+\draw[ioarr] (decode) -- (out);
+\end{tikzpicture}
+\caption{Luồng input/output của GTS-BERT: khác AsteLookupBaseline (tra
+cứu) và khác T5 (sinh văn bản) -- đây là một bài toán phân loại có giám
+sát trên mọi cặp token trong câu.}
+\end{figure}
+
+Cài đặt: \texttt{src/data/gts\_grid.py} (logic xây/giải mã lưới, có test
+local -- \texttt{tests/test\_gts\_grid.py}, 10 test bao gồm một test tái
+hiện đúng ví dụ minh hoạ trong bài báo gốc) và
+\texttt{src/baseline/gts\_bert\_model.py} (model, cần GPU); train trên
+Kaggle qua \texttt{notebooks/train-gts-bert-for-aste-on-14res-15res-16res.ipynb}.
 
 \subsection{T5-small / T5-base / FLAN-T5-base fine-tuned cho ASTE}
 
@@ -617,9 +661,19 @@ từng lỗi (dùng để sinh lại report nếu fail, Mục~4.4).}
         reason) thì bị gắn cờ \texttt{reasons belong to another aspect}.
 \end{enumerate}
 
-Báo cáo chỉ được coi là \texttt{passed: true} khi cả 4 aspect bắt buộc đều
-xuất hiện, mọi mệnh đề hợp lệ, và không còn con số nào ``trôi nổi'' không
-gán được nguồn (\texttt{unattributed\_numbers}).
+\textbf{Tách riêng ``đúng sự thật'' và ``đủ nội dung''.} Checker trả về
+hai cờ độc lập: \texttt{factual\_passed} (mọi con số/reason \emph{đã được
+nhắc tới} trong report có khớp nguồn hay không -- tiêu chí về
+\emph{hallucination}) và \texttt{coverage\_passed} (cả 4 aspect bắt buộc
+có được nhắc tới hay không -- tiêu chí về \emph{độ đầy đủ}). Lý do tách
+riêng: một report bỏ sót 1 trong 4 aspect nhưng mọi con số đã nói ra đều
+đúng vẫn an toàn hơn nhiều so với một report bịa số liệu -- gộp chung hai
+tiêu chí này vào một cờ \texttt{passed} duy nhất sẽ đối xử với hai loại
+lỗi có mức độ nghiêm trọng rất khác nhau như nhau. Checker có 2 chế độ:
+\texttt{factual-only} (mặc định) chỉ yêu cầu \texttt{factual\_passed} để
+\texttt{passed: true}, hạ thiếu/lặp aspect xuống thành cảnh báo
+(\texttt{coverage\_warnings}) thay vì lỗi chặn; chế độ \texttt{strict}
+yêu cầu cả hai cờ đều true.
 
 \subsection{Triển khai}
 
@@ -678,7 +732,7 @@ output/, results/     ket qua / metrics da ghi lai, dung lam so lieu bao cao
 \section{Kết quả và đánh giá}
 % =====================================================================
 
-\subsection{So sánh baseline vs 3 model T5}
+\subsection{So sánh 2 baseline vs 3 model T5}
 
 \begin{table}[h]
 \centering
@@ -687,6 +741,7 @@ output/, results/     ket qua / metrics da ghi lai, dung lam so lieu bao cao
 Model & Triplet-F1 & Precision & Recall \\
 \midrule
 AsteLookupBaseline (phi-neural) & 0.3736 & 0.3222 & 0.4446 \\
+GTS-BERT (neural, không generative) & 0.6920 & 0.7088 & 0.6760 \\
 T5-small & 0.7240 & 0.7238 & 0.7243 \\
 \textbf{T5-base} & \textbf{0.7442} & 0.7609 & 0.7282 \\
 FLAN-T5-base & 0.5898 & 0.5910 & 0.5887 \\
@@ -739,10 +794,17 @@ phát hiện ở Mục~\ref{sec:findings}: vấn đề là cần nhiều epoch h
 \end{figure}
 
 T5-base cải thiện gần gấp đôi triplet-F1 so với baseline tra cứu
-(0.3736 $\to$ 0.7442) và được chọn làm model chính. Hình~\ref{fig:triplet-f1-curves}
+(0.3736 $\to$ 0.7442) và được chọn làm model chính. GTS-BERT -- baseline
+neural nhưng không generative -- đạt 0.6920, cao hơn hẳn baseline tra cứu
+và thậm chí cao hơn FLAN-T5-base, nhưng vẫn thấp hơn cả T5-small lẫn
+T5-base. Điều này cho thấy bản thân việc dùng neural network/BERT không
+phải là yếu tố quyết định khoảng cách hiệu năng -- cách đóng khung bài
+toán (T5 sinh trực tiếp bộ ba dạng text-to-text, so với GTS-BERT phải
+phân loại lưới $n \times n$ rồi giải mã span) mới là khác biệt chính giúp
+hướng generative vượt trội hơn trên tác vụ này. Hình~\ref{fig:triplet-f1-curves}
 cho thấy rõ lý do FLAN-T5-base thua kém: không phải nó ``kém hơn'' về bản
-chất mà đơn giản là chưa hội tụ trong ngân sách 20 epoch đã cấp cho cả 4
-lần chạy. Xem Mục~\ref{sec:findings} để phân tích sâu hơn.
+chất mà đơn giản là chưa hội tụ trong ngân sách 20 epoch đã cấp. Xem
+Mục~\ref{sec:findings} để phân tích sâu hơn.
 
 \subsection{Chất lượng bảng tổng hợp aspect + lý do}
 
@@ -771,23 +833,44 @@ aspect \texttt{ice cream} (765 lượt, positive), \texttt{place} (633),
 
 \subsection{Đánh giá factual checker}
 
-Trên lượt chạy demo thật (bảng \texttt{predicted} của
-\texttt{output/aspect\_reasons\_restaurant.json}, model FLAN-T5-base đã
-fine-tune trên định dạng reason), báo cáo sinh ra so sánh 4 aspect
-\texttt{food}/\texttt{indian food}/\texttt{dessert}/\texttt{waiter}, và
-\textbf{factual checker chấp nhận toàn bộ 4/4 claim (\texttt{passed: true})}
--- không có aspect thiếu, không có số liệu ``trôi nổi'' không rõ nguồn.
-Đây là một lượt chạy demo minh hoạ (chưa phải một benchmark định lượng
-trên hàng trăm report), do khối lượng biên dịch báo cáo còn hạn chế trong
-thời gian làm đồ án.
+\textbf{Demo trên track nhà hàng (có nhãn).} Trên lượt chạy thật (bảng
+\texttt{predicted} của \texttt{output/aspect\_reasons\_restaurant.json},
+model FLAN-T5-base đã fine-tune trên định dạng reason), báo cáo sinh ra
+so sánh 4 aspect \texttt{food}/\texttt{indian food}/\texttt{dessert}/
+\texttt{waiter}: \textbf{factual\_passed = true} (4/4 claim khớp nguồn,
+không số liệu bịa), \textbf{coverage\_passed = true} (đủ cả 4 aspect) --
+nhưng checker vẫn gắn cờ cảnh báo \texttt{repeated\_aspects: [dessert,
+indian food]} vì report nhắc lại hai aspect này ở cả câu mở đầu lẫn câu
+riêng, một chi tiết vô hại (không sai số liệu) nhưng checker vẫn phát
+hiện đúng.
 
-Để bù lại, checker được kiểm chứng ở mức đơn vị khá kỹ: 16 test case
-trong \texttt{tests/test\_report\_generation.py} phủ các tình huống lỗi
-cụ thể -- số liệu bịa (\emph{hallucinated number}), thiếu một aspect bắt
-buộc, reason bị ``mượn'' từ một aspect khác, câu văn thừa không có căn cứ
-số liệu. Một ví dụ đối chứng rõ ràng: cùng một bảng thống kê track laptop
-thăm dò ban đầu (\texttt{output/aspect\_stats.txt}), bản \textbf{chưa
-fine-tune} (\texttt{google/flan-t5-base} zero-shot,
+\textbf{Demo trên track Yelp (quy mô lớn, không nhãn).} Chạy tiếp trên
+bảng \texttt{predicted} của \texttt{output/aspect\_reasons\_yelp\_demo.json}
+(Mục~5.3), báo cáo chọn 4 aspect \texttt{ice cream}/\texttt{atmosphere}/
+\texttt{parking}/\texttt{line}, nhưng đoạn văn sinh ra chỉ thực sự nhắc
+tới 3/4 aspect (bỏ sót \texttt{line}) và nhắc lại \texttt{parking} hai
+lần. Kết quả: \textbf{factual\_passed = true} (toàn bộ 3 claim thực sự
+được đưa ra đều khớp nguồn -- 765/621 cho \texttt{ice cream}, 64/66 cho
+\texttt{atmosphere}, bộ số của \texttt{parking} cả hai lần nhắc), nhưng
+\textbf{coverage\_passed = false} (thiếu \texttt{line}, lặp
+\texttt{parking}). Ở chế độ mặc định \texttt{factual-only},
+\texttt{passed: true} với \texttt{status: accepted\_with\_warnings} --
+đúng tinh thần thiết kế: model không bịa gì cả (an toàn), chỉ chưa nói
+hết những gì được yêu cầu (một hạn chế nhẹ hơn nhiều so với hallucination).
+Đây cũng là ví dụ đầu tiên chạy full pipeline (ASTE $\to$ tổng hợp $\to$
+sinh báo cáo $\to$ factual check) trên chính dữ liệu demo quy mô lớn,
+thay vì chỉ dừng ở bảng thống kê (Mục~5.3).
+
+Để bù lại cho việc chưa có benchmark định lượng trên hàng trăm report,
+checker được kiểm chứng ở mức đơn vị khá kỹ: 17 test case trong
+\texttt{tests/test\_report\_generation.py} phủ các tình huống lỗi cụ thể
+-- số liệu bịa (\emph{hallucinated number}), thiếu/lặp aspect, reason bị
+``mượn'' từ một aspect khác, câu văn thừa không có căn cứ số liệu, và một
+test riêng xác nhận đúng hành vi tách \texttt{factual\_passed} khỏi
+\texttt{coverage\_passed} vừa mô tả ở trên. Một ví dụ đối chứng rõ ràng
+khác: cùng một bảng thống kê track laptop thăm dò ban đầu
+(\texttt{output/aspect\_stats.txt}), bản \textbf{chưa fine-tune}
+(\texttt{google/flan-t5-base} zero-shot,
 \texttt{output/flan\_t5\_natural\_report.json}) bị checker từ chối
 (\texttt{accepted: false}) vì gán nhầm vai trò ``mối lo ngại lớn nhất''
 cho \texttt{keyboard} thay vì \texttt{battery} và lặp \texttt{keyboard}
@@ -926,13 +1009,20 @@ một token gần giống định dạng huấn luyện.
         97.25\% đo trên dữ liệu có nhãn cùng domain (SemEval Restaurant),
         không phải đo trực tiếp trên chính dữ liệu Yelp.
     \item \textbf{Factual checker mới kiểm chứng ở quy mô demo}: kết quả
-        4/4 claim hợp lệ (Mục~5.4) đến từ một lượt chạy minh hoạ, chưa
-        phải benchmark định lượng trên hàng trăm report -- cần chạy trên
-        nhiều mẫu hơn để có số liệu \% đáng tin cậy hơn (xem đề xuất ở
-        Mục~\ref{sec:conclusion}). Checker cũng vẫn là rule-based: dựa
-        vào việc gán mệnh đề cho aspect bằng khớp cụm từ, nên có thể
-        nhầm lẫn với các câu văn phức tạp hơn (nhiều aspect lồng nhau,
-        câu dài nhiều mệnh đề phụ) so với các ví dụ demo hiện tại.
+        ở Mục~5.4 đến từ 2 lượt chạy minh hoạ (nhà hàng có nhãn + Yelp
+        quy mô lớn), chưa phải benchmark định lượng trên hàng trăm report
+        -- cần chạy trên nhiều mẫu hơn để có số liệu \% đáng tin cậy hơn
+        (xem đề xuất ở Mục~\ref{sec:conclusion}). Checker cũng vẫn là
+        rule-based: dựa vào việc gán mệnh đề cho aspect bằng khớp cụm từ,
+        nên có thể nhầm lẫn với các câu văn phức tạp hơn (nhiều aspect
+        lồng nhau, câu dài nhiều mệnh đề phụ) so với các ví dụ demo hiện
+        tại. Ranh giới \texttt{factual\_passed}/\texttt{coverage\_passed}
+        cũng là một lựa chọn thiết kế có thể tranh luận: coi thiếu aspect
+        là cảnh báo thay vì lỗi chặn (chế độ mặc định \texttt{factual-only})
+        đánh đổi độ đầy đủ của report lấy sự khoan dung hơn với model --
+        phù hợp với mục tiêu ưu tiên chống hallucination, nhưng nghĩa là
+        \texttt{passed: true} không còn đảm bảo report nói hết mọi điều
+        đã chọn.
     \item \textbf{Bước tổng hợp gom nhóm theo chuỗi ký tự nguyên văn,
         không chuẩn hoá hình thái} (phát hiện ở error analysis,
         Mục~\ref{sec:erroranalysis}): các biến thể chính tả/số ít-số
@@ -1003,11 +1093,11 @@ vựng giới hạn.
 \toprule
 Việc & Thành viên \\
 \midrule
-Data pipeline + baseline (Tuần 3) & Đạt \\
-Fine-tune BERT/T5 + tổng hợp thống kê (Tuần 4) & Đạt, Sơn \\
-FLAN-T5 sinh report + factual checker (Tuần 4) & Hoàng, Vinh, Hưng \\
-Đánh giá \& phân tích (Tuần 5) & \todo{phân công} \\
-Viết báo cáo + slides (Tuần 6) & \todo{phân công} \\
+Data pipeline + baseline  & Đạt \\
+Fine-tune BERT/T5 + tổng hợp thống kê  & Đạt, Sơn \\
+FLAN-T5 sinh report + factual checker  & Hoàng, Vinh, Hưng \\
+Đánh giá \& phân tích  & Đạt, Hoàng \\
+Viết báo cáo + slides  & Đạt, Hoàng, Sơn \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1106,6 +1196,8 @@ Kết quả factual checker: \texttt{passed: true}, \texttt{claims\_checked:
 \bibitem{t5totto} Kale, M., \& Rastogi, A. (2020). \emph{Text-to-Text Pre-Training for Data-to-Text Tasks}. INLG 2020. \url{https://aclanthology.org/2020.inlg-1.14.pdf}
 
 \bibitem{factcc} Kryscinski, W., McCann, B., Xiong, C., \& Socher, R. (2020). \emph{Evaluating the Factual Consistency of Abstractive Text Summarization} (FactCC).
+
+\bibitem{gts} Wu, Z., Ying, C., Zhao, F., Fan, Z., Dai, X., \& Xia, R. (2020). \emph{Grid Tagging Scheme for Aspect-oriented Fine-grained Opinion Extraction}. Findings of ACL: EMNLP 2020. \url{https://aclanthology.org/2020.findings-emnlp.234/}
 
 \bibitem{consistency2024} \emph{Consistency Is the Key: Improving Factuality via Consistency-based Checking}. arXiv:2511.12236.
 
