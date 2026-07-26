@@ -120,9 +120,13 @@ Chi tiết: [`docs/Research-Notes.md`](../docs/Research-Notes.md)
 
   Đang thử lại flan-t5-base với `lr=1e-4` (giảm 10 lần, vẫn là giá trị cố định, không thêm warmup/schedule) để kiểm chứng — notebook: `notebooks/train-flan-t5-base-for-aste-on-14res-15res-16res.ipynb`. Không chặn các bước tiếp theo (đã chốt t5-base), chỉ để có kết luận chắc chắn hơn cho báo cáo.
 
-  **Còn thiếu**:
-  - Kết quả retry flan-t5-base (lr=1e-4).
-  - Tích hợp output triplet (đặc biệt field `opinion` làm "reason") vào bước tổng hợp thống kê + sinh báo cáo bên dưới — hiện `output/aspect_stats_bert.txt` (từ BERT, chỉ có aspect+sentiment, không có reason) vẫn là input duy nhất cho báo cáo.
+  **Aspect + top-10-reasons bằng t5-base — hoàn tất.** Ban đầu định chạy 100% local (để nối thẳng vào report generation, không qua Kaggle) nhưng t5-base beam-search trên CPU ước tính mất ~3-3.5 tiếng cho 4550 câu → chuyển hẳn inference sang Kaggle GPU (`notebooks/aste_aspect_reasons_restaurant.ipynb`), giữ nguyên logic parse ASTE + tổng hợp thuần Python (`src/data/aste_loader.py`, `src/report/aspect_stats.py::aggregate_aspect_reasons`) có test local, inline vào notebook để chạy GPU — đã verify code inline khớp 100% với bản đã test.
+
+  Kết quả: `output/aspect_reasons_restaurant.json` — 4550 câu (train+dev+test, 3 domain), 619 aspect gold / 585 aspect predicted (≥2 lượt nhắc). **Majority-sentiment agreement: 531/546 = 97.25%** — cao hơn hẳn track BERT/Laptop (90-93%), vì model sinh trực tiếp cả 3 field cùng lúc thay vì phải suy luận sentiment cho aspect đã biết trước.
+
+  Mỗi aspect giờ có đủ count + top-10 reason cho từng sentiment, ví dụ `food` (827 lượt, positive): reasons `great`(109), `good`(100), `delicious`(39)...; negative: `mediocre`(10), `bad`(7), `overpriced`(5)... — sẵn sàng bàn giao `output/aspect_reasons_restaurant.json` (mảng `predicted`) cho bước FLAN-T5 report generation, thay thế/bổ sung cho `output/aspect_stats_bert.txt` (track Laptop, không có reason).
+
+  **Còn thiếu**: kết quả retry flan-t5-base (lr=1e-4) — không chặn gì, chỉ để có kết luận chắc chắn hơn cho báo cáo.
 - [ ] Dùng FLAN-T5 sinh báo cáo ngắn từ bảng thống kê.
 - [ ] Xây factual checker đơn giản đối chiếu số liệu trong report với thống kê gốc.
 
