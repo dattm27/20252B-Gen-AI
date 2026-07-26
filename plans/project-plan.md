@@ -4,7 +4,7 @@ Kế hoạch thực hiện đề tài **Phân tích cảm xúc theo khía cạnh
 
 > Cập nhật trạng thái bằng cách đổi `[ ]` → `[x]` khi hoàn thành từng việc, và cập nhật bảng tổng quan + dòng "Last updated" bên dưới.
 
-**Last updated:** 2026-07-19
+**Last updated:** 2026-07-22
 
 ## Tổng quan trạng thái
 
@@ -13,7 +13,7 @@ Kế hoạch thực hiện đề tài **Phân tích cảm xúc theo khía cạnh
 | 1 | Nghiên cứu nền tảng | 🟢 Hoàn thành |
 | 2 | Chốt Proposal | 🟢 Hoàn thành |
 | 3 | Data pipeline & baseline | 🟢 Hoàn thành |
-| 4 | Model cải tiến & report generation | 🔴 Chưa bắt đầu |
+| 4 | Model cải tiến & report generation | 🟡 Đang làm |
 | 5 | Đánh giá & phân tích | 🔴 Chưa bắt đầu |
 | 6 | Deliverables | 🔴 Chưa bắt đầu |
 
@@ -127,8 +127,8 @@ Chi tiết: [`docs/Research-Notes.md`](../docs/Research-Notes.md)
 
   Mỗi aspect giờ có đủ count + top-10 reason cho từng sentiment, ví dụ `food` (827 lượt, positive): reasons `great`(109), `good`(100), `delicious`(39)...; negative: `mediocre`(10), `bad`(7), `overpriced`(5)... — sẵn sàng bàn giao `output/aspect_reasons_restaurant.json` (mảng `predicted`) cho bước FLAN-T5 report generation, thay thế/bổ sung cho `output/aspect_stats_bert.txt` (track Laptop, không có reason).
 
-- [ ] Dùng FLAN-T5 sinh báo cáo ngắn từ bảng thống kê.
-- [ ] Xây factual checker đơn giản đối chiếu số liệu trong report với thống kê gốc.
+- [x] Dùng FLAN-T5 sinh báo cáo ngắn từ bảng thống kê. Bắt đầu với track Laptop (`output/aspect_stats.txt`, fixed-template, notebook Colab `notebooks/finetune_flan_t5_report_colab.ipynb`; model sinh đúng 4/4 claim cho `screen`/`price`/`battery`/`keyboard`, kết quả tại `output/flan_t5_finetuned_report.json` có `accepted: true`), sau đó chuyển sang bảng reason-aware track Restaurant (`output/aspect_reasons_restaurant.json`, mảng `predicted`, notebook Colab `notebooks/finetune_flan_t5_reasoned_report_colab.ipynb`) — kết quả `output/flan_t5_reasoned_report.json`, `output/flan_t5_natural_report.json`. Pipeline restaurant/reason-aware là bản hiện dùng cho báo cáo (single-track ASTE).
+- [x] Xây factual checker đơn giản đối chiếu số liệu trong report với thống kê gốc (`src/report/factual_checker.py`, `src/report/flan_t5_report.py`, `src/report/stats_io.py`; CLI `scripts/generate_report.py`; test trong `tests/test_report_generation.py`).
 
 ## Tuần 5 — Đánh giá & phân tích
 

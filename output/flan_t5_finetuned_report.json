@@ -1,0 +1,175 @@
+{
+  "report": "screen: 60 mentions (32 positive, 24 negative, 4 neutral). price: 56 mentions (49 positive, 4 negative, 3 neutral). battery: 47 mentions (9 positive, 34 negative, 4 neutral). keyboard: 50 mentions (25 positive, 20 negative, 5 neutral).",
+  "factual_check": {
+    "passed": true,
+    "claims_checked": 4,
+    "valid_claims": 4,
+    "unparsed_numeric_tokens": 0,
+    "missing_aspects": [],
+    "duplicate_aspects": [],
+    "unexpected_text": "",
+    "checks": [
+      {
+        "aspect": "screen",
+        "claimed": {
+          "total": 60,
+          "positive": 32,
+          "negative": 24,
+          "neutral": 4
+        },
+        "expected": {
+          "total": 60,
+          "positive": 32,
+          "negative": 24,
+          "neutral": 4
+        },
+        "valid": true,
+        "errors": []
+      },
+      {
+        "aspect": "price",
+        "claimed": {
+          "total": 56,
+          "positive": 49,
+          "negative": 4,
+          "neutral": 3
+        },
+        "expected": {
+          "total": 56,
+          "positive": 49,
+          "negative": 4,
+          "neutral": 3
+        },
+        "valid": true,
+        "errors": []
+      },
+      {
+        "aspect": "battery",
+        "claimed": {
+          "total": 47,
+          "positive": 9,
+          "negative": 34,
+          "neutral": 4
+        },
+        "expected": {
+          "total": 47,
+          "positive": 9,
+          "negative": 34,
+          "neutral": 4
+        },
+        "valid": true,
+        "errors": []
+      },
+      {
+        "aspect": "keyboard",
+        "claimed": {
+          "total": 50,
+          "positive": 25,
+          "negative": 20,
+          "neutral": 5
+        },
+        "expected": {
+          "total": 50,
+          "positive": 25,
+          "negative": 20,
+          "neutral": 5
+        },
+        "valid": true,
+        "errors": []
+      }
+    ]
+  },
+  "accepted": true,
+  "selected_aspects": [
+    "screen",
+    "price",
+    "battery",
+    "keyboard"
+  ],
+  "generation_attempts": 1,
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "report": "screen: 60 mentions (32 positive, 24 negative, 4 neutral). price: 56 mentions (49 positive, 4 negative, 3 neutral). battery: 47 mentions (9 positive, 34 negative, 4 neutral). keyboard: 50 mentions (25 positive, 20 negative, 5 neutral).",
+      "factual_check": {
+        "passed": true,
+        "claims_checked": 4,
+        "valid_claims": 4,
+        "unparsed_numeric_tokens": 0,
+        "missing_aspects": [],
+        "duplicate_aspects": [],
+        "unexpected_text": "",
+        "checks": [
+          {
+            "aspect": "screen",
+            "claimed": {
+              "total": 60,
+              "positive": 32,
+              "negative": 24,
+              "neutral": 4
+            },
+            "expected": {
+              "total": 60,
+              "positive": 32,
+              "negative": 24,
+              "neutral": 4
+            },
+            "valid": true,
+            "errors": []
+          },
+          {
+            "aspect": "price",
+            "claimed": {
+              "total": 56,
+              "positive": 49,
+              "negative": 4,
+              "neutral": 3
+            },
+            "expected": {
+              "total": 56,
+              "positive": 49,
+              "negative": 4,
+              "neutral": 3
+            },
+            "valid": true,
+            "errors": []
+          },
+          {
+            "aspect": "battery",
+            "claimed": {
+              "total": 47,
+              "positive": 9,
+              "negative": 34,
+              "neutral": 4
+            },
+            "expected": {
+              "total": 47,
+              "positive": 9,
+              "negative": 34,
+              "neutral": 4
+            },
+            "valid": true,
+            "errors": []
+          },
+          {
+            "aspect": "keyboard",
+            "claimed": {
+              "total": 50,
+              "positive": 25,
+              "negative": 20,
+              "neutral": 5
+            },
+            "expected": {
+              "total": 50,
+              "positive": 25,
+              "negative": 20,
+              "neutral": 5
+            },
+            "valid": true,
+            "errors": []
+          }
+        ]
+      }
+    }
+  ]
+}
