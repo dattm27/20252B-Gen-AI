@@ -43,10 +43,16 @@ See [`docs/Proposal.md`](docs/Proposal.md) for the full proposal, [`docs/Require
 │   ├── baseline_semeval_laptop_kaggle_run.ipynb   # Executed baseline, with real results
 │   ├── finetune_distilbert_semeval_laptop.ipynb   # Fine-tune DistilBERT (Kaggle-ready)
 │   ├── finetune_bert_semeval_laptop.ipynb         # Fine-tune BERT-base (Kaggle-ready)
-│   └── aspect_stats_semeval_laptop.ipynb          # Runs the fine-tuned model + aggregates per-aspect stats
+│   ├── aspect_stats_semeval_laptop.ipynb          # Runs the fine-tuned model + aggregates per-aspect stats
+│   ├── train-t5-small-for-aste-on-14res-15res-16res.ipynb      # ASTE: fine-tune t5-small (Kaggle-ready)
+│   ├── train-t5-base-for-aste-on-14res-15res-16res.ipynb       # ASTE: fine-tune t5-base (Kaggle-ready)
+│   └── train-flan-t5-base-for-aste-on-14res-15res-16res.ipynb  # ASTE: fine-tune flan-t5-base (Kaggle-ready)
 ├── notebooks-output/              # Executed copies of the notebooks above, with real Kaggle results
 │   ├── finetune_distilbert_semeval_laptop_output.ipynb
-│   └── aspect_stats_semeval_laptop_output.ipynb
+│   ├── aspect_stats_semeval_laptop_output.ipynb
+│   ├── train-t5-small-for-aste-on-14res-15res-16res-output.ipynb
+│   ├── train-t5-base-for-aste-on-14res-15res-16res-output.ipynb
+│   └── train-flan-t5-base-for-aste-on-14res-15res-16r-output.ipynb
 ├── tests/
 │   ├── fixtures/sample_laptop.xml  # Hand-built fixture matching the official XML schema
 │   ├── test_semeval_loader.py
@@ -170,6 +176,43 @@ between the gold and predicted tables:
 
 `output/aspect_stats_bert.txt` is the official table handed off to report generation — the
 DistilBERT run is kept only for comparison.
+
+## Aspect Sentiment Triplet Extraction (ASTE)
+
+A parallel, additive track (not a replacement for the DistilBERT/BERT classification track
+above): a T5-family seq2seq model reads a raw sentence and directly generates
+`aspect: X | opinion: Y | sentiment: Z` triplets — no gold aspect term needed, and the `opinion`
+span doubles as a **reason/rationale** the report-generation step can quote (e.g. "service is
+*poor*"), instead of a bare aspect+sentiment count.
+
+- Dataset: [SemEval Triplet data](https://github.com/xuuuluuu/SemEval-Triplet-data), **restaurant
+  domain** (14res/15res/16res) — different domain from the Laptop data used above.
+- Notebooks self-locate the dataset: first checks `semi-triple-{14,15,16}res` Kaggle inputs, falls
+  back to cloning the GitHub repo if not found (enable internet + GPU on Kaggle).
+- Three models compared under identical hyperparameters (20 epochs, lr=3e-4, effective batch 16)
+  so only the checkpoint changes:
+  [`notebooks/train-t5-small-for-aste-on-14res-15res-16res.ipynb`](notebooks/train-t5-small-for-aste-on-14res-15res-16res.ipynb),
+  [`notebooks/train-t5-base-for-aste-on-14res-15res-16res.ipynb`](notebooks/train-t5-base-for-aste-on-14res-15res-16res.ipynb),
+  [`notebooks/train-flan-t5-base-for-aste-on-14res-15res-16res.ipynb`](notebooks/train-flan-t5-base-for-aste-on-14res-15res-16res.ipynb).
+
+**Current results** (test split, triplet-level F1 = set overlap of predicted vs gold
+`(aspect, opinion, sentiment)` triples):
+
+| Model | Test triplet-F1 | Test P / R | Test exact match | Executed notebook |
+|---|---|---|---|---|
+| t5-small | 0.7240 | 0.7238 / 0.7243 | 0.6358 | [`notebooks-output/train-t5-small-for-aste-on-14res-15res-16res-output.ipynb`](notebooks-output/train-t5-small-for-aste-on-14res-15res-16res-output.ipynb) |
+| **t5-base** | **0.7442** | 0.7609 / 0.7282 | **0.6481** | [`notebooks-output/train-t5-base-for-aste-on-14res-15res-16res-output.ipynb`](notebooks-output/train-t5-base-for-aste-on-14res-15res-16res-output.ipynb) |
+| flan-t5-base | 0.5898 | 0.5910 / 0.5887 | 0.4877 | [`notebooks-output/train-flan-t5-base-for-aste-on-14res-15res-16r-output.ipynb`](notebooks-output/train-flan-t5-base-for-aste-on-14res-15res-16r-output.ipynb) |
+
+**t5-base wins on every metric — it's the chosen model** for this track going forward.
+flan-t5-base's low score is very likely a **learning-rate artifact, not a capability gap** — its
+training loss starts at ~22 (vs. a stable start for the other two) and never fully recovers in 20
+epochs, the classic sign that lr=3e-4 (fine for vanilla T5) is too aggressive for an already
+instruction-tuned checkpoint.
+[`notebooks/train-flan-t5-base-for-aste-on-14res-15res-16res.ipynb`](notebooks/train-flan-t5-base-for-aste-on-14res-15res-16res.ipynb)
+now retries at `lr=1e-4` (10x lower, still fixed — no schedule/warmup added) with everything else
+unchanged, to confirm before ruling it out. This doesn't block downstream work, which proceeds
+with t5-base.
 
 ## Tests
 

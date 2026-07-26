@@ -106,6 +106,23 @@ Chi tiết: [`docs/Research-Notes.md`](../docs/Research-Notes.md)
   - Top aspect theo số lượt nhắc (ổn định ở cả 2 lần chạy): `screen` (60, positive), `price` (56, positive), `use` (53, positive), `battery life` (52, positive), `keyboard` (50, positive), `battery` (47, **negative**), `warranty` (31, **neutral**), `hard drive`/`windows` (negative).
   - Lưu ý: per-example agreement in trong notebook (0.9421 với BERT, 0.8617 với DistilBERT) đo trên union train+valid+test nên **cao hơn ảo** so với accuracy thật của model (đo trên test set riêng: BERT 0.7627, DistilBERT 0.7447) — không dùng số này để so sánh/báo cáo hiệu năng model, chỉ dùng để sanity-check bước tổng hợp.
   - Bàn giao `output/aspect_stats_bert.txt` (mảng `predicted`) cho bước FLAN-T5 report generation bên dưới.
+- [x] **[Pivot bổ sung] Aspect Sentiment Triplet Extraction (ASTE) bằng T5** — theo yêu cầu của teammate, để có "reason" (câu/cụm từ opinion) đi kèm mỗi cặp aspect+sentiment, phục vụ báo cáo tốt hơn. Đây là hướng **bổ sung**, không thay thế mục fine-tune DistilBERT/BERT ở trên (`plans/task.txt` vẫn phân công riêng cho Đạt/Sơn).
+
+  Task: model sinh trực tiếp `aspect: X | opinion: Y | sentiment: Z` từ câu thô — không cần gold aspect term, nên **giải quyết luôn phần "aspect extraction" còn thiếu** ở mục trên. Dataset: SemEval Triplet (`14res`/`15res`/`16res`, domain **nhà hàng** — khác domain Laptop dùng ở trên). 3 model so sánh, cùng hyperparameter (epoch=20, lr=3e-4, effective batch=16) để so sánh công bằng — chỉ đổi checkpoint:
+
+  | Model | Test triplet-F1 | Test P / R | Test Exact match | Notebook đã chạy |
+  |---|---|---|---|---|
+  | t5-small | 0.7240 | 0.7238 / 0.7243 | 0.6358 | `notebooks-output/train-t5-small-for-aste-on-14res-15res-16res-output.ipynb` |
+  | **t5-base** | **0.7442** | 0.7609 / 0.7282 | **0.6481** | `notebooks-output/train-t5-base-for-aste-on-14res-15res-16res-output.ipynb` |
+  | flan-t5-base | 0.5898 | 0.5910 / 0.5887 | 0.4877 | `notebooks-output/train-flan-t5-base-for-aste-on-14res-15res-16r-output.ipynb` |
+
+  **t5-base thắng ở mọi metric** — **chốt dùng t5-base làm model chính cho ASTE** ở các bước tiếp theo. **flan-t5-base kém bất ngờ**: log training cho thấy loss ban đầu rất cao (22.1 ở epoch ~1.2, so với t5-small/t5-base ổn định ngay từ đầu) rồi giảm dần suốt 20 epoch nhưng không kịp hồi phục — dấu hiệu điển hình của **lr=3e-4 quá cao cho FLAN-T5** (model đã instruction-tuned thường cần lr thấp hơn nhiều so với T5 gốc khi fine-tune tiếp). Đây là finding đáng ghi vào báo cáo, không phải do FLAN-T5 kém hơn về bản chất.
+
+  Đang thử lại flan-t5-base với `lr=1e-4` (giảm 10 lần, vẫn là giá trị cố định, không thêm warmup/schedule) để kiểm chứng — notebook: `notebooks/train-flan-t5-base-for-aste-on-14res-15res-16res.ipynb`. Không chặn các bước tiếp theo (đã chốt t5-base), chỉ để có kết luận chắc chắn hơn cho báo cáo.
+
+  **Còn thiếu**:
+  - Kết quả retry flan-t5-base (lr=1e-4).
+  - Tích hợp output triplet (đặc biệt field `opinion` làm "reason") vào bước tổng hợp thống kê + sinh báo cáo bên dưới — hiện `output/aspect_stats_bert.txt` (từ BERT, chỉ có aspect+sentiment, không có reason) vẫn là input duy nhất cho báo cáo.
 - [ ] Dùng FLAN-T5 sinh báo cáo ngắn từ bảng thống kê.
 - [ ] Xây factual checker đơn giản đối chiếu số liệu trong report với thống kê gốc.
 

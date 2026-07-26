@@ -216,8 +216,11 @@
     {
       "aspect": "gaming",
       "positive": 5,
+      reasons:
       "negative": 3,
+      reasons:
       "neutral": 5,
+      reasons:
       "total": 13,
       "majority_sentiment": "positive"
     },

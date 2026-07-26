@@ -15,6 +15,9 @@ data/raw/*
 # Processed splits (derived from the gated raw dataset — regenerate with scripts/split_dataset.py)
 data/processed/*
 
+# Downloaded model checkpoints (large binaries — re-download from the Kaggle training run's Output tab)
+models/*
+
 # Generated results (baseline_metrics.json is committed as a record of the reported run)
 results/*
 !results/.gitkeep
