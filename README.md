@@ -335,7 +335,14 @@ python scripts/generate_report.py \
 The selected input rows do not carry preassigned role labels. FLAN-T5 compares them and writes a
 connected paragraph grounded in exact counts and supplied reasons. The checker is not tied to one
 exact sentence template: it associates sentences with aspects, rejects unsupported numbers, and
-requires count and reason evidence for each selected aspect. There is no fallback report.
+requires count and reason evidence for every claim that the report actually states. There is no
+fallback report.
+
+Reason-aware checking separates factuality from completeness. In the default `factual-only` mode,
+a grounded report can be accepted even when it omits a selected aspect; omissions and repeated
+aspects are returned as coverage warnings. Use `--checker-mode strict` when full selected-aspect
+coverage must also be required for acceptance. Results expose `factual_passed`, `coverage_passed`,
+`status`, and detailed warnings instead of treating every incomplete report as factually false.
 
 The real restaurant table is reserved for final evaluation only. Synthetic train, validation, and
 test splits have disjoint aspect vocabularies, independently generated counts, shuffled input rows,

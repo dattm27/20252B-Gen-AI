@@ -191,6 +191,7 @@ def generate_factual_report(
     max_aspects: int = 4,
     max_new_tokens: int = 192,
     max_attempts: int = 3,
+    checker_mode: str = "factual-only",
 ) -> dict[str, Any]:
     """Generate, validate, and retry without reloading the model between attempts."""
     if max_attempts < 1:
@@ -223,7 +224,7 @@ def generate_factual_report(
         if reason_aware:
             from src.report.factual_checker import check_reasoned_report
 
-            factual_check = check_reasoned_report(report, selected)
+            factual_check = check_reasoned_report(report, selected, mode=checker_mode)
         else:
             factual_check = check_report(
                 report,
@@ -236,10 +237,17 @@ def generate_factual_report(
             break
 
     final = history[-1]
+    coverage_warnings = final["factual_check"].get("coverage_warnings", [])
+    if final["factual_check"]["passed"]:
+        status = "accepted_with_warnings" if coverage_warnings else "accepted"
+    else:
+        status = "rejected"
     return {
         "report": final["report"],
         "factual_check": final["factual_check"],
         "accepted": final["factual_check"]["passed"],
+        "status": status,
+        "checker_mode": checker_mode if reason_aware else "strict",
         "selected_aspects": required_aspects,
         "reason_aware": reason_aware,
         "generation_attempts": len(history),

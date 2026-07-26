@@ -2,13 +2,24 @@
   "report": "The strongest takeaway is the contrast between Indian food and dessert. Indian food was praised in 21 of 22 mentions, especially for being great, whereas dessert received 16 negative comments out of 26, largely citing not inspired. At the same time, food remained the most visible topic, appearing 827 times with 621 positive mentions and great as a recurring reason. Feedback on waiter was less settled: 24 positive versus 18 negative reactions across 42 mentions, with experiences ranging from attentive to snobby.",
   "factual_check": {
     "passed": true,
+    "factual_passed": true,
+    "coverage_passed": true,
+    "checker_mode": "factual-only",
     "claims_checked": 4,
     "valid_claims": 4,
     "missing_aspects": [],
+    "repeated_aspects": [
+      "dessert",
+      "indian food"
+    ],
+    "coverage_warnings": [
+      "Repeated aspects: dessert, indian food"
+    ],
     "unattributed_numbers": [],
     "checks": [
       {
         "aspect": "food",
+        "checked": true,
         "valid": true,
         "numbers_found": [
           827,
@@ -21,6 +32,7 @@
       },
       {
         "aspect": "indian food",
+        "checked": true,
         "valid": true,
         "numbers_found": [
           21,
@@ -33,6 +45,7 @@
       },
       {
         "aspect": "dessert",
+        "checked": true,
         "valid": true,
         "numbers_found": [
           16,
@@ -45,6 +58,7 @@
       },
       {
         "aspect": "waiter",
+        "checked": true,
         "valid": true,
         "numbers_found": [
           24,
@@ -60,6 +74,8 @@
     ]
   },
   "accepted": true,
+  "status": "accepted_with_warnings",
+  "checker_mode": "factual-only",
   "selected_aspects": [
     "food",
     "indian food",
@@ -67,20 +83,31 @@
     "waiter"
   ],
   "reason_aware": true,
-  "generation_attempts": 3,
+  "generation_attempts": 1,
   "attempt_history": [
     {
       "attempt": 1,
       "report": "The strongest takeaway is the contrast between Indian food and dessert. Indian food was praised in 21 of 22 mentions, especially for being great, whereas dessert received 16 negative comments out of 26, largely citing not inspired. At the same time, food remained the most visible topic, appearing 827 times with 621 positive mentions and great as a recurring reason. Feedback on waiter was less settled: 24 positive versus 18 negative reactions across 42 mentions, with experiences ranging from attentive to snobby.",
       "factual_check": {
         "passed": true,
+        "factual_passed": true,
+        "coverage_passed": true,
+        "checker_mode": "factual-only",
         "claims_checked": 4,
         "valid_claims": 4,
         "missing_aspects": [],
+        "repeated_aspects": [
+          "dessert",
+          "indian food"
+        ],
+        "coverage_warnings": [
+          "Repeated aspects: dessert, indian food"
+        ],
         "unattributed_numbers": [],
         "checks": [
           {
             "aspect": "food",
+            "checked": true,
             "valid": true,
             "numbers_found": [
               827,
@@ -93,6 +120,7 @@
           },
           {
             "aspect": "indian food",
+            "checked": true,
             "valid": true,
             "numbers_found": [
               21,
@@ -105,6 +133,7 @@
           },
           {
             "aspect": "dessert",
+            "checked": true,
             "valid": true,
             "numbers_found": [
               16,
@@ -117,132 +146,7 @@
           },
           {
             "aspect": "waiter",
-            "valid": true,
-            "numbers_found": [
-              24,
-              18,
-              42
-            ],
-            "reasons_found": [
-              "attentive",
-              "snobby"
-            ],
-            "errors": []
-          }
-        ]
-      }
-    },
-    {
-      "attempt": 2,
-      "report": "The strongest takeaway is the contrast between Indian food and dessert. Indian food was praised in 21 of 22 mentions, especially for being great, whereas dessert received 16 negative comments out of 26, largely citing not inspired. At the same time, food remained the most visible topic, appearing 827 times with 621 positive mentions and great as a recurring reason. Feedback on waiter was less settled: 24 positive versus 18 negative reactions across 42 mentions, with experiences ranging from attentive to snobby.",
-      "factual_check": {
-        "passed": true,
-        "claims_checked": 4,
-        "valid_claims": 4,
-        "missing_aspects": [],
-        "unattributed_numbers": [],
-        "checks": [
-          {
-            "aspect": "food",
-            "valid": true,
-            "numbers_found": [
-              827,
-              621
-            ],
-            "reasons_found": [
-              "great"
-            ],
-            "errors": []
-          },
-          {
-            "aspect": "indian food",
-            "valid": true,
-            "numbers_found": [
-              21,
-              22
-            ],
-            "reasons_found": [
-              "great"
-            ],
-            "errors": []
-          },
-          {
-            "aspect": "dessert",
-            "valid": true,
-            "numbers_found": [
-              16,
-              26
-            ],
-            "reasons_found": [
-              "not inspired"
-            ],
-            "errors": []
-          },
-          {
-            "aspect": "waiter",
-            "valid": true,
-            "numbers_found": [
-              24,
-              18,
-              42
-            ],
-            "reasons_found": [
-              "attentive",
-              "snobby"
-            ],
-            "errors": []
-          }
-        ]
-      }
-    },
-    {
-      "attempt": 3,
-      "report": "The strongest takeaway is the contrast between Indian food and dessert. Indian food was praised in 21 of 22 mentions, especially for being great, whereas dessert received 16 negative comments out of 26, largely citing not inspired. At the same time, food remained the most visible topic, appearing 827 times with 621 positive mentions and great as a recurring reason. Feedback on waiter was less settled: 24 positive versus 18 negative reactions across 42 mentions, with experiences ranging from attentive to snobby.",
-      "factual_check": {
-        "passed": true,
-        "claims_checked": 4,
-        "valid_claims": 4,
-        "missing_aspects": [],
-        "unattributed_numbers": [],
-        "checks": [
-          {
-            "aspect": "food",
-            "valid": true,
-            "numbers_found": [
-              827,
-              621
-            ],
-            "reasons_found": [
-              "great"
-            ],
-            "errors": []
-          },
-          {
-            "aspect": "indian food",
-            "valid": true,
-            "numbers_found": [
-              21,
-              22
-            ],
-            "reasons_found": [
-              "great"
-            ],
-            "errors": []
-          },
-          {
-            "aspect": "dessert",
-            "valid": true,
-            "numbers_found": [
-              16,
-              26
-            ],
-            "reasons_found": [
-              "not inspired"
-            ],
-            "errors": []
-          },
-          {
-            "aspect": "waiter",
+            "checked": true,
             "valid": true,
             "numbers_found": [
               24,
