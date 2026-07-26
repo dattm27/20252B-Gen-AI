@@ -2,8 +2,8 @@ import json
 
 import pytest
 
-from src.report.factual_checker import check_report
-from src.report.flan_t5_report import build_prompt, select_report_rows
+from src.report.factual_checker import check_reasoned_report, check_report
+from src.report.flan_t5_report import build_prompt, build_reasoned_prompt, select_report_rows
 from src.report.stats_io import load_aspect_stats
 
 
@@ -109,3 +109,105 @@ def test_loader_rejects_inconsistent_total(tmp_path):
     path.write_text(json.dumps([{"aspect": "x", "positive": 1, "negative": 1, "neutral": 0, "total": 3}]))
     with pytest.raises(ValueError, match="do not add up"):
         load_aspect_stats(path)
+
+
+def test_reason_table_is_loaded_and_prompt_contains_evidence():
+    rows = load_aspect_stats("output/aspect_reasons_restaurant.json", table="predicted")
+    food = rows[0]
+    assert food["aspect"] == "food"
+    assert food["positive_reasons"][0] == ["great", 109]
+    prompt = build_reasoned_prompt(rows)
+    assert "positive_reasons=great (109), good (100)" in prompt
+    assert "role=" not in prompt
+    assert "Avoid a row-by-row list" in prompt
+
+
+def test_reason_aware_selection_uses_distinct_comparative_aspects():
+    rows = load_aspect_stats("output/aspect_reasons_restaurant.json", table="predicted")
+    selected = select_report_rows(rows)
+    assert [row["aspect"] for row in selected] == ["food", "indian food", "dessert", "waiter"]
+
+
+def test_reasoned_checker_accepts_flexible_grounded_paragraph():
+    rows = [
+        {
+            "aspect": "food",
+            "total": 100,
+            "positive": 75,
+            "negative": 20,
+            "neutral": 5,
+            "positive_reasons": [["delicious", 30]],
+            "negative_reasons": [["bland", 8]],
+            "neutral_reasons": [],
+        },
+        {
+            "aspect": "service",
+            "total": 80,
+            "positive": 20,
+            "negative": 55,
+            "neutral": 5,
+            "positive_reasons": [["friendly", 10]],
+            "negative_reasons": [["slow", 25]],
+            "neutral_reasons": [],
+        },
+    ]
+    report = (
+        "Food led the discussion with 100 mentions, including 75 positive responses, "
+        "as diners repeatedly called it delicious. "
+        "Service needs attention: 55 of its 80 mentions were negative, most often because it was slow."
+    )
+    result = check_reasoned_report(report, rows)
+    assert result["passed"] is True
+    assert result["valid_claims"] == 2
+
+
+def test_reasoned_checker_rejects_invented_number_and_missing_reason():
+    rows = [
+        {
+            "aspect": "service",
+            "total": 80,
+            "positive": 20,
+            "negative": 55,
+            "neutral": 5,
+            "positive_reasons": [["friendly", 10]],
+            "negative_reasons": [["slow", 25]],
+            "neutral_reasons": [],
+        }
+    ]
+    result = check_reasoned_report(
+        "Service received 80 mentions, including 99 negative responses.",
+        rows,
+    )
+    assert result["passed"] is False
+    assert "unsupported numbers: [99]" in result["checks"][0]["errors"]
+    assert "no grounded reason mentioned" in result["checks"][0]["errors"]
+
+
+def test_reasoned_checker_handles_two_aspects_in_contrast_sentence():
+    rows = [
+        {
+            "aspect": "price",
+            "total": 22,
+            "positive": 21,
+            "negative": 1,
+            "neutral": 0,
+            "positive_reasons": [["reasonable", 8]],
+            "negative_reasons": [],
+            "neutral_reasons": [],
+        },
+        {
+            "aspect": "service",
+            "total": 26,
+            "positive": 9,
+            "negative": 16,
+            "neutral": 1,
+            "positive_reasons": [],
+            "negative_reasons": [["slow", 3]],
+            "neutral_reasons": [],
+        },
+    ]
+    report = (
+        "Price was praised in 21 of 22 mentions for being reasonable, "
+        "whereas service received 16 negative comments out of 26, largely citing slow."
+    )
+    assert check_reasoned_report(report, rows)["passed"] is True

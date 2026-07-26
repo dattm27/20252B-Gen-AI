@@ -6,6 +6,31 @@ from pathlib import Path
 from typing import Any
 
 REQUIRED_FIELDS = ("aspect", "positive", "negative", "neutral", "total")
+REASON_FIELDS = ("positive_reasons", "negative_reasons", "neutral_reasons")
+
+
+def _validate_reasons(value: Any, row_index: int, field: str) -> list[list[Any]]:
+    """Validate and normalize ``[[reason, count], ...]`` entries."""
+    if value is None:
+        return []
+    if not isinstance(value, list):
+        raise ValueError(f"Row {row_index} field '{field}' must be a list")
+    clean = []
+    for reason_index, item in enumerate(value):
+        if not isinstance(item, (list, tuple)) or len(item) != 2:
+            raise ValueError(
+                f"Row {row_index} field '{field}' item {reason_index} must be [reason, count]"
+            )
+        reason = str(item[0]).strip().lower()
+        count = item[1]
+        if not reason:
+            raise ValueError(f"Row {row_index} field '{field}' contains an empty reason")
+        if isinstance(count, bool) or not isinstance(count, int) or count < 1:
+            raise ValueError(
+                f"Row {row_index} field '{field}' reason counts must be positive integers"
+            )
+        clean.append([reason, count])
+    return clean
 
 
 def load_aspect_stats(path: str | Path, table: str = "predicted") -> list[dict[str, Any]]:
@@ -39,5 +64,7 @@ def load_aspect_stats(path: str | Path, table: str = "predicted") -> list[dict[s
         if clean["positive"] + clean["negative"] + clean["neutral"] != clean["total"]:
             raise ValueError(f"Row {index} sentiment counts do not add up to total")
         clean["majority_sentiment"] = str(row.get("majority_sentiment", "")).lower()
+        for field in REASON_FIELDS:
+            clean[field] = _validate_reasons(row.get(field), index, field)
         validated.append(clean)
     return validated

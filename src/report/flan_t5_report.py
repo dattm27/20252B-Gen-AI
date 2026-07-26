@@ -16,23 +16,103 @@ def select_report_rows(rows: list[dict[str, Any]], max_aspects: int = 4) -> list
         raise ValueError("max_aspects must be at least 1")
     candidates = [row for row in rows if row["total"] >= 10] or rows
     by_total = sorted(candidates, key=lambda row: (-row["total"], row["aspect"]))
-    representative_pool = by_total[:10]
-    priorities = [
-        by_total[0],
-        max(candidates, key=lambda row: (row["positive"], row["total"])),
-        max(candidates, key=lambda row: (row["negative"], row["total"])),
-        min(
-            representative_pool,
-            key=lambda row: (abs(row["positive"] - row["negative"]), -row["total"]),
-        ),
-    ]
-    selected = []
-    for row in priorities + by_total:
-        if row["aspect"] not in {item["aspect"] for item in selected}:
-            selected.append(row)
+    has_reasons = any(
+        row.get(field)
+        for row in candidates
+        for field in ("positive_reasons", "negative_reasons", "neutral_reasons")
+    )
+    if not has_reasons:
+        representative_pool = by_total[:10]
+        priorities = [
+            by_total[0],
+            max(candidates, key=lambda row: (row["positive"], row["total"])),
+            max(candidates, key=lambda row: (row["negative"], row["total"])),
+            min(
+                representative_pool,
+                key=lambda row: (abs(row["positive"] - row["negative"]), -row["total"]),
+            ),
+        ]
+        selected = []
+        for row in priorities + by_total:
+            if row["aspect"] not in {item["aspect"] for item in selected}:
+                selected.append(row)
+            if len(selected) == max_aspects:
+                break
+        return selected
+
+    representative_pool = by_total[:30]
+    selected = [by_total[0]]
+
+    def remaining() -> list[dict[str, Any]]:
+        used = {item["aspect"] for item in selected}
+        return [row for row in representative_pool if row["aspect"] not in used]
+
+    if len(selected) < max_aspects and remaining():
+        selected.append(
+            max(remaining(), key=lambda row: (row["positive"] / row["total"], row["total"]))
+        )
+    if len(selected) < max_aspects and remaining():
+        selected.append(
+            max(remaining(), key=lambda row: (row["negative"] / row["total"], row["total"]))
+        )
+    if len(selected) < max_aspects and remaining():
+        selected.append(
+            min(
+                remaining(),
+                key=lambda row: (
+                    abs(row["positive"] - row["negative"]) / row["total"],
+                    -row["total"],
+                ),
+            )
+        )
+    for row in by_total:
         if len(selected) == max_aspects:
             break
+        if row["aspect"] not in {item["aspect"] for item in selected}:
+            selected.append(row)
     return selected
+
+
+def _top_reasons(row: dict[str, Any], sentiment: str, limit: int = 2) -> list[tuple[str, int]]:
+    return [
+        (str(reason), int(count))
+        for reason, count in row.get(f"{sentiment}_reasons", [])[:limit]
+    ]
+
+
+def _reason_text(row: dict[str, Any], limit: int = 2) -> str:
+    parts = []
+    for sentiment in ("positive", "negative", "neutral"):
+        reasons = _top_reasons(row, sentiment, limit)
+        if reasons:
+            rendered = ", ".join(f"{reason} ({count})" for reason, count in reasons)
+            parts.append(f"{sentiment}_reasons={rendered}")
+    return " | ".join(parts) or "reasons=none"
+
+
+def build_reasoned_prompt(
+    rows: list[dict[str, Any]], max_aspects: int = 4, retry_number: int = 0
+) -> str:
+    """Build the compact prompt used by the reason-aware fine-tuned model."""
+    selected = select_report_rows(rows, max_aspects=max_aspects)
+    table = "\n".join(
+        f"aspect={row['aspect']} | total={row['total']} | positive={row['positive']} | "
+        f"negative={row['negative']} | neutral={row['neutral']} | {_reason_text(row)}"
+        for row in selected
+    )
+    retry = (
+        "Previous output was not fully grounded. Correct every aspect, count, and reason.\n"
+        if retry_number
+        else ""
+    )
+    return (
+        retry
+        + "Write one natural analytical restaurant-feedback paragraph from the data below. "
+        "Compare the aspects, identify the clearest strength and concern, and explain why using "
+        "only the supplied reasons. Mention exact counts as supporting evidence. Do not invent "
+        "facts, percentages, dishes, brands, or reasons. Avoid a row-by-row list.\n"
+        f"DATA:\n{table}\nREPORT:"
+    )
 
 
 def build_prompt(rows: list[dict[str, Any]], max_aspects: int = 4, retry_number: int = 0) -> str:
@@ -125,18 +205,32 @@ def generate_factual_report(
 
     selected = select_report_rows(rows, max_aspects=max_aspects)
     required_aspects = [row["aspect"] for row in selected]
+    reason_aware = any(
+        row.get(field)
+        for row in selected
+        for field in ("positive_reasons", "negative_reasons", "neutral_reasons")
+    )
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
     history = []
     for attempt in range(max_attempts):
-        prompt = build_prompt(rows, max_aspects=max_aspects, retry_number=attempt)
-        report = _generate(model, tokenizer, prompt, max_new_tokens)
-        factual_check = check_report(
-            report,
-            rows,
-            required_aspects=required_aspects,
-            required_roles=list(REPORT_ROLES[: len(required_aspects)]),
+        prompt = (
+            build_reasoned_prompt(rows, max_aspects=max_aspects, retry_number=attempt)
+            if reason_aware
+            else build_prompt(rows, max_aspects=max_aspects, retry_number=attempt)
         )
+        report = _generate(model, tokenizer, prompt, max_new_tokens)
+        if reason_aware:
+            from src.report.factual_checker import check_reasoned_report
+
+            factual_check = check_reasoned_report(report, selected)
+        else:
+            factual_check = check_report(
+                report,
+                rows,
+                required_aspects=required_aspects,
+                required_roles=list(REPORT_ROLES[: len(required_aspects)]),
+            )
         history.append({"attempt": attempt + 1, "report": report, "factual_check": factual_check})
         if factual_check["passed"]:
             break
@@ -147,6 +241,7 @@ def generate_factual_report(
         "factual_check": final["factual_check"],
         "accepted": final["factual_check"]["passed"],
         "selected_aspects": required_aspects,
+        "reason_aware": reason_aware,
         "generation_attempts": len(history),
         "attempt_history": history,
     }

@@ -8,14 +8,14 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from src.report.factual_checker import check_report
-from src.report.flan_t5_report import generate_factual_report
+from src.report.factual_checker import check_reasoned_report, check_report
+from src.report.flan_t5_report import generate_factual_report, select_report_rows
 from src.report.stats_io import load_aspect_stats
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--stats", default="output/aspect_stats.txt")
+    parser.add_argument("--stats", default="output/aspect_reasons_restaurant.json")
     parser.add_argument("--table", default="predicted")
     parser.add_argument("--model", default="google/flan-t5-base")
     parser.add_argument("--max-aspects", type=int, default=4)
@@ -27,7 +27,17 @@ def main() -> None:
     rows = load_aspect_stats(args.stats, table=args.table)
     if args.report_file:
         report = Path(args.report_file).read_text(encoding="utf-8").strip()
-        factual_check = check_report(report, rows)
+        selected = select_report_rows(rows, max_aspects=args.max_aspects)
+        reason_aware = any(
+            row.get(field)
+            for row in selected
+            for field in ("positive_reasons", "negative_reasons", "neutral_reasons")
+        )
+        factual_check = (
+            check_reasoned_report(report, selected)
+            if reason_aware
+            else check_report(report, rows)
+        )
         result = {"report": report, "factual_check": factual_check, "accepted": factual_check["passed"]}
     else:
         result = generate_factual_report(

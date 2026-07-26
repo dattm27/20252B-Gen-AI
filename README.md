@@ -167,6 +167,38 @@ Tests run against a small hand-built fixture (`tests/fixtures/sample_laptop.xml`
 
 ## FLAN-T5 report generation and factual checking
 
+### Current reason-aware restaurant pipeline
+
+The current input is
+[`output/aspect_reasons_restaurant.json`](output/aspect_reasons_restaurant.json), using its
+`predicted` table. Each aspect contains sentiment counts plus frequent positive, negative, and
+neutral reason phrases.
+
+Fine-tune with the self-contained Colab notebook
+[`notebooks/finetune_flan_t5_reasoned_report_colab.ipynb`](notebooks/finetune_flan_t5_reasoned_report_colab.ipynb).
+Upload only the reason JSON, run all cells, download the model ZIP, and extract it to
+`models/flan-t5-reasoned-report`. Then run:
+
+```bash
+python scripts/generate_report.py \
+  --model models/flan-t5-reasoned-report \
+  --max-aspects 4 \
+  --max-attempts 3 \
+  --output output/flan_t5_reasoned_report.json
+```
+
+The selected input rows do not carry preassigned role labels. FLAN-T5 compares them and writes a
+connected paragraph grounded in exact counts and supplied reasons. The checker is not tied to one
+exact sentence template: it associates sentences with aspects, rejects unsupported numbers, and
+requires count and reason evidence for each selected aspect. There is no fallback report.
+
+The real restaurant table is reserved for final evaluation only. Synthetic train, validation, and
+test splits have disjoint aspect vocabularies, independently generated counts, shuffled input rows,
+and several target discourse organizations. Human-written or carefully reviewed target reports
+would be the next step beyond this synthetic baseline.
+
+The laptop instructions below describe the older fixed-template experiment retained for comparison.
+
 The end-to-end pipeline reads the real DistilBERT statistics in
 [`output/aspect_stats.txt`](output/aspect_stats.txt). It uses the `predicted` table by default,
 because this is the table available in a real deployment where gold sentiment labels do not exist.

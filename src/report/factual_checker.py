@@ -147,3 +147,138 @@ def check_report(
         "unexpected_text": unexpected_text,
         "checks": [asdict(check) for check in checks],
     }
+
+
+def _contains_phrase(text: str, phrase: str) -> bool:
+    return bool(re.search(rf"(?<!\w){re.escape(phrase)}(?!\w)", text, re.IGNORECASE))
+
+
+def _aspects_in_sentence(sentence: str, aspects: list[str]) -> set[str]:
+    """Find aspect mentions without double-counting substrings such as food/Indian food."""
+    candidates = []
+    for aspect in aspects:
+        for match in re.finditer(rf"(?<!\w){re.escape(aspect)}(?!\w)", sentence, re.IGNORECASE):
+            candidates.append((match.start(), match.end(), aspect))
+    chosen = []
+    for start, end, aspect in sorted(candidates, key=lambda item: (-(item[1] - item[0]), item[0])):
+        if not any(start < other_end and other_start < end for other_start, other_end, _ in chosen):
+            chosen.append((start, end, aspect))
+    return {aspect for _, _, aspect in chosen}
+
+
+def check_reasoned_report(report: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Audit a flexible paragraph against selected count and reason evidence.
+
+    This checker intentionally does not require one fixed sentence template. It
+    associates sentences with aspect names, verifies their numbers, and ensures
+    that each discussed aspect cites a reason supplied for that aspect.
+    """
+    sentences = [
+        sentence.strip()
+        for sentence in re.split(r"(?<=[.!?])\s+", report.strip())
+        if sentence.strip()
+    ]
+    segments = [
+        segment.strip()
+        for sentence in sentences
+        for segment in re.split(
+            r";\s*|,\s*(?:whereas|while|but)\s+|\b(?:whereas|while)\b",
+            sentence,
+            flags=re.IGNORECASE,
+        )
+        if segment.strip()
+    ]
+    all_reasons = {
+        str(reason).lower()
+        for row in rows
+        for field in ("positive_reasons", "negative_reasons", "neutral_reasons")
+        for reason, _ in row.get(field, [])
+    }
+    checks = []
+    covered_aspects: set[str] = set()
+    aspects = [str(row["aspect"]).lower() for row in rows]
+    segment_aspects = {segment: _aspects_in_sentence(segment, aspects) for segment in segments}
+
+    for row in rows:
+        aspect = str(row["aspect"]).lower()
+        aspect_segments = [
+            segment for segment in segments if aspect in segment_aspects[segment]
+        ]
+        errors = []
+        if not aspect_segments:
+            errors.append("aspect not mentioned")
+            checks.append(
+                {
+                    "aspect": aspect,
+                    "valid": False,
+                    "numbers_found": [],
+                    "reasons_found": [],
+                    "errors": errors,
+                }
+            )
+            continue
+
+        covered_aspects.add(aspect)
+        text = " ".join(aspect_segments).lower()
+        numbers = [int(value) for value in re.findall(r"\d+", text)]
+        allowed_numbers = {
+            int(row[field]) for field in ("total", "positive", "negative", "neutral")
+        }
+        allowed_numbers.update(
+            int(count)
+            for field in ("positive_reasons", "negative_reasons", "neutral_reasons")
+            for _, count in row.get(field, [])
+        )
+        invalid_numbers = [value for value in numbers if value not in allowed_numbers]
+        if invalid_numbers:
+            errors.append(f"unsupported numbers: {invalid_numbers}")
+        if int(row["total"]) not in numbers:
+            errors.append(f"missing total count {row['total']}")
+        sentiment_counts = {int(row[field]) for field in ("positive", "negative", "neutral")}
+        if not sentiment_counts.intersection(numbers):
+            errors.append("missing sentiment count evidence")
+
+        row_reasons = {
+            str(reason).lower()
+            for field in ("positive_reasons", "negative_reasons", "neutral_reasons")
+            for reason, _ in row.get(field, [])
+        }
+        reasons_found = sorted(reason for reason in row_reasons if _contains_phrase(text, reason))
+        foreign_reasons = sorted(
+            reason
+            for reason in all_reasons - row_reasons
+            if len(reason) >= 3 and _contains_phrase(text, reason)
+        )
+        if row_reasons and not reasons_found:
+            errors.append("no grounded reason mentioned")
+        if foreign_reasons:
+            errors.append(f"reasons belong to another aspect: {foreign_reasons}")
+        checks.append(
+            {
+                "aspect": aspect,
+                "valid": not errors,
+                "numbers_found": numbers,
+                "reasons_found": reasons_found,
+                "errors": errors,
+            }
+        )
+
+    unknown_numbers = []
+    for segment in segments:
+        if not segment_aspects[segment]:
+            unknown_numbers.extend(int(value) for value in re.findall(r"\d+", segment))
+    missing_aspects = sorted(str(row["aspect"]).lower() for row in rows if str(row["aspect"]).lower() not in covered_aspects)
+    passed = (
+        bool(checks)
+        and all(check["valid"] for check in checks)
+        and not missing_aspects
+        and not unknown_numbers
+    )
+    return {
+        "passed": passed,
+        "claims_checked": len(checks),
+        "valid_claims": sum(check["valid"] for check in checks),
+        "missing_aspects": missing_aspects,
+        "unattributed_numbers": unknown_numbers,
+        "checks": checks,
+    }
