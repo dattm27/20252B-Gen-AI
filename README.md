@@ -30,11 +30,12 @@ See [`docs/Proposal.md`](docs/Proposal.md) for the full proposal, [`docs/Require
 ├── src/
 │   ├── data/
 │   │   ├── semeval_loader.py     # Parses SemEval-2014 XML into Sentence/AspectTerm
-│   │   └── preprocess.py         # Flattens sentences into (context, aspect, polarity) examples
+│   │   ├── preprocess.py         # Flattens sentences into (context, aspect, polarity) examples
+│   │   └── aste_loader.py        # Parses the ASTE triplet tag format (aspect, opinion, sentiment)
 │   ├── baseline/
 │   │   └── tfidf_logreg.py       # TF-IDF + Logistic Regression baseline model
 │   └── report/
-│       └── aspect_stats.py       # Groups (aspect, sentiment) pairs into a per-aspect summary table
+│       └── aspect_stats.py       # Per-aspect summary tables: sentiment counts, + top-N reason phrases
 ├── scripts/
 │   ├── train_baseline.py         # CLI: train + evaluate the baseline
 │   └── split_dataset.py          # CLI: split the train XML into train/valid/test XML files
@@ -43,18 +44,27 @@ See [`docs/Proposal.md`](docs/Proposal.md) for the full proposal, [`docs/Require
 │   ├── baseline_semeval_laptop_kaggle_run.ipynb   # Executed baseline, with real results
 │   ├── finetune_distilbert_semeval_laptop.ipynb   # Fine-tune DistilBERT (Kaggle-ready)
 │   ├── finetune_bert_semeval_laptop.ipynb         # Fine-tune BERT-base (Kaggle-ready)
-│   └── aspect_stats_semeval_laptop.ipynb          # Runs the fine-tuned model + aggregates per-aspect stats
+│   ├── aspect_stats_semeval_laptop.ipynb          # Runs the fine-tuned model + aggregates per-aspect stats
+│   ├── train-t5-small-for-aste-on-14res-15res-16res.ipynb      # ASTE: fine-tune t5-small (Kaggle-ready)
+│   ├── train-t5-base-for-aste-on-14res-15res-16res.ipynb       # ASTE: fine-tune t5-base (Kaggle-ready)
+│   ├── train-flan-t5-base-for-aste-on-14res-15res-16res.ipynb  # ASTE: fine-tune flan-t5-base (Kaggle-ready)
+│   └── aste_aspect_reasons_restaurant.ipynb                    # ASTE: t5-base inference + aspect/reasons aggregation (Kaggle-ready)
 ├── notebooks-output/              # Executed copies of the notebooks above, with real Kaggle results
 │   ├── finetune_distilbert_semeval_laptop_output.ipynb
-│   └── aspect_stats_semeval_laptop_output.ipynb
+│   ├── aspect_stats_semeval_laptop_output.ipynb
+│   ├── train-t5-small-for-aste-on-14res-15res-16res-output.ipynb
+│   ├── train-t5-base-for-aste-on-14res-15res-16res-output.ipynb
+│   └── train-flan-t5-base-for-aste-on-14res-15res-16r-output.ipynb
 ├── tests/
 │   ├── fixtures/sample_laptop.xml  # Hand-built fixture matching the official XML schema
 │   ├── test_semeval_loader.py
-│   └── test_aspect_stats.py
+│   ├── test_aspect_stats.py
+│   └── test_aste_loader.py
 ├── results/
 │   └── baseline_metrics.json     # Recorded baseline results (Tuần 3)
 ├── output/
-│   └── aspect_stats.txt          # Aggregated per-aspect sentiment stats (gold + predicted), from the Kaggle run
+│   ├── aspect_stats.txt                    # Per-aspect sentiment stats (Laptop/BERT track, gold + predicted)
+│   └── aspect_reasons_restaurant.json      # Per-aspect sentiment + top-10 reasons (Restaurant/t5-base ASTE track)
 └── requirements.txt
 ```
 
@@ -171,10 +181,78 @@ between the gold and predicted tables:
 `output/aspect_stats_bert.txt` is the official table handed off to report generation — the
 DistilBERT run is kept only for comparison.
 
+## Aspect Sentiment Triplet Extraction (ASTE)
+
+A parallel, additive track (not a replacement for the DistilBERT/BERT classification track
+above): a T5-family seq2seq model reads a raw sentence and directly generates
+`aspect: X | opinion: Y | sentiment: Z` triplets — no gold aspect term needed, and the `opinion`
+span doubles as a **reason/rationale** the report-generation step can quote (e.g. "service is
+*poor*"), instead of a bare aspect+sentiment count.
+
+- Dataset: [SemEval Triplet data](https://github.com/xuuuluuu/SemEval-Triplet-data), **restaurant
+  domain** (14res/15res/16res) — different domain from the Laptop data used above.
+- Notebooks self-locate the dataset: first checks `semi-triple-{14,15,16}res` Kaggle inputs, falls
+  back to cloning the GitHub repo if not found (enable internet + GPU on Kaggle).
+- Three models compared under identical hyperparameters (20 epochs, lr=3e-4, effective batch 16)
+  so only the checkpoint changes:
+  [`notebooks/train-t5-small-for-aste-on-14res-15res-16res.ipynb`](notebooks/train-t5-small-for-aste-on-14res-15res-16res.ipynb),
+  [`notebooks/train-t5-base-for-aste-on-14res-15res-16res.ipynb`](notebooks/train-t5-base-for-aste-on-14res-15res-16res.ipynb),
+  [`notebooks/train-flan-t5-base-for-aste-on-14res-15res-16res.ipynb`](notebooks/train-flan-t5-base-for-aste-on-14res-15res-16res.ipynb).
+
+**Current results** (test split, triplet-level F1 = set overlap of predicted vs gold
+`(aspect, opinion, sentiment)` triples):
+
+| Model | Test triplet-F1 | Test P / R | Test exact match | Executed notebook |
+|---|---|---|---|---|
+| t5-small | 0.7240 | 0.7238 / 0.7243 | 0.6358 | [`notebooks-output/train-t5-small-for-aste-on-14res-15res-16res-output.ipynb`](notebooks-output/train-t5-small-for-aste-on-14res-15res-16res-output.ipynb) |
+| **t5-base** | **0.7442** | 0.7609 / 0.7282 | **0.6481** | [`notebooks-output/train-t5-base-for-aste-on-14res-15res-16res-output.ipynb`](notebooks-output/train-t5-base-for-aste-on-14res-15res-16res-output.ipynb) |
+| flan-t5-base (lr=3e-4) | 0.5898 | 0.5910 / 0.5887 | 0.4877 | [`notebooks-output/train-flan-t5-base-for-aste-on-14res-15res-16r-output.ipynb`](notebooks-output/train-flan-t5-base-for-aste-on-14res-15res-16r-output.ipynb) |
+| flan-t5-base (lr=1e-4, retry) | 0.4159 | 0.4185 / 0.4133 | 0.3210 | [`notebooks-output/train-flan-t5-base-for-aste-on-14res-15res-16r-1-e-4.ipynb`](notebooks-output/train-flan-t5-base-for-aste-on-14res-15res-16r-1-e-4.ipynb) |
+
+**t5-base wins on every metric — it's the chosen model** for this track. flan-t5-base was tried
+at two learning rates and both lose decisively, so no further tuning was invested. Notably, the
+initial "lr=3e-4 is too high" hypothesis was **wrong**: dropping to `lr=1e-4` made results *worse*
+(0.4159 vs 0.5898), and its training log shows `eval_triplet_f1` still climbing steadily through
+epoch 20 (0.244 → 0.470) with no sign of plateauing — the lower lr just converges slower, it
+doesn't fix anything. The likely real explanation: flan-t5-base (already instruction-tuned across
+many diverse tasks) needs substantially more epochs to re-specialize on this terse structured
+extraction format, not a different lr — a useful cautionary finding for the report (don't
+conclude root cause from tuning a single hyperparameter).
+
+## Aspect + top-10-reasons (t5-base)
+
+Aggregates t5-base's `(aspect, opinion, sentiment)` triplets into one row per aspect —
+`positive`/`negative`/`neutral` counts, plus the top-10 most frequent opinion phrases ("reasons")
+per sentiment — the input the FLAN-T5 report-generation step consumes (richer than the
+Laptop/BERT track's plain aspect+sentiment table, since it now has quotable reasons).
+
+- [`src/data/aste_loader.py`](src/data/aste_loader.py) / [`src/report/aspect_stats.py`](src/report/aspect_stats.py)
+  (`aggregate_aspect_reasons`) — the parsing/aggregation logic, pure Python, tested locally
+  ([`tests/test_aste_loader.py`](tests/test_aste_loader.py), [`tests/test_aspect_stats.py`](tests/test_aspect_stats.py)).
+- [`notebooks/aste_aspect_reasons_restaurant.ipynb`](notebooks/aste_aspect_reasons_restaurant.ipynb) —
+  the Kaggle side: loads t5-base, runs inference over the full dataset, and inlines the same
+  tested parsing/aggregation code to produce gold + predicted tables.
+
+  Originally planned to run fully locally (no Kaggle round-trip, so it chains straight into
+  report generation) — dropped after t5-base beam-search inference over ~4500 sentences was
+  estimated at ~3-3.5 hours on CPU. Only the model inference moved back to Kaggle GPU; the
+  aggregation logic stayed local/tested and is simply inlined into the notebook.
+
+**Kaggle setup**: add the t5-base ASTE model (`t5-base-aste-restaurant-best/`, from the training
+notebook above) as a Kaggle Dataset/Model input, GPU accelerator.
+
+**Current result**: 4550 sentences (train+dev+test, all 3 domains); 619 gold / 585 predicted
+aspects with ≥2 mentions; majority-sentiment agreement **531/546 = 97.25%** (higher than the
+Laptop/BERT track's 93.28% — the model predicts aspect, opinion, and sentiment jointly instead of
+sentiment for an already-known aspect). Example row (`food`, 827 mentions, majority positive):
+positive reasons `great`(109)/`good`(100)/`delicious`(39)/...; negative reasons
+`mediocre`(10)/`bad`(7)/`overpriced`(5)/... Full table:
+[`output/aspect_reasons_restaurant.json`](output/aspect_reasons_restaurant.json).
+
 ## Tests
 
 ```bash
 python -m pytest tests/ -v
 ```
 
-Tests run against a small hand-built fixture (`tests/fixtures/sample_laptop.xml`, for `test_semeval_loader.py`) and synthetic data (`test_aspect_stats.py`) — neither needs the gated dataset or GPU/transformers.
+Tests run against a small hand-built fixture (`tests/fixtures/sample_laptop.xml`, for `test_semeval_loader.py`) and synthetic/hand-written data (`test_aspect_stats.py`, `test_aste_loader.py`) — none need the gated dataset or GPU/transformers.

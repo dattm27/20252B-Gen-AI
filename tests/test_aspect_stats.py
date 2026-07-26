@@ -1,4 +1,4 @@
-from src.report.aspect_stats import aggregate_aspect_sentiment
+from src.report.aspect_stats import aggregate_aspect_reasons, aggregate_aspect_sentiment
 
 
 def test_groups_case_and_whitespace_insensitively():
@@ -61,3 +61,59 @@ def test_majority_sentiment_tie_break_prefers_positive_then_negative():
 
     tie_neg_neutral = aggregate_aspect_sentiment([("x", "negative"), ("x", "neutral")])
     assert tie_neg_neutral[0].majority_sentiment == "negative"
+
+
+def test_aggregate_aspect_reasons_ranks_opinions_by_frequency_per_sentiment():
+    records = [
+        ("gaming", "fun", "positive"),
+        ("gaming", "fun", "positive"),
+        ("gaming", "fun", "positive"),
+        ("gaming", "fast", "positive"),
+        ("gaming", "fast", "positive"),
+        ("gaming", "laggy", "negative"),
+        ("gaming", "laggy", "negative"),
+        ("gaming", "overheats", "negative"),
+        ("gaming", "ok", "neutral"),
+    ]
+
+    summaries = aggregate_aspect_reasons(records)
+
+    gaming = summaries[0]
+    assert gaming.aspect == "gaming"
+    assert gaming.positive == 5
+    assert gaming.positive_reasons == [("fun", 3), ("fast", 2)]
+    assert gaming.negative == 3
+    assert gaming.negative_reasons == [("laggy", 2), ("overheats", 1)]
+    assert gaming.neutral == 1
+    assert gaming.neutral_reasons == [("ok", 1)]
+    assert gaming.total == 9
+    assert gaming.majority_sentiment == "positive"
+
+
+def test_aggregate_aspect_reasons_normalizes_and_tie_breaks_alphabetically():
+    records = [
+        ("screen", "Bright", "positive"),
+        ("screen", "bright", "positive"),
+        ("screen", "vivid", "positive"),
+    ]
+
+    summaries = aggregate_aspect_reasons(records)
+
+    assert summaries[0].positive_reasons == [("bright", 2), ("vivid", 1)]
+
+
+def test_aggregate_aspect_reasons_top_n_truncates():
+    records = [("battery", f"reason{i}", "negative") for i in range(15)]
+
+    summaries = aggregate_aspect_reasons(records, top_n=10)
+
+    assert summaries[0].negative == 15
+    assert len(summaries[0].negative_reasons) == 10
+
+
+def test_aggregate_aspect_reasons_min_mentions_filters_rare_aspects():
+    records = [("screen", "nice", "positive"), ("battery", "good", "positive")]
+
+    summaries = aggregate_aspect_reasons(records, min_mentions=2)
+
+    assert summaries == []

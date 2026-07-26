@@ -106,6 +106,27 @@ Chi tiết: [`docs/Research-Notes.md`](../docs/Research-Notes.md)
   - Top aspect theo số lượt nhắc (ổn định ở cả 2 lần chạy): `screen` (60, positive), `price` (56, positive), `use` (53, positive), `battery life` (52, positive), `keyboard` (50, positive), `battery` (47, **negative**), `warranty` (31, **neutral**), `hard drive`/`windows` (negative).
   - Lưu ý: per-example agreement in trong notebook (0.9421 với BERT, 0.8617 với DistilBERT) đo trên union train+valid+test nên **cao hơn ảo** so với accuracy thật của model (đo trên test set riêng: BERT 0.7627, DistilBERT 0.7447) — không dùng số này để so sánh/báo cáo hiệu năng model, chỉ dùng để sanity-check bước tổng hợp.
   - Bàn giao `output/aspect_stats_bert.txt` (mảng `predicted`) cho bước FLAN-T5 report generation bên dưới.
+- [x] **[Pivot bổ sung] Aspect Sentiment Triplet Extraction (ASTE) bằng T5** — theo yêu cầu của teammate, để có "reason" (câu/cụm từ opinion) đi kèm mỗi cặp aspect+sentiment, phục vụ báo cáo tốt hơn. Đây là hướng **bổ sung**, không thay thế mục fine-tune DistilBERT/BERT ở trên (`plans/task.txt` vẫn phân công riêng cho Đạt/Sơn).
+
+  Task: model sinh trực tiếp `aspect: X | opinion: Y | sentiment: Z` từ câu thô — không cần gold aspect term, nên **giải quyết luôn phần "aspect extraction" còn thiếu** ở mục trên. Dataset: SemEval Triplet (`14res`/`15res`/`16res`, domain **nhà hàng** — khác domain Laptop dùng ở trên). 3 model so sánh, cùng hyperparameter (epoch=20, lr=3e-4, effective batch=16) để so sánh công bằng — chỉ đổi checkpoint:
+
+  | Model | Test triplet-F1 | Test P / R | Test Exact match | Notebook đã chạy |
+  |---|---|---|---|---|
+  | t5-small | 0.7240 | 0.7238 / 0.7243 | 0.6358 | `notebooks-output/train-t5-small-for-aste-on-14res-15res-16res-output.ipynb` |
+  | **t5-base** | **0.7442** | 0.7609 / 0.7282 | **0.6481** | `notebooks-output/train-t5-base-for-aste-on-14res-15res-16res-output.ipynb` |
+  | flan-t5-base (lr=3e-4) | 0.5898 | 0.5910 / 0.5887 | 0.4877 | `notebooks-output/train-flan-t5-base-for-aste-on-14res-15res-16r-output.ipynb` |
+  | flan-t5-base (lr=1e-4, retry) | 0.4159 | 0.4185 / 0.4133 | 0.3210 | `notebooks-output/train-flan-t5-base-for-aste-on-14res-15res-16r-1-e-4.ipynb` |
+
+  **t5-base thắng ở mọi metric — chốt dùng t5-base làm model chính cho ASTE.**
+
+  **flan-t5-base: đã thử 2 lr, cả 2 đều thua xa t5-base — không thử thêm.** Giả thuyết ban đầu ("lr=3e-4 quá cao gây bất ổn, cần hạ lr") **sai**: hạ xuống lr=1e-4 làm kết quả **tệ hơn** (0.4159 vs 0.5898), không tốt hơn. Nhìn log training của lần retry: `eval_triplet_f1` vẫn tăng dần đều tới hết epoch 20 (0.244 → 0.292 → 0.417 → 0.460 → 0.470) — chưa hề bão hòa, tức là lr thấp hơn chỉ làm **hội tụ chậm hơn**, chưa đủ epoch để bắt kịp chứ không sửa được gì. Nguyên nhân thực sự nhiều khả năng: flan-t5-base (đã instruction-tuned trên nhiều task đa dạng) cần nhiều epoch hơn hẳn t5-base/t5-small để thích nghi lại với format trích xuất terse (`aspect: X | opinion: Y | sentiment: Z`), không phải vấn đề lr. Đây là finding đáng ghi vào báo cáo (bài học: đừng vội kết luận nguyên nhân khi mới thử 1 hyperparameter). Không đầu tư thêm GPU time để thử epoch cao hơn vì t5-base đã đủ tốt và đang được dùng cho các bước sau.
+
+  **Aspect + top-10-reasons bằng t5-base — hoàn tất.** Ban đầu định chạy 100% local (để nối thẳng vào report generation, không qua Kaggle) nhưng t5-base beam-search trên CPU ước tính mất ~3-3.5 tiếng cho 4550 câu → chuyển hẳn inference sang Kaggle GPU (`notebooks/aste_aspect_reasons_restaurant.ipynb`), giữ nguyên logic parse ASTE + tổng hợp thuần Python (`src/data/aste_loader.py`, `src/report/aspect_stats.py::aggregate_aspect_reasons`) có test local, inline vào notebook để chạy GPU — đã verify code inline khớp 100% với bản đã test.
+
+  Kết quả: `output/aspect_reasons_restaurant.json` — 4550 câu (train+dev+test, 3 domain), 619 aspect gold / 585 aspect predicted (≥2 lượt nhắc). **Majority-sentiment agreement: 531/546 = 97.25%** — cao hơn hẳn track BERT/Laptop (90-93%), vì model sinh trực tiếp cả 3 field cùng lúc thay vì phải suy luận sentiment cho aspect đã biết trước.
+
+  Mỗi aspect giờ có đủ count + top-10 reason cho từng sentiment, ví dụ `food` (827 lượt, positive): reasons `great`(109), `good`(100), `delicious`(39)...; negative: `mediocre`(10), `bad`(7), `overpriced`(5)... — sẵn sàng bàn giao `output/aspect_reasons_restaurant.json` (mảng `predicted`) cho bước FLAN-T5 report generation, thay thế/bổ sung cho `output/aspect_stats_bert.txt` (track Laptop, không có reason).
+
 - [ ] Dùng FLAN-T5 sinh báo cáo ngắn từ bảng thống kê.
 - [ ] Xây factual checker đơn giản đối chiếu số liệu trong report với thống kê gốc.
 

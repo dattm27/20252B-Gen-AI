@@ -1,0 +1,100 @@
+"""Parser for the ASTE triplet tag format used by the SemEval Triplet data
+(github.com/xuuuluuu/SemEval-Triplet-data), e.g.:
+
+    The food is good . #### food=T-POS is=O good=O #### food=O is=O good=S
+
+Line format: `sentence #### aspect tags #### opinion tags`. Aspect tokens carry a
+`<group>-<POS|NEG|NEU>` tag; opinion tokens carry a matching `S`-repeated group id (aspect
+group `1` pairs with opinion group `S`, group `12` pairs with `SS`, etc).
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from pathlib import Path
+
+SENTIMENT_MAP = {"POS": "positive", "NEG": "negative", "NEU": "neutral"}
+
+
+@dataclass
+class AsteTriplet:
+    aspect: str
+    opinion: str
+    sentiment: str
+
+
+@dataclass
+class AsteSentence:
+    text: str
+    triplets: list[AsteTriplet] = field(default_factory=list)
+
+
+def _split_token_tag(item: str) -> tuple[str, str]:
+    token, tag = item.rsplit("=", 1)
+    return token, tag
+
+
+def _parse_tag_sequence(tag_text: str) -> list[tuple[str, str]]:
+    return [_split_token_tag(item) for item in tag_text.strip().split()]
+
+
+def _phrase_from_tokens(tokens: list[str]) -> str:
+    return " ".join(tokens).replace(" n't", "n't").replace(" 's", "'s").strip()
+
+
+def parse_aste_line(line: str) -> AsteSentence | None:
+    """Parse one `sentence #### aspect tags #### opinion tags` line. Returns None if the
+    line doesn't have exactly 3 `####`-separated parts (e.g. blank/malformed lines)."""
+    parts = line.strip().split("####")
+    if len(parts) != 3:
+        return None
+
+    sentence, target_tag_text, opinion_tag_text = parts
+    target_pairs = _parse_tag_sequence(target_tag_text)
+    opinion_pairs = _parse_tag_sequence(opinion_tag_text)
+
+    target_groups: dict[str, dict] = {}
+    for token, tag in target_pairs:
+        if tag == "O" or "-" not in tag:
+            continue
+        group_id, sentiment_code = tag.split("-", 1)
+        target_groups.setdefault(group_id, {"tokens": [], "sentiment": sentiment_code})
+        target_groups[group_id]["tokens"].append(token)
+
+    opinion_groups: dict[str, list[str]] = {}
+    for token, tag in opinion_pairs:
+        if tag == "O":
+            continue
+        opinion_groups.setdefault(tag, []).append(token)
+
+    triplets = []
+    for group_id, target_info in sorted(target_groups.items(), key=lambda x: (len(x[0]), x[0])):
+        opinion_group_id = "S" * len(group_id)
+        aspect = _phrase_from_tokens(target_info["tokens"])
+        opinion = _phrase_from_tokens(opinion_groups.get(opinion_group_id, []))
+        sentiment = SENTIMENT_MAP.get(target_info["sentiment"], target_info["sentiment"].lower())
+        if aspect and opinion:
+            triplets.append(AsteTriplet(aspect=aspect, opinion=opinion, sentiment=sentiment))
+
+    return AsteSentence(text=sentence.strip(), triplets=triplets)
+
+
+def triplets_to_text(triplets: list[AsteTriplet]) -> str:
+    """Render triplets as `aspect: X | opinion: Y | sentiment: Z ; ...` — the T5 target/prompt
+    format used to fine-tune the ASTE models (see notebooks/train-*-for-aste-*.ipynb)."""
+    if not triplets:
+        return "no triplet"
+    chunks = [f"aspect: {t.aspect} | opinion: {t.opinion} | sentiment: {t.sentiment}" for t in triplets]
+    return " ; ".join(chunks)
+
+
+def load_aste_file(path: str | Path) -> list[AsteSentence]:
+    """Load a `train.txt`/`dev.txt`/`test.txt` ASTE triplet file. Blank/malformed lines are skipped."""
+    sentences = []
+    with open(path, "r", encoding="utf-8") as f:
+        for line in f:
+            if not line.strip():
+                continue
+            item = parse_aste_line(line)
+            if item is not None:
+                sentences.append(item)
+    return sentences
