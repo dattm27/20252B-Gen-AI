@@ -1,0 +1,270 @@
+{
+  "report": "Customer feedback points to atmosphere as a standout: it drew 64 positive comments from 66 mentions, frequently because it was great. Although ice cream attracted the most discussion at 765 mentions and earned 621 positive reactions associated with best, not every area performed as well. In particular, parking generated 26 negative responses among 61 mentions, with limited recurring as the chief complaint. Meanwhile, parking split opinion: its 61 mentions contained 23 positive and 26 negative reactions, commonly framed as either plenty or limited.",
+  "factual_check": {
+    "passed": false,
+    "claims_checked": 4,
+    "valid_claims": 3,
+    "missing_aspects": [
+      "line"
+    ],
+    "unattributed_numbers": [],
+    "checks": [
+      {
+        "aspect": "ice cream",
+        "valid": true,
+        "numbers_found": [
+          765,
+          621
+        ],
+        "reasons_found": [
+          "best",
+          "ice cream"
+        ],
+        "errors": []
+      },
+      {
+        "aspect": "atmosphere",
+        "valid": true,
+        "numbers_found": [
+          64,
+          66
+        ],
+        "reasons_found": [
+          "great"
+        ],
+        "errors": []
+      },
+      {
+        "aspect": "parking",
+        "valid": true,
+        "numbers_found": [
+          26,
+          61,
+          61,
+          23,
+          26
+        ],
+        "reasons_found": [
+          "limited",
+          "plenty"
+        ],
+        "errors": []
+      },
+      {
+        "aspect": "line",
+        "valid": false,
+        "numbers_found": [],
+        "reasons_found": [],
+        "errors": [
+          "aspect not mentioned"
+        ]
+      }
+    ]
+  },
+  "accepted": false,
+  "selected_aspects": [
+    "ice cream",
+    "atmosphere",
+    "parking",
+    "line"
+  ],
+  "reason_aware": true,
+  "generation_attempts": 3,
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "report": "Customer feedback points to atmosphere as a standout: it drew 64 positive comments from 66 mentions, frequently because it was great. Although ice cream attracted the most discussion at 765 mentions and earned 621 positive reactions associated with best, not every area performed as well. In particular, parking generated 26 negative responses among 61 mentions, with limited recurring as the chief complaint. Meanwhile, parking split opinion: its 61 mentions contained 23 positive and 26 negative reactions, commonly framed as either plenty or limited.",
+      "factual_check": {
+        "passed": false,
+        "claims_checked": 4,
+        "valid_claims": 3,
+        "missing_aspects": [
+          "line"
+        ],
+        "unattributed_numbers": [],
+        "checks": [
+          {
+            "aspect": "ice cream",
+            "valid": true,
+            "numbers_found": [
+              765,
+              621
+            ],
+            "reasons_found": [
+              "best",
+              "ice cream"
+            ],
+            "errors": []
+          },
+          {
+            "aspect": "atmosphere",
+            "valid": true,
+            "numbers_found": [
+              64,
+              66
+            ],
+            "reasons_found": [
+              "great"
+            ],
+            "errors": []
+          },
+          {
+            "aspect": "parking",
+            "valid": true,
+            "numbers_found": [
+              26,
+              61,
+              61,
+              23,
+              26
+            ],
+            "reasons_found": [
+              "limited",
+              "plenty"
+            ],
+            "errors": []
+          },
+          {
+            "aspect": "line",
+            "valid": false,
+            "numbers_found": [],
+            "reasons_found": [],
+            "errors": [
+              "aspect not mentioned"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "attempt": 2,
+      "report": "Customer feedback points to atmosphere as a standout: it drew 64 positive comments from 66 mentions, frequently because it was great. Although ice cream attracted the most discussion at 765 mentions and earned 621 positive reactions associated with best, not every area performed as well. In particular, parking generated 26 negative responses among 61 mentions, with limited recurring as the chief complaint. Meanwhile, parking split opinion: its 61 mentions contained 23 positive and 26 negative reactions, commonly framed as either plenty or limited.",
+      "factual_check": {
+        "passed": false,
+        "claims_checked": 4,
+        "valid_claims": 3,
+        "missing_aspects": [
+          "line"
+        ],
+        "unattributed_numbers": [],
+        "checks": [
+          {
+            "aspect": "ice cream",
+            "valid": true,
+            "numbers_found": [
+              765,
+              621
+            ],
+            "reasons_found": [
+              "best",
+              "ice cream"
+            ],
+            "errors": []
+          },
+          {
+            "aspect": "atmosphere",
+            "valid": true,
+            "numbers_found": [
+              64,
+              66
+            ],
+            "reasons_found": [
+              "great"
+            ],
+            "errors": []
+          },
+          {
+            "aspect": "parking",
+            "valid": true,
+            "numbers_found": [
+              26,
+              61,
+              61,
+              23,
+              26
+            ],
+            "reasons_found": [
+              "limited",
+              "plenty"
+            ],
+            "errors": []
+          },
+          {
+            "aspect": "line",
+            "valid": false,
+            "numbers_found": [],
+            "reasons_found": [],
+            "errors": [
+              "aspect not mentioned"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "attempt": 3,
+      "report": "Customer feedback points to atmosphere as a standout: it drew 64 positive comments from 66 mentions, frequently because it was great. Although ice cream attracted the most discussion at 765 mentions and earned 621 positive reactions associated with best, not every area performed as well. In particular, parking generated 26 negative responses among 61 mentions, with limited recurring as the chief complaint. Meanwhile, parking split opinion: its 61 mentions contained 23 positive and 26 negative reactions, commonly framed as either plenty or limited.",
+      "factual_check": {
+        "passed": false,
+        "claims_checked": 4,
+        "valid_claims": 3,
+        "missing_aspects": [
+          "line"
+        ],
+        "unattributed_numbers": [],
+        "checks": [
+          {
+            "aspect": "ice cream",
+            "valid": true,
+            "numbers_found": [
+              765,
+              621
+            ],
+            "reasons_found": [
+              "best",
+              "ice cream"
+            ],
+            "errors": []
+          },
+          {
+            "aspect": "atmosphere",
+            "valid": true,
+            "numbers_found": [
+              64,
+              66
+            ],
+            "reasons_found": [
+              "great"
+            ],
+            "errors": []
+          },
+          {
+            "aspect": "parking",
+            "valid": true,
+            "numbers_found": [
+              26,
+              61,
+              61,
+              23,
+              26
+            ],
+            "reasons_found": [
+              "limited",
+              "plenty"
+            ],
+            "errors": []
+          },
+          {
+            "aspect": "line",
+            "valid": false,
+            "numbers_found": [],
+            "reasons_found": [],
+            "errors": [
+              "aspect not mentioned"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
