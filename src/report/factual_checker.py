@@ -166,7 +166,11 @@ def _aspects_in_sentence(sentence: str, aspects: list[str]) -> set[str]:
     return {aspect for _, _, aspect in chosen}
 
 
-def check_reasoned_report(report: str, rows: list[dict[str, Any]]) -> dict[str, Any]:
+def check_reasoned_report(
+    report: str,
+    rows: list[dict[str, Any]],
+    mode: str = "factual-only",
+) -> dict[str, Any]:
     """Audit a flexible paragraph against selected count and reason evidence.
 
     This checker intentionally does not require one fixed sentence template. It
@@ -194,6 +198,8 @@ def check_reasoned_report(report: str, rows: list[dict[str, Any]]) -> dict[str, 
         for field in ("positive_reasons", "negative_reasons", "neutral_reasons")
         for reason, _ in row.get(field, [])
     }
+    if mode not in {"factual-only", "strict"}:
+        raise ValueError("mode must be 'factual-only' or 'strict'")
     checks = []
     covered_aspects: set[str] = set()
     aspects = [str(row["aspect"]).lower() for row in rows]
@@ -210,7 +216,8 @@ def check_reasoned_report(report: str, rows: list[dict[str, Any]]) -> dict[str, 
             checks.append(
                 {
                     "aspect": aspect,
-                    "valid": False,
+                    "checked": False,
+                    "valid": None,
                     "numbers_found": [],
                     "reasons_found": [],
                     "errors": errors,
@@ -256,6 +263,7 @@ def check_reasoned_report(report: str, rows: list[dict[str, Any]]) -> dict[str, 
         checks.append(
             {
                 "aspect": aspect,
+                "checked": True,
                 "valid": not errors,
                 "numbers_found": numbers,
                 "reasons_found": reasons_found,
@@ -268,17 +276,34 @@ def check_reasoned_report(report: str, rows: list[dict[str, Any]]) -> dict[str, 
         if not segment_aspects[segment]:
             unknown_numbers.extend(int(value) for value in re.findall(r"\d+", segment))
     missing_aspects = sorted(str(row["aspect"]).lower() for row in rows if str(row["aspect"]).lower() not in covered_aspects)
-    passed = (
-        bool(checks)
-        and all(check["valid"] for check in checks)
-        and not missing_aspects
+    checked_claims = [check for check in checks if check["checked"]]
+    repeated_aspects = sorted(
+        aspect
+        for aspect in aspects
+        if sum(aspect in found for found in segment_aspects.values()) > 1
+    )
+    factual_passed = (
+        bool(checked_claims)
+        and all(check["valid"] for check in checked_claims)
         and not unknown_numbers
     )
+    coverage_passed = not missing_aspects
+    coverage_warnings = []
+    if missing_aspects:
+        coverage_warnings.append("Missing aspects: " + ", ".join(missing_aspects))
+    if repeated_aspects:
+        coverage_warnings.append("Repeated aspects: " + ", ".join(repeated_aspects))
+    passed = factual_passed if mode == "factual-only" else factual_passed and coverage_passed
     return {
         "passed": passed,
-        "claims_checked": len(checks),
-        "valid_claims": sum(check["valid"] for check in checks),
+        "factual_passed": factual_passed,
+        "coverage_passed": coverage_passed,
+        "checker_mode": mode,
+        "claims_checked": len(checked_claims),
+        "valid_claims": sum(check["valid"] is True for check in checked_claims),
         "missing_aspects": missing_aspects,
+        "repeated_aspects": repeated_aspects,
+        "coverage_warnings": coverage_warnings,
         "unattributed_numbers": unknown_numbers,
         "checks": checks,
     }

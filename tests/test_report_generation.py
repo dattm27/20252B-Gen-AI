@@ -183,6 +183,42 @@ def test_reasoned_checker_rejects_invented_number_and_missing_reason():
     assert "no grounded reason mentioned" in result["checks"][0]["errors"]
 
 
+def test_reasoned_checker_separates_factuality_from_coverage():
+    rows = [
+        {
+            "aspect": "food",
+            "total": 100,
+            "positive": 75,
+            "negative": 20,
+            "neutral": 5,
+            "positive_reasons": [["delicious", 30]],
+            "negative_reasons": [["bland", 8]],
+            "neutral_reasons": [],
+        },
+        {
+            "aspect": "service",
+            "total": 80,
+            "positive": 20,
+            "negative": 55,
+            "neutral": 5,
+            "positive_reasons": [["friendly", 10]],
+            "negative_reasons": [["slow", 25]],
+            "neutral_reasons": [],
+        },
+    ]
+    report = "Food received 100 mentions, including 75 positive responses because it was delicious."
+    relaxed = check_reasoned_report(report, rows)
+    strict = check_reasoned_report(report, rows, mode="strict")
+    assert relaxed["factual_passed"] is True
+    assert relaxed["coverage_passed"] is False
+    assert relaxed["passed"] is True
+    assert relaxed["missing_aspects"] == ["service"]
+    assert relaxed["claims_checked"] == 1
+    assert strict["factual_passed"] is True
+    assert strict["coverage_passed"] is False
+    assert strict["passed"] is False
+
+
 def test_reasoned_checker_handles_two_aspects_in_contrast_sentence():
     rows = [
         {

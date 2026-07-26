@@ -20,6 +20,12 @@ def main() -> None:
     parser.add_argument("--model", default="google/flan-t5-base")
     parser.add_argument("--max-aspects", type=int, default=4)
     parser.add_argument("--max-attempts", type=int, default=3)
+    parser.add_argument(
+        "--checker-mode",
+        choices=("factual-only", "strict"),
+        default="factual-only",
+        help="Reason-aware reports: accept grounded claims only, or also require full aspect coverage",
+    )
     parser.add_argument("--report-file", help="Check an existing report instead of running FLAN-T5")
     parser.add_argument("--output", help="Optional JSON output path")
     args = parser.parse_args()
@@ -34,17 +40,31 @@ def main() -> None:
             for field in ("positive_reasons", "negative_reasons", "neutral_reasons")
         )
         factual_check = (
-            check_reasoned_report(report, selected)
+            check_reasoned_report(report, selected, mode=args.checker_mode)
             if reason_aware
             else check_report(report, rows)
         )
-        result = {"report": report, "factual_check": factual_check, "accepted": factual_check["passed"]}
+        warnings = factual_check.get("coverage_warnings", [])
+        result = {
+            "report": report,
+            "factual_check": factual_check,
+            "accepted": factual_check["passed"],
+            "status": (
+                "accepted_with_warnings"
+                if factual_check["passed"] and warnings
+                else "accepted"
+                if factual_check["passed"]
+                else "rejected"
+            ),
+            "checker_mode": args.checker_mode if reason_aware else "strict",
+        }
     else:
         result = generate_factual_report(
             rows,
             model_name=args.model,
             max_aspects=args.max_aspects,
             max_attempts=args.max_attempts,
+            checker_mode=args.checker_mode,
         )
     rendered = json.dumps(result, ensure_ascii=False, indent=2)
     if args.output:

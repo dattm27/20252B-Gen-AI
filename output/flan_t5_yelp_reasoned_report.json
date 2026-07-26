@@ -1,0 +1,170 @@
+{
+  "report": "Customer feedback points to atmosphere as a standout: it drew 64 positive comments from 66 mentions, frequently because it was great. Although ice cream attracted the most discussion at 765 mentions and earned 621 positive reactions associated with best, not every area performed as well. In particular, parking generated 26 negative responses among 61 mentions, with limited recurring as the chief complaint. Meanwhile, parking split opinion: its 61 mentions contained 23 positive and 26 negative reactions, commonly framed as either plenty or limited.",
+  "factual_check": {
+    "passed": true,
+    "factual_passed": true,
+    "coverage_passed": false,
+    "checker_mode": "factual-only",
+    "claims_checked": 3,
+    "valid_claims": 3,
+    "missing_aspects": [
+      "line"
+    ],
+    "repeated_aspects": [
+      "parking"
+    ],
+    "coverage_warnings": [
+      "Missing aspects: line",
+      "Repeated aspects: parking"
+    ],
+    "unattributed_numbers": [],
+    "checks": [
+      {
+        "aspect": "ice cream",
+        "checked": true,
+        "valid": true,
+        "numbers_found": [
+          765,
+          621
+        ],
+        "reasons_found": [
+          "best",
+          "ice cream"
+        ],
+        "errors": []
+      },
+      {
+        "aspect": "atmosphere",
+        "checked": true,
+        "valid": true,
+        "numbers_found": [
+          64,
+          66
+        ],
+        "reasons_found": [
+          "great"
+        ],
+        "errors": []
+      },
+      {
+        "aspect": "parking",
+        "checked": true,
+        "valid": true,
+        "numbers_found": [
+          26,
+          61,
+          61,
+          23,
+          26
+        ],
+        "reasons_found": [
+          "limited",
+          "plenty"
+        ],
+        "errors": []
+      },
+      {
+        "aspect": "line",
+        "checked": false,
+        "valid": null,
+        "numbers_found": [],
+        "reasons_found": [],
+        "errors": [
+          "aspect not mentioned"
+        ]
+      }
+    ]
+  },
+  "accepted": true,
+  "status": "accepted_with_warnings",
+  "checker_mode": "factual-only",
+  "selected_aspects": [
+    "ice cream",
+    "atmosphere",
+    "parking",
+    "line"
+  ],
+  "reason_aware": true,
+  "generation_attempts": 1,
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "report": "Customer feedback points to atmosphere as a standout: it drew 64 positive comments from 66 mentions, frequently because it was great. Although ice cream attracted the most discussion at 765 mentions and earned 621 positive reactions associated with best, not every area performed as well. In particular, parking generated 26 negative responses among 61 mentions, with limited recurring as the chief complaint. Meanwhile, parking split opinion: its 61 mentions contained 23 positive and 26 negative reactions, commonly framed as either plenty or limited.",
+      "factual_check": {
+        "passed": true,
+        "factual_passed": true,
+        "coverage_passed": false,
+        "checker_mode": "factual-only",
+        "claims_checked": 3,
+        "valid_claims": 3,
+        "missing_aspects": [
+          "line"
+        ],
+        "repeated_aspects": [
+          "parking"
+        ],
+        "coverage_warnings": [
+          "Missing aspects: line",
+          "Repeated aspects: parking"
+        ],
+        "unattributed_numbers": [],
+        "checks": [
+          {
+            "aspect": "ice cream",
+            "checked": true,
+            "valid": true,
+            "numbers_found": [
+              765,
+              621
+            ],
+            "reasons_found": [
+              "best",
+              "ice cream"
+            ],
+            "errors": []
+          },
+          {
+            "aspect": "atmosphere",
+            "checked": true,
+            "valid": true,
+            "numbers_found": [
+              64,
+              66
+            ],
+            "reasons_found": [
+              "great"
+            ],
+            "errors": []
+          },
+          {
+            "aspect": "parking",
+            "checked": true,
+            "valid": true,
+            "numbers_found": [
+              26,
+              61,
+              61,
+              23,
+              26
+            ],
+            "reasons_found": [
+              "limited",
+              "plenty"
+            ],
+            "errors": []
+          },
+          {
+            "aspect": "line",
+            "checked": false,
+            "valid": null,
+            "numbers_found": [],
+            "reasons_found": [],
+            "errors": [
+              "aspect not mentioned"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
