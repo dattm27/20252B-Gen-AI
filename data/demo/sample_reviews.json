@@ -1,20 +1,12 @@
 [
-  {"case": "clear_positive_single_aspect", "text": "The food was absolutely delicious ."},
+  {"case": "clear_positive_single_aspect", "text": "The food was absolutely tasty ."},
   {"case": "clear_negative_single_aspect", "text": "The service was incredibly slow ."},
   {"case": "mixed_two_aspects", "text": "The food was great but the service was terrible ."},
-  {"case": "neutral_factual", "text": "The restaurant is located near the train station ."},
   {"case": "negation", "text": "The soup was not warm enough ."},
   {"case": "multi_positive_aspects", "text": "Great atmosphere , friendly staff , and delicious food ."},
   {"case": "multi_negative_aspects", "text": "The wait was long , the table was dirty , and the waiter was rude ."},
   {"case": "price_vs_quality_contrast", "text": "The price is reasonable although the portions are small ."},
-  {"case": "ambience_positive", "text": "The atmosphere was cozy and romantic ."},
-  {"case": "price_negative", "text": "The prices were way too high for what we got ."},
-  {"case": "service_positive", "text": "Our waiter was attentive and very friendly ."},
-  {"case": "dessert_positive", "text": "The chocolate cake was rich and amazing ."},
-  {"case": "mixed_three_aspects", "text": "The sushi was fresh , the service was slow , but the price was fair ."},
-  {"case": "comparative", "text": "The pizza here is better than the one across the street ."},
   {"case": "neutral_no_opinion", "text": "We ordered pasta and a salad ."},
   {"case": "strong_negative", "text": "This was the worst dining experience we have ever had ."},
-  {"case": "strong_positive", "text": "Best Italian restaurant in the city , hands down !"},
   {"case": "sarcasm_edge_case", "text": "Oh great , another burnt steak ."}
 ]

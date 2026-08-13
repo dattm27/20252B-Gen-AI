@@ -323,7 +323,7 @@ pip install -r requirements.txt
 | t5-base ASTE | `notebooks/train-t5-base-for-aste-on-14res-15res-16res.ipynb` Output tab (`t5-base-aste-restaurant-best/`) | `models/t5-base-aste-restaurant-best/` |
 | FLAN-T5 reasoned report | `notebooks/finetune_flan_t5_reasoned_report_colab.ipynb` (downloaded ZIP) | `models/flan-t5-reasoned-report/` |
 
-**3. Run ASTE inference** over the sample reviews (`data/demo/sample_reviews.json` — 18 restaurant
+**3. Run ASTE inference** over the sample reviews (`data/demo/sample_reviews.json` — 10 restaurant
 sentences covering positive/negative/mixed/neutral/negation/sarcasm cases):
 
 ```bash
@@ -346,7 +346,7 @@ python scripts/generate_report.py \
   --output output/flan_t5_demo_report.json
 ```
 
-With only ~18 source sentences, most aspects have just 1-3 mentions — far sparser than the
+With only ~10 source sentences, most aspects have just 1-3 mentions — far sparser than the
 55-180 mentions/aspect the model was fine-tuned on — so the checker often (correctly) rejects
 the report for a repeated or missing aspect. That rejection is itself part of the demo: it shows
 the factual checker catching under-grounded output rather than passing it through.
