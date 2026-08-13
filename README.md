@@ -302,6 +302,67 @@ stray token on short/fragmentary sentences after sentence-splitting). Full error
 [`notebooks-output/aste_aspect_reasons_yelp_demo_output.ipynb`](notebooks-output/aste_aspect_reasons_yelp_demo_output.ipynb);
 full table: [`output/aspect_reasons_yelp_demo.json`](output/aspect_reasons_yelp_demo.json).
 
+## Local CPU demo (ASTE + report generation, no Kaggle/Colab round-trip)
+
+Runs the full ASTE → aggregation → FLAN-T5 report pipeline end-to-end on a small local sample,
+entirely on CPU (no GPU needed) — for a live demo, not full-dataset evaluation (that stays on
+Kaggle/Colab, see the sections above). ~15 sentences takes well under a minute on a laptop CPU.
+
+**1. Install deps** (`transformers` is pinned `<4.50` — 4.57+ fails to load these T5 checkpoints'
+tokenizers; `protobuf` is required for the slow T5 tokenizer fallback):
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+**2. Download checkpoints** (not in the repo, gitignored) and place them under `models/`:
+
+| Checkpoint | Source | Target path |
+|---|---|---|
+| t5-base ASTE | `notebooks/train-t5-base-for-aste-on-14res-15res-16res.ipynb` Output tab (`t5-base-aste-restaurant-best/`) | `models/t5-base-aste-restaurant-best/` |
+| FLAN-T5 reasoned report | `notebooks/finetune_flan_t5_reasoned_report_colab.ipynb` (downloaded ZIP) | `models/flan-t5-reasoned-report/` |
+
+**3. Run ASTE inference** over the sample reviews (`data/demo/sample_reviews.json` — 18 restaurant
+sentences covering positive/negative/mixed/neutral/negation/sarcasm cases):
+
+```bash
+python scripts/infer_aste_demo.py \
+  --model models/t5-base-aste-restaurant-best \
+  --input data/demo/sample_reviews.json \
+  --output output/aspect_reasons_demo.json
+```
+
+Prints each sentence's generated triplets, then aggregates into the same `aspect`/`reasons`
+table schema `generate_report.py` reads (see "Aspect + top-10-reasons" above).
+
+**4. Generate and factually check a report** from the aggregated table:
+
+```bash
+python scripts/generate_report.py \
+  --stats output/aspect_reasons_demo.json --table predicted \
+  --model models/flan-t5-reasoned-report \
+  --max-aspects 4 --max-attempts 3 \
+  --output output/flan_t5_demo_report.json
+```
+
+With only ~18 source sentences, most aspects have just 1-3 mentions — far sparser than the
+55-180 mentions/aspect the model was fine-tuned on — so the checker often (correctly) rejects
+the report for a repeated or missing aspect. That rejection is itself part of the demo: it shows
+the factual checker catching under-grounded output rather than passing it through.
+
+To skip the fine-tuned checkpoint and use zero-shot `google/flan-t5-base` instead (downloaded
+from HF Hub, no local checkpoint needed), pass `--model google/flan-t5-base`.
+
+**Note on a checkpoint version mismatch**: if a checkpoint was exported by a newer `transformers`
+than the one installed locally, `tie_word_embeddings=True` can make the loader silently overwrite
+a genuinely fine-tuned `lm_head.weight` with the (barely fine-tuned) input embedding matrix,
+producing fluent-looking but degenerate, prompt-independent repeated-token output. `generate_report.py`
+detects and repairs this automatically (`_restore_untied_lm_head` in
+[`src/report/flan_t5_report.py`](src/report/flan_t5_report.py)) by reading the checkpoint's real
+`lm_head.weight` straight from its safetensors file — no action needed, but worth knowing if a
+future checkpoint still comes out garbled.
+
 ## Tests
 
 ```bash

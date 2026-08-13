@@ -1,0 +1,583 @@
+{
+  "model_dir": "models/t5-base-aste-restaurant-best",
+  "domain": "restaurant (local demo sample)",
+  "min_mentions": 1,
+  "top_n_reasons": 10,
+  "num_examples": 18,
+  "predictions": [
+    {
+      "case": "clear_positive_single_aspect",
+      "text": "The food was absolutely delicious .",
+      "generated": "aspect: food | opinion: delicious | sentiment: positive",
+      "triplets": [
+        {
+          "aspect": "food",
+          "opinion": "delicious",
+          "sentiment": "positive"
+        }
+      ]
+    },
+    {
+      "case": "clear_negative_single_aspect",
+      "text": "The service was incredibly slow .",
+      "generated": "aspect: service | opinion: slow | sentiment: negative",
+      "triplets": [
+        {
+          "aspect": "service",
+          "opinion": "slow",
+          "sentiment": "negative"
+        }
+      ]
+    },
+    {
+      "case": "mixed_two_aspects",
+      "text": "The food was great but the service was terrible .",
+      "generated": "aspect: food | opinion: great | sentiment: positive ; aspect: service | opinion: terrible | sentiment: negative",
+      "triplets": [
+        {
+          "aspect": "food",
+          "opinion": "great",
+          "sentiment": "positive"
+        },
+        {
+          "aspect": "service",
+          "opinion": "terrible",
+          "sentiment": "negative"
+        }
+      ]
+    },
+    {
+      "case": "neutral_factual",
+      "text": "The restaurant is located near the train station .",
+      "generated": "aspect: restaurant | opinion: near the train station | sentiment: positive",
+      "triplets": [
+        {
+          "aspect": "restaurant",
+          "opinion": "near the train station",
+          "sentiment": "positive"
+        }
+      ]
+    },
+    {
+      "case": "negation",
+      "text": "The soup was not warm enough .",
+      "generated": "aspect: soup | opinion: not warm enough | sentiment: negative",
+      "triplets": [
+        {
+          "aspect": "soup",
+          "opinion": "not warm enough",
+          "sentiment": "negative"
+        }
+      ]
+    },
+    {
+      "case": "multi_positive_aspects",
+      "text": "Great atmosphere , friendly staff , and delicious food .",
+      "generated": "aspect: atmosphere | opinion: Great | sentiment: positive ; aspect: staff | opinion: friendly | sentiment: positive ; aspect: food | opinion: delicious | sentiment: positive",
+      "triplets": [
+        {
+          "aspect": "atmosphere",
+          "opinion": "Great",
+          "sentiment": "positive"
+        },
+        {
+          "aspect": "staff",
+          "opinion": "friendly",
+          "sentiment": "positive"
+        },
+        {
+          "aspect": "food",
+          "opinion": "delicious",
+          "sentiment": "positive"
+        }
+      ]
+    },
+    {
+      "case": "multi_negative_aspects",
+      "text": "The wait was long , the table was dirty , and the waiter was rude .",
+      "generated": "aspect: wait | opinion: long | sentiment: negative ; aspect: table | opinion: dirty | sentiment: negative ; aspect: waiter | opinion: rude | sentiment: negative",
+      "triplets": [
+        {
+          "aspect": "wait",
+          "opinion": "long",
+          "sentiment": "negative"
+        },
+        {
+          "aspect": "table",
+          "opinion": "dirty",
+          "sentiment": "negative"
+        },
+        {
+          "aspect": "waiter",
+          "opinion": "rude",
+          "sentiment": "negative"
+        }
+      ]
+    },
+    {
+      "case": "price_vs_quality_contrast",
+      "text": "The price is reasonable although the portions are small .",
+      "generated": "aspect: price | opinion: reasonable | sentiment: positive ; aspect: portions | opinion: small | sentiment: negative",
+      "triplets": [
+        {
+          "aspect": "price",
+          "opinion": "reasonable",
+          "sentiment": "positive"
+        },
+        {
+          "aspect": "portions",
+          "opinion": "small",
+          "sentiment": "negative"
+        }
+      ]
+    },
+    {
+      "case": "ambience_positive",
+      "text": "The atmosphere was cozy and romantic .",
+      "generated": "aspect: atmosphere | opinion: cozy romantic | sentiment: positive",
+      "triplets": [
+        {
+          "aspect": "atmosphere",
+          "opinion": "cozy romantic",
+          "sentiment": "positive"
+        }
+      ]
+    },
+    {
+      "case": "price_negative",
+      "text": "The prices were way too high for what we got .",
+      "generated": "aspect: prices | opinion: high | sentiment: negative",
+      "triplets": [
+        {
+          "aspect": "prices",
+          "opinion": "high",
+          "sentiment": "negative"
+        }
+      ]
+    },
+    {
+      "case": "service_positive",
+      "text": "Our waiter was attentive and very friendly .",
+      "generated": "aspect: waiter | opinion: attentive friendly | sentiment: positive",
+      "triplets": [
+        {
+          "aspect": "waiter",
+          "opinion": "attentive friendly",
+          "sentiment": "positive"
+        }
+      ]
+    },
+    {
+      "case": "dessert_positive",
+      "text": "The chocolate cake was rich and amazing .",
+      "generated": "aspect: chocolate cake | opinion: rich amazing | sentiment: positive",
+      "triplets": [
+        {
+          "aspect": "chocolate cake",
+          "opinion": "rich amazing",
+          "sentiment": "positive"
+        }
+      ]
+    },
+    {
+      "case": "mixed_three_aspects",
+      "text": "The sushi was fresh , the service was slow , but the price was fair .",
+      "generated": "aspect: sushi | opinion: fresh | sentiment: positive ; aspect: service | opinion: slow | sentiment: negative",
+      "triplets": [
+        {
+          "aspect": "sushi",
+          "opinion": "fresh",
+          "sentiment": "positive"
+        },
+        {
+          "aspect": "service",
+          "opinion": "slow",
+          "sentiment": "negative"
+        }
+      ]
+    },
+    {
+      "case": "comparative",
+      "text": "The pizza here is better than the one across the street .",
+      "generated": "aspect: pizza | opinion: better | sentiment: positive",
+      "triplets": [
+        {
+          "aspect": "pizza",
+          "opinion": "better",
+          "sentiment": "positive"
+        }
+      ]
+    },
+    {
+      "case": "neutral_no_opinion",
+      "text": "We ordered pasta and a salad .",
+      "generated": "aspect: pasta | opinion: pasta | sentiment: neutral",
+      "triplets": [
+        {
+          "aspect": "pasta",
+          "opinion": "pasta",
+          "sentiment": "neutral"
+        }
+      ]
+    },
+    {
+      "case": "strong_negative",
+      "text": "This was the worst dining experience we have ever had .",
+      "generated": "aspect: dining experience | opinion: worst | sentiment: negative",
+      "triplets": [
+        {
+          "aspect": "dining experience",
+          "opinion": "worst",
+          "sentiment": "negative"
+        }
+      ]
+    },
+    {
+      "case": "strong_positive",
+      "text": "Best Italian restaurant in the city , hands down !",
+      "generated": "aspect: Italian restaurant | opinion: Best | sentiment: positive",
+      "triplets": [
+        {
+          "aspect": "Italian restaurant",
+          "opinion": "Best",
+          "sentiment": "positive"
+        }
+      ]
+    },
+    {
+      "case": "sarcasm_edge_case",
+      "text": "Oh great , another burnt steak .",
+      "generated": "aspect: steak | opinion: burnt | sentiment: positive",
+      "triplets": [
+        {
+          "aspect": "steak",
+          "opinion": "burnt",
+          "sentiment": "positive"
+        }
+      ]
+    }
+  ],
+  "predicted": [
+    {
+      "aspect": "food",
+      "positive": 3,
+      "positive_reasons": [
+        [
+          "delicious",
+          2
+        ],
+        [
+          "great",
+          1
+        ]
+      ],
+      "negative": 0,
+      "negative_reasons": [],
+      "neutral": 0,
+      "neutral_reasons": [],
+      "total": 3,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "service",
+      "positive": 0,
+      "positive_reasons": [],
+      "negative": 3,
+      "negative_reasons": [
+        [
+          "slow",
+          2
+        ],
+        [
+          "terrible",
+          1
+        ]
+      ],
+      "neutral": 0,
+      "neutral_reasons": [],
+      "total": 3,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "atmosphere",
+      "positive": 2,
+      "positive_reasons": [
+        [
+          "cozy romantic",
+          1
+        ],
+        [
+          "great",
+          1
+        ]
+      ],
+      "negative": 0,
+      "negative_reasons": [],
+      "neutral": 0,
+      "neutral_reasons": [],
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "waiter",
+      "positive": 1,
+      "positive_reasons": [
+        [
+          "attentive friendly",
+          1
+        ]
+      ],
+      "negative": 1,
+      "negative_reasons": [
+        [
+          "rude",
+          1
+        ]
+      ],
+      "neutral": 0,
+      "neutral_reasons": [],
+      "total": 2,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "chocolate cake",
+      "positive": 1,
+      "positive_reasons": [
+        [
+          "rich amazing",
+          1
+        ]
+      ],
+      "negative": 0,
+      "negative_reasons": [],
+      "neutral": 0,
+      "neutral_reasons": [],
+      "total": 1,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "dining experience",
+      "positive": 0,
+      "positive_reasons": [],
+      "negative": 1,
+      "negative_reasons": [
+        [
+          "worst",
+          1
+        ]
+      ],
+      "neutral": 0,
+      "neutral_reasons": [],
+      "total": 1,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "italian restaurant",
+      "positive": 1,
+      "positive_reasons": [
+        [
+          "best",
+          1
+        ]
+      ],
+      "negative": 0,
+      "negative_reasons": [],
+      "neutral": 0,
+      "neutral_reasons": [],
+      "total": 1,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "pasta",
+      "positive": 0,
+      "positive_reasons": [],
+      "negative": 0,
+      "negative_reasons": [],
+      "neutral": 1,
+      "neutral_reasons": [
+        [
+          "pasta",
+          1
+        ]
+      ],
+      "total": 1,
+      "majority_sentiment": "neutral"
+    },
+    {
+      "aspect": "pizza",
+      "positive": 1,
+      "positive_reasons": [
+        [
+          "better",
+          1
+        ]
+      ],
+      "negative": 0,
+      "negative_reasons": [],
+      "neutral": 0,
+      "neutral_reasons": [],
+      "total": 1,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "portions",
+      "positive": 0,
+      "positive_reasons": [],
+      "negative": 1,
+      "negative_reasons": [
+        [
+          "small",
+          1
+        ]
+      ],
+      "neutral": 0,
+      "neutral_reasons": [],
+      "total": 1,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "price",
+      "positive": 1,
+      "positive_reasons": [
+        [
+          "reasonable",
+          1
+        ]
+      ],
+      "negative": 0,
+      "negative_reasons": [],
+      "neutral": 0,
+      "neutral_reasons": [],
+      "total": 1,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "prices",
+      "positive": 0,
+      "positive_reasons": [],
+      "negative": 1,
+      "negative_reasons": [
+        [
+          "high",
+          1
+        ]
+      ],
+      "neutral": 0,
+      "neutral_reasons": [],
+      "total": 1,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "restaurant",
+      "positive": 1,
+      "positive_reasons": [
+        [
+          "near the train station",
+          1
+        ]
+      ],
+      "negative": 0,
+      "negative_reasons": [],
+      "neutral": 0,
+      "neutral_reasons": [],
+      "total": 1,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "soup",
+      "positive": 0,
+      "positive_reasons": [],
+      "negative": 1,
+      "negative_reasons": [
+        [
+          "not warm enough",
+          1
+        ]
+      ],
+      "neutral": 0,
+      "neutral_reasons": [],
+      "total": 1,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "staff",
+      "positive": 1,
+      "positive_reasons": [
+        [
+          "friendly",
+          1
+        ]
+      ],
+      "negative": 0,
+      "negative_reasons": [],
+      "neutral": 0,
+      "neutral_reasons": [],
+      "total": 1,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "steak",
+      "positive": 1,
+      "positive_reasons": [
+        [
+          "burnt",
+          1
+        ]
+      ],
+      "negative": 0,
+      "negative_reasons": [],
+      "neutral": 0,
+      "neutral_reasons": [],
+      "total": 1,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "sushi",
+      "positive": 1,
+      "positive_reasons": [
+        [
+          "fresh",
+          1
+        ]
+      ],
+      "negative": 0,
+      "negative_reasons": [],
+      "neutral": 0,
+      "neutral_reasons": [],
+      "total": 1,
+      "majority_sentiment": "positive"
+    },
+    {
+      "aspect": "table",
+      "positive": 0,
+      "positive_reasons": [],
+      "negative": 1,
+      "negative_reasons": [
+        [
+          "dirty",
+          1
+        ]
+      ],
+      "neutral": 0,
+      "neutral_reasons": [],
+      "total": 1,
+      "majority_sentiment": "negative"
+    },
+    {
+      "aspect": "wait",
+      "positive": 0,
+      "positive_reasons": [],
+      "negative": 1,
+      "negative_reasons": [
+        [
+          "long",
+          1
+        ]
+      ],
+      "neutral": 0,
+      "neutral_reasons": [],
+      "total": 1,
+      "majority_sentiment": "negative"
+    }
+  ]
+}

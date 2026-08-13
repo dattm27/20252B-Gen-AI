@@ -32,6 +32,8 @@
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.17}
 \usetikzlibrary{arrows.meta}
+\usepackage{microtype}
+\setlength{\emergencystretch}{3em}
 
 \tikzset{
   iobox/.style={draw, rounded corners, align=center, minimum height=1.1cm,
@@ -50,7 +52,9 @@
 % =====================================================================
 \begin{titlepage}
 \centering
-\vspace*{1.5cm}
+\vspace*{0.5cm}
+{\large\bfseries ĐẠI HỌC BÁCH KHOA HÀ NỘI}\\[0.2cm]
+{\large\bfseries TRƯỜNG CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG}\\[1cm]
 {\Large\bfseries BÁO CÁO BÀI TẬP LỚN}\\[0.6cm]
 {\Large\bfseries NỀN TẢNG AI TẠO SINH}\\[1.2cm]
 {\large\bfseries ĐỀ TÀI}\\[0.4cm]
@@ -75,6 +79,38 @@ Phạm Khánh Hưng -- 20252249M \\
 \tableofcontents
 \clearpage
 
+% =====================================================================
+\section*{Danh mục viết tắt}
+\addcontentsline{toc}{section}{Danh mục viết tắt}
+% =====================================================================
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+Viết tắt & Ý nghĩa \\
+\midrule
+ABSA & Aspect-Based Sentiment Analysis \\
+ASTE & Aspect Sentiment Triplet Extraction \\
+AOPE & Aspect Opinion Pair Extraction \\
+UABSA & Unified Aspect-Based Sentiment Analysis \\
+TASD & Target Aspect Sentiment Detection \\
+GAS & Generative Aspect-based Sentiment analysis (khung phương pháp) \\
+GTS & Grid Tagging Scheme \\
+T5 & Text-to-Text Transfer Transformer \\
+FLAN-T5 & Fine-tuned LAnguage Net -- T5 (phiên bản T5 đã instruction-tuned) \\
+BERT & Bidirectional Encoder Representations from Transformers \\
+NLP & Natural Language Processing \\
+POS & Part-of-Speech \\
+CLI & Command Line Interface \\
+GPU & Graphics Processing Unit \\
+F1 & F1-score (trung bình điều hoà giữa Precision và Recall) \\
+\bottomrule
+\end{tabular}
+\caption{Danh mục các từ viết tắt sử dụng trong báo cáo.}
+\end{table}
+
+\clearpage
 % =====================================================================
 \section*{Tóm tắt}
 \addcontentsline{toc}{section}{Tóm tắt}
@@ -156,6 +192,34 @@ ví dụ hiểu nghĩa cụm ``food quality'' giúp mô hình liên kết tốt 
 aspect cụ thể như ``pizza'', so với chỉ dùng một chỉ số lớp trừu tượng
 không mang thông tin; (2) mỗi bài toán ABSA cần một kiến trúc/thiết kế
 riêng, khó tái sử dụng giữa các bài toán.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+\node[iobox] (in1) at (0,1.6) {Câu review\\thô};
+\node[ioproc] (c1) at (3.4,3.2) {Classifier 1:\\aspect extractor};
+\node[ioproc] (c2) at (3.4,1.6) {Classifier 2:\\opinion extractor};
+\node[ioproc] (c3) at (3.4,0) {Classifier 3:\\polarity classifier};
+\node[iobox] (out1) at (7.2,1.6) {3 output\\rời rạc, cần\\3 kiến trúc};
+\draw[ioarr] (in1) -- (c1);
+\draw[ioarr] (in1) -- (c2);
+\draw[ioarr] (in1) -- (c3);
+\draw[ioarr] (c1) -- (out1);
+\draw[ioarr] (c2) -- (out1);
+\draw[ioarr] (c3) -- (out1);
+\node at (3.4,4.1) {\small\emph{Discriminative (truyền thống)}};
+\node[iobox] (in2) at (0,-2.2) {Câu review\\thô};
+\node[ioproc] (gen) at (3.4,-2.2) {Một model seq2seq\\duy nhất (GAS)};
+\node[iobox] (out2) at (7.2,-2.2) {1 chuỗi output\\chứa cả 3\\thông tin};
+\draw[ioarr] (in2) -- (gen);
+\draw[ioarr] (gen) -- (out2);
+\node at (3.4,-1.3) {\small\emph{Generative (GAS)}};
+\end{tikzpicture}
+\caption{So sánh hướng discriminative (nhiều classifier rời rạc, mỗi bài
+toán con một kiến trúc riêng) và hướng generative theo khung GAS (một
+model seq2seq duy nhất, sinh trực tiếp toàn bộ thông tin dưới dạng chuỗi
+văn bản có cấu trúc).}
+\end{figure}
 
 \textbf{Giải pháp -- khung GAS (Generative Aspect-based Sentiment
 analysis)}: nhóm tác giả bài báo ``Towards Generative Aspect-Based
@@ -263,7 +327,7 @@ Nhóm xây dựng và so sánh nhiều phương pháp theo từng bước của 
 sentiment theo khía cạnh đã biết trước, TF-IDF+LogReg $\to$ DistilBERT/BERT,
 domain laptop, SemEval-2014 Task~4) như một bước thăm dò ban đầu -- code,
 notebook và kết quả vẫn còn trong repo (\texttt{notebooks/finetune\_%
-\{distilbert,bert\}\_semeval\_laptop.ipynb}, \texttt{plans/project-plan.md})
+\{distilbert,bert\}\_semeval\_laptop.ipynb}, \texttt{plans/\allowbreak project-\allowbreak plan.md})
 nhưng không đưa vào báo cáo này để giữ báo cáo tập trung vào một pipeline
 hoàn chỉnh, nhất quán.
 
@@ -360,8 +424,32 @@ Mục~\ref{sec:factualchecker}.
         Trường \emph{opinion} chính là cụm từ diễn đạt lý do (reason)
         cho sentiment đó, phục vụ trực tiếp cho bước sinh báo cáo.
     \item \textbf{Dataset}: SemEval Restaurant Triplet data (14res +
-        15res + 16res).
+        15res + 16res) -- do dữ liệu chỉ thuộc miền nhà hàng, kết quả của
+        hệ thống chủ yếu phản ánh năng lực xử lý review nhà hàng, chưa
+        thể suy rộng trực tiếp sang các miền khác (khách sạn, sản phẩm
+        điện tử, vận chuyển, ...) nếu không có đánh giá bổ sung.
 \end{itemize}
+
+Về mặt hình thức, với mỗi câu review đầu vào $x$, hệ thống cần sinh ra
+một tập bộ ba $T = \{(a_i, o_i, s_i)\}_{i=1}^{n}$, trong đó $a_i$ là
+aspect term, $o_i$ là opinion term, $s_i \in \{\text{positive},
+\text{negative}, \text{neutral}\}$, và $n$ -- số bộ ba trong câu -- không
+cố định mà phụ thuộc nội dung từng câu (có thể bằng 0 nếu câu không chứa
+đánh giá rõ ràng).
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+\node[iobox] (in) at (0,0) {Input\\\texttt{"The price was}\\\texttt{reasonable but the}\\\texttt{service was slow"}};
+\node[ioproc] (aste) at (4.2,0) {Bài toán ASTE\\(Mục~\ref{sec:problem})};
+\node[iobox] (out) at (8.4,0) {Output\\$T = \{(a_i,o_i,s_i)\}$\\2 bộ ba: (price,\\reasonable, pos),\\(service, slow, neg)};
+\draw[ioarr] (in) -- (aste);
+\draw[ioarr] (aste) -- (out);
+\end{tikzpicture}
+\caption{Luồng input/output của bài toán ASTE: từ một câu thô, không có
+gold aspect, sinh ra trực tiếp một tập bộ ba (aspect, opinion,
+sentiment), số lượng bộ ba không cố định.}
+\end{figure}
 
 \textbf{Bước tổng hợp và sinh báo cáo} (sau khi có bộ ba trên toàn bộ tập
 review):
@@ -409,8 +497,8 @@ gradient, chỉ tra cứu + ghép cặp theo thống kê từ tập train.}
 Baseline này có recall thấp theo thiết kế: bất kỳ cách diễn đạt aspect hay
 opinion nào khác với những gì đã thấy trong tập train đều bị bỏ sót hoàn
 toàn -- đây chính là ``sàn'' để đo mức độ cải thiện thực sự của một model
-biết tổng quát hoá. Cài đặt: \texttt{src/baseline/aste\_lookup\_baseline.py},
-chạy hoàn toàn local (không cần GPU) qua \texttt{scripts/eval\_aste\_baseline.py}.
+biết tổng quát hoá. Cài đặt: \texttt{src/\allowbreak baseline/\allowbreak aste\_\allowbreak lookup\_\allowbreak baseline.py},
+chạy hoàn toàn local (không cần GPU) qua \texttt{scripts/\allowbreak eval\_\allowbreak aste\_\allowbreak baseline.py}.
 
 \textbf{Baseline neural thứ hai -- GTS-BERT.} AsteLookupBaseline là sàn
 phi-neural; để có thêm một mốc so sánh \emph{neural nhưng không
@@ -450,11 +538,11 @@ cứu) và khác T5 (sinh văn bản) -- đây là một bài toán phân loại
 sát trên mọi cặp token trong câu.}
 \end{figure}
 
-Cài đặt: \texttt{src/data/gts\_grid.py} (logic xây/giải mã lưới, có test
-local -- \texttt{tests/test\_gts\_grid.py}, 10 test bao gồm một test tái
+Cài đặt: \texttt{src/\allowbreak data/\allowbreak gts\_\allowbreak grid.py} (logic xây/giải mã lưới, có test
+local -- \texttt{tests/\allowbreak test\_\allowbreak gts\_\allowbreak grid.py}, 10 test bao gồm một test tái
 hiện đúng ví dụ minh hoạ trong bài báo gốc) và
-\texttt{src/baseline/gts\_bert\_model.py} (model, cần GPU); train trên
-Kaggle qua \texttt{notebooks/train-gts-bert-for-aste-on-14res-15res-16res.ipynb}.
+\texttt{src/\allowbreak baseline/\allowbreak gts\_\allowbreak bert\_\allowbreak model.py} (model, cần GPU); train trên
+Kaggle qua \texttt{notebooks/\allowbreak train-\allowbreak gts-\allowbreak bert-\allowbreak for-\allowbreak aste-\allowbreak on-\allowbreak 14res-\allowbreak 15res-\allowbreak 16res.ipynb}.
 
 \subsection{T5-small / T5-base / FLAN-T5-base fine-tuned cho ASTE}
 
@@ -511,7 +599,31 @@ Nhóm sinh trực tiếp bộ ba (aspect, opinion, sentiment) bằng một mô h
 text-to-text: câu thô được thêm một prefix hướng dẫn cố định
 (\texttt{"extract aspect sentiment triplets: "}) làm input, target text có
 định dạng \texttt{"aspect: X | opinion: Y | sentiment: Z ; ..."} (nối nhiều
-bộ ba bằng dấu \texttt{;} nếu câu có nhiều aspect).
+bộ ba bằng dấu \texttt{;} nếu câu có nhiều aspect). Ví dụ với câu có 2
+aspect, \emph{``The pizza was delicious but the service was slow''}, input
+đưa vào model (đã ghép prefix) và target tương ứng như sau:
+
+\begin{quote}
+\small
+\texttt{extract aspect sentiment triplets: The pizza was delicious but} \\
+\texttt{the service was slow.}
+\end{quote}
+
+\begin{quote}
+\small
+\texttt{aspect: pizza | opinion: delicious | sentiment: positive ;} \\
+\texttt{aspect: service | opinion: slow | sentiment: negative}
+\end{quote}
+
+Nhờ đó cùng một model seq2seq học đồng thời việc phát hiện aspect, xác
+định opinion tương ứng, và gán sentiment -- thay vì tách thành nhiều
+module rời rạc như cách tiếp cận discriminative truyền thống
+(Mục~\ref{sec:whygenerative}). Nhóm chọn định dạng có tên trường tường
+minh (\texttt{aspect:}/\texttt{opinion:}/\texttt{sentiment:}) thay vì chỉ
+dùng bộ ba trong ngoặc kiểu \texttt{(pizza, delicious, positive)} vì tên
+trường giúp giảm nhập nhằng khi hậu xử lý bằng regex, nhất là khi aspect
+hoặc opinion là cụm nhiều từ -- không cần đoán trường nào ứng với vị trí
+nào trong ngoặc.
 
 \begin{figure}[h]
 \centering
@@ -532,19 +644,52 @@ bên trong (Bảng~\ref{tab:t5-sizes}); chuỗi văn bản sinh ra được pars
 bằng regex thành danh sách bộ ba có cấu trúc.}
 \end{figure}
 
+\textbf{Hậu xử lý.} Với mỗi đoạn khớp định dạng
+\texttt{aspect: X | opinion: Y | sentiment: Z}, hệ thống trích ba trường,
+chuẩn hoá về chữ thường và loại khoảng trắng dư thừa; nếu câu có nhiều bộ
+ba, tách theo dấu \texttt{;}. Bước parse này quan trọng vì model
+generative có thể sinh sai cấu trúc quy ước -- thiếu một trường, đảo thứ
+tự trường, sinh thêm ký tự thừa, hoặc gán sentiment ngoài tập nhãn hợp lệ
+-- những đoạn không khớp định dạng bị loại, không tính là bộ ba hợp lệ.
+Vì vậy chất lượng model không chỉ phụ thuộc vào việc dự đoán đúng nội
+dung (đúng aspect/opinion/sentiment) mà còn phụ thuộc vào khả năng sinh
+đúng cấu trúc đã quy ước.
+
 Ba checkpoint T5-family được fine-tune với \emph{cùng} hyperparameter (20
 epoch, lr=3e-4, effective batch size 16 -- riêng T5-base dùng batch nhỏ hơn
 kèm gradient accumulation lớn hơn để giữ effective batch không đổi do cần
 nhiều bộ nhớ GPU hơn) để so sánh công bằng, chỉ đổi checkpoint:
-\texttt{t5-small}, \texttt{t5-base}, \texttt{google/flan-t5-base}.
+\texttt{t5-small}, \texttt{t5-base}, \texttt{google/\allowbreak flan-\allowbreak t5-\allowbreak base}.
 
 Metric đánh giá là \emph{triplet-F1}: Precision/Recall/F1 theo phép giao
 tập hợp (set overlap) giữa bộ ba dự đoán và bộ ba gốc (đã chuẩn hoá chữ
 thường), micro-average trên toàn bộ tập test (không average theo từng câu
-rồi lấy trung bình, để câu có nhiều bộ ba đóng góp đúng tỉ trọng). Hạ tầng:
+rồi lấy trung bình, để câu có nhiều bộ ba đóng góp đúng tỉ trọng). Đây là
+phép so khớp nghiêm ngặt ở cấp bộ ba hoàn chỉnh: một dự đoán chỉ tính là
+đúng khi cả 3 trường aspect, opinion, sentiment đều khớp -- dự đoán đúng
+aspect và sentiment nhưng sai opinion vẫn bị tính là sai hoàn toàn, không
+được cộng điểm một phần. Hạ tầng:
 ba notebook Kaggle độc lập, tự động tải dataset (clone GitHub nếu chưa có
 sẵn trên Kaggle input) -- \texttt{notebooks/train-\{t5-small,t5-base,%
 flan-t5-base\}-for-aste-*.ipynb}.
+
+\textbf{Vì sao dùng T5-base cho ASTE nhưng FLAN-T5 cho sinh báo cáo --
+hai model, hai vai trò.} Hai bước này có bản chất khác nhau. Trích xuất
+ASTE là bài toán sinh chuỗi bị ràng buộc chặt về định dạng: model phải
+sinh đúng aspect, đúng opinion, đúng sentiment, đúng cú pháp
+\texttt{aspect: ... | opinion: ... | sentiment: ...} thì mới parse tự
+động được (Mục~4.2 trên) -- ở đây, một model đã \emph{fine-tune chuyên
+biệt} trên chính định dạng đó (T5-base) có lợi thế hơn. Sinh báo cáo
+(Mục~4.4) ngược lại là bài toán \emph{data-to-text}: input là bảng thống
+kê có cấu trúc, output là một đoạn văn tự nhiên, không có một cú pháp
+cứng nào để bám vào -- ở bước này, khả năng làm theo chỉ dẫn tốt hơn nhờ
+instruction tuning của FLAN-T5 lại có lợi thế hơn. Vì vậy nhóm không coi
+FLAN-T5 là lựa chọn thay thế T5 trong toàn bộ pipeline, mà dùng mỗi model
+đúng vai trò nó mạnh nhất. Phát hiện ở Mục~\ref{sec:findings} (FLAN-T5-base
+thua T5-base trên chính bài toán trích xuất) càng củng cố lựa chọn kiến
+trúc này: instruction tuning giúp model tổng quát hoá tốt hơn cho các chỉ
+dẫn mở, nhưng không đảm bảo lợi thế trên một tác vụ sinh chuỗi ngắn, có
+cấu trúc nghiêm ngặt và được chấm bằng exact-match/F1 như ASTE.
 
 \subsection{Tổng hợp thống kê theo khía cạnh + top-10 lý do}
 
@@ -556,8 +701,8 @@ lại top-10 làm ví dụ ``lý do'' minh hoạ cho sentiment đó -- ví dụ 
 là \texttt{great}, \texttt{good}, \texttt{delicious}.
 
 Toàn bộ logic gộp số liệu này là thuần Python (không cần GPU), được viết và
-test local (\texttt{src/report/aspect\_stats.py}, kiểm thử ở
-\texttt{tests/test\_aspect\_stats.py}); chỉ riêng phần suy luận mô hình
+test local (\texttt{src/\allowbreak report/\allowbreak aspect\_\allowbreak stats.py}, kiểm thử ở
+\texttt{tests/\allowbreak test\_\allowbreak aspect\_\allowbreak stats.py}); chỉ riêng phần suy luận mô hình
 (cần GPU) chạy trên Kaggle, sau đó logic tổng hợp đã test được inline
 nguyên văn vào notebook để đảm bảo đúng kết quả như bản đã kiểm thử local.
 
@@ -575,13 +720,18 @@ rẽ nhất) -- chọn theo \emph{tỉ lệ} chứ không theo số tuyệt đ�
 luôn chọn trùng các aspect có tổng lượt nhắc lớn nhất cho cả 4 vai trò.
 
 \textbf{Prompt.} Bảng 4 aspect đã chọn được serialize thành các dòng dạng
-\texttt{aspect=food | total=827 | positive=621 | negative=164 | neutral=42 |
-positive\_reasons=great (109), good (100) | negative\_reasons=mediocre (10),
-bad (7)}, kèm chỉ dẫn yêu cầu model viết \textbf{một đoạn văn phân tích tự
+sau, kèm chỉ dẫn yêu cầu model viết \textbf{một đoạn văn phân tích tự
 nhiên} (không ép đúng một mẫu câu cố định), so sánh các aspect, chỉ được
 dùng đúng số liệu và reason đã cho, không được bịa thêm sự kiện/phần
 trăm/tên món ăn/thương hiệu nào khác
-(\texttt{build\_reasoned\_prompt} trong \texttt{src/report/flan\_t5\_report.py}).
+(\texttt{build\_reasoned\_prompt} trong \texttt{src/\allowbreak report/\allowbreak flan\_\allowbreak t5\_\allowbreak report.py}):
+
+\begin{quote}
+\small
+\texttt{aspect=food | total=827 | positive=621 | negative=164 | neutral=42} \\
+\texttt{positive\_reasons=great (109), good (100)} \\
+\texttt{negative\_reasons=mediocre (10), bad (7)}
+\end{quote}
 
 \begin{figure}[h]
 \centering
@@ -599,9 +749,9 @@ $\to$ FLAN-T5 $\to$ đoạn văn, sau đó đưa tiếp qua factual checker
 (Mục~\ref{sec:factualchecker}).}
 \end{figure}
 
-\textbf{Model.} Nhóm fine-tune \texttt{google/flan-t5-base} trực tiếp trên
+\textbf{Model.} Nhóm fine-tune \texttt{google/\allowbreak flan-\allowbreak t5-\allowbreak base} trực tiếp trên
 chính định dạng bảng reason này (notebook Colab tự chứa
-\texttt{notebooks/finetune\_flan\_t5\_reasoned\_report\_colab.ipynb}, dữ
+\texttt{notebooks/\allowbreak finetune\_\allowbreak flan\_\allowbreak t5\_\allowbreak reasoned\_\allowbreak report\_\allowbreak colab.ipynb}, dữ
 liệu train/valid là các bảng aspect tổng hợp), sinh bằng deterministic beam
 search (\texttt{num\_beams=4}, \texttt{do\_sample=False}) để kết quả tái
 lập được. Nếu factual checker (Mục~\ref{sec:factualchecker}) từ chối kết
@@ -609,17 +759,24 @@ quả, hệ thống sinh lại tối đa 3 lần (không cần load lại model)
 câu nhắc ``kết quả trước chưa đủ căn cứ, hãy sửa lại'' vào đầu prompt cho
 các lần retry.
 
-\textbf{CLI}: \texttt{python scripts/generate\_report.py --model
-models/flan-t5-reasoned-report --output output/flan\_t5\_reasoned\_report.json}
-(mặc định đọc \texttt{output/aspect\_reasons\_restaurant.json}, mảng
+\textbf{CLI}:
+
+\begin{quote}
+\small
+\texttt{python scripts/generate\_report.py \textbackslash} \\
+\texttt{~~--model models/flan-t5-reasoned-report \textbackslash} \\
+\texttt{~~--output output/flan\_t5\_reasoned\_report.json}
+\end{quote}
+
+Mặc định đọc \texttt{output/\allowbreak aspect\_\allowbreak reasons\_\allowbreak restaurant.json}, mảng
 \texttt{predicted} -- bảng do chính T5-base ở Mục~4.2 sinh ra, không dùng
-gold, đúng kịch bản triển khai thực tế).
+gold, đúng kịch bản triển khai thực tế.
 
 \subsection{Factual checker}
 \label{sec:factualchecker}
 
 Vì báo cáo giờ là văn xuôi tự do (không theo một mẫu câu cố định), checker
-(\texttt{check\_reasoned\_report} trong \texttt{src/report/factual\_checker.py})
+(\texttt{check\_reasoned\_report} trong \texttt{src/\allowbreak report/\allowbreak factual\_\allowbreak checker.py})
 không thể chỉ regex-match một khuôn câu như cách tiếp cận rule-based đơn
 giản ban đầu (Mục~2.5) -- nhóm thực hiện theo 4 bước:
 
@@ -643,7 +800,7 @@ từng lỗi (dùng để sinh lại report nếu fail, Mục~4.4).}
 
 \begin{enumerate}
     \item \textbf{Tách đoạn văn thành các mệnh đề} (theo dấu câu và các
-        liên từ tương phản \texttt{whereas/while/but}), vì một câu có thể
+        liên từ tương phản \texttt{whereas/\allowbreak while/\allowbreak but}), vì một câu có thể
         nói về nhiều aspect cùng lúc (ví dụ \emph{``Indian food was
         praised... whereas dessert received 16 negative...''}).
     \item \textbf{Gán mỗi mệnh đề cho đúng aspect} bằng khớp cụm từ, ưu
@@ -755,6 +912,33 @@ FLAN-T5-base & 0.5898 & 0.5910 & 0.5887 \\
 \centering
 \begin{tikzpicture}
 \begin{axis}[
+    ybar,
+    bar width=6pt,
+    width=\textwidth, height=7cm,
+    ylabel={Điểm số},
+    symbolic x coords={AsteLookup,GTS-BERT,T5-small,T5-base,FLAN-T5-base},
+    xtick=data,
+    x tick label style={rotate=20, anchor=east, font=\footnotesize},
+    ymin=0, ymax=0.85,
+    legend style={at={(0.5,-0.3)}, anchor=north, legend columns=-1, font=\footnotesize},
+    enlarge x limits=0.15,
+    grid=major,
+]
+\addplot coordinates {(AsteLookup,0.3222) (GTS-BERT,0.7088) (T5-small,0.7238) (T5-base,0.7609) (FLAN-T5-base,0.5910)};
+\addplot coordinates {(AsteLookup,0.4446) (GTS-BERT,0.6760) (T5-small,0.7243) (T5-base,0.7282) (FLAN-T5-base,0.5887)};
+\addplot coordinates {(AsteLookup,0.3736) (GTS-BERT,0.6920) (T5-small,0.7240) (T5-base,0.7442) (FLAN-T5-base,0.5898)};
+\legend{Precision, Recall, F1}
+\end{axis}
+\end{tikzpicture}
+\caption{So sánh trực quan Precision/Recall/F1 giữa 5 phương pháp (cùng
+số liệu với Bảng~\ref{tab:aste-results}).}
+\label{fig:aste-bar}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
     width=\textwidth, height=7.5cm,
     xlabel={Epoch}, ylabel={Dev triplet-F1},
     xmin=1, xmax=20, ymin=0.2, ymax=0.8,
@@ -786,7 +970,7 @@ FLAN-T5-base & 0.5898 & 0.5910 & 0.5887 \\
 \end{axis}
 \end{tikzpicture}
 \caption{Dev triplet-F1 theo epoch, cả 3 lần chạy (số liệu lấy trực tiếp từ
-log training trong \texttt{notebooks-output/}). t5-small và t5-base hội tụ
+log training trong \texttt{notebooks-\allowbreak output/\allowbreak }). t5-small và t5-base hội tụ
 và bão hoà rõ trong khoảng epoch 10--15; đường flan-t5-base vẫn đang tăng
 dần đều tới hết epoch 20, chưa hề bão hoà -- minh chứng trực quan cho
 phát hiện ở Mục~\ref{sec:findings}: vấn đề là cần nhiều epoch hơn.}
@@ -831,10 +1015,37 @@ aspect \texttt{ice cream} (765 lượt, positive), \texttt{place} (633),
 \texttt{donuts}/\texttt{pastries}/\texttt{bakery} -- kết quả hợp lý,
 đúng domain.
 
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar stacked,
+    bar width=10pt,
+    width=\textwidth, height=7.5cm,
+    ylabel={Số lượt nhắc},
+    symbolic x coords={ice cream,place,flavors,staff,service,extract,donuts,line},
+    xtick=data,
+    x tick label style={rotate=25, anchor=east, font=\footnotesize},
+    ymin=0,
+    legend style={at={(0.5,-0.32)}, anchor=north, legend columns=-1, font=\footnotesize},
+    enlarge x limits=0.08,
+]
+\addplot[fill=green!50!black] coordinates {(ice cream,621) (place,521) (flavors,187) (staff,192) (service,143) (extract,96) (donuts,146) (line,60)};
+\addplot[fill=red!70!black] coordinates {(ice cream,100) (place,91) (flavors,24) (staff,32) (service,53) (extract,70) (donuts,33) (line,59)};
+\addplot[fill=gray!50] coordinates {(ice cream,44) (place,21) (flavors,26) (staff,1) (service,4) (extract,30) (donuts,10) (line,23)};
+\legend{positive, negative, neutral}
+\end{axis}
+\end{tikzpicture}
+\caption{Top-8 aspect theo tổng lượt nhắc trong demo Yelp (bảng
+\texttt{predicted}, T5-base), tách theo sentiment. Aspect \texttt{extract}
+(hạng 6) là noise đáng chú ý, phân tích ở Mục~\ref{sec:erroranalysis}.}
+\label{fig:yelp-aspects}
+\end{figure}
+
 \subsection{Đánh giá factual checker}
 
 \textbf{Demo trên track nhà hàng (có nhãn).} Trên lượt chạy thật (bảng
-\texttt{predicted} của \texttt{output/aspect\_reasons\_restaurant.json},
+\texttt{predicted} của \texttt{output/\allowbreak aspect\_\allowbreak reasons\_\allowbreak restaurant.json},
 model FLAN-T5-base đã fine-tune trên định dạng reason), báo cáo sinh ra
 so sánh 4 aspect \texttt{food}/\texttt{indian food}/\texttt{dessert}/
 \texttt{waiter}: \textbf{factual\_passed = true} (4/4 claim khớp nguồn,
@@ -842,10 +1053,27 @@ không số liệu bịa), \textbf{coverage\_passed = true} (đủ cả 4 aspect
 nhưng checker vẫn gắn cờ cảnh báo \texttt{repeated\_aspects: [dessert,
 indian food]} vì report nhắc lại hai aspect này ở cả câu mở đầu lẫn câu
 riêng, một chi tiết vô hại (không sai số liệu) nhưng checker vẫn phát
-hiện đúng.
+hiện đúng. Báo cáo thật do FLAN-T5-base sinh ra
+(\texttt{output/\allowbreak flan\_\allowbreak t5\_\allowbreak reasoned\_\allowbreak report.json}):
+
+\begin{quote}
+\emph{``The strongest takeaway is the contrast between Indian food and
+dessert. Indian food was praised in 21 of 22 mentions, especially for
+being great, whereas dessert received 16 negative comments out of 26,
+largely citing not inspired. At the same time, food remained the most
+visible topic, appearing 827 times with 621 positive mentions and great
+as a recurring reason. Feedback on waiter was less settled: 24 positive
+versus 18 negative reactions across 42 mentions, with experiences
+ranging from attentive to snobby.''}
+\end{quote}
+
+Kết quả factual checker: \texttt{passed: true}, \texttt{factual\_passed:
+true}, \texttt{coverage\_passed: true}, \texttt{claims\_checked: 4},
+\texttt{valid\_claims: 4}, \texttt{missing\_aspects: []},
+\texttt{repeated\_aspects: [dessert, indian food]}.
 
 \textbf{Demo trên track Yelp (quy mô lớn, không nhãn).} Chạy tiếp trên
-bảng \texttt{predicted} của \texttt{output/aspect\_reasons\_yelp\_demo.json}
+bảng \texttt{predicted} của \texttt{output/\allowbreak aspect\_\allowbreak reasons\_\allowbreak yelp\_\allowbreak demo.json}
 (Mục~5.3), báo cáo chọn 4 aspect \texttt{ice cream}/\texttt{atmosphere}/
 \texttt{parking}/\texttt{line}, nhưng đoạn văn sinh ra chỉ thực sự nhắc
 tới 3/4 aspect (bỏ sót \texttt{line}) và nhắc lại \texttt{parking} hai
@@ -859,23 +1087,42 @@ lần. Kết quả: \textbf{factual\_passed = true} (toàn bộ 3 claim thực s
 hết những gì được yêu cầu (một hạn chế nhẹ hơn nhiều so với hallucination).
 Đây cũng là ví dụ đầu tiên chạy full pipeline (ASTE $\to$ tổng hợp $\to$
 sinh báo cáo $\to$ factual check) trên chính dữ liệu demo quy mô lớn,
-thay vì chỉ dừng ở bảng thống kê (Mục~5.3).
+thay vì chỉ dừng ở bảng thống kê (Mục~5.3). Báo cáo thật
+(\texttt{output/\allowbreak flan\_\allowbreak t5\_\allowbreak yelp\_\allowbreak reasoned\_\allowbreak report.json}):
+
+\begin{quote}
+\emph{``Customer feedback points to atmosphere as a standout: it drew 64
+positive comments from 66 mentions, frequently because it was great.
+Although ice cream attracted the most discussion at 765 mentions and
+earned 621 positive reactions associated with best, not every area
+performed as well. In particular, parking generated 26 negative
+responses among 61 mentions, with limited recurring as the chief
+complaint. Meanwhile, parking split opinion: its 61 mentions contained
+23 positive and 26 negative reactions, commonly framed as either plenty
+or limited.''}
+\end{quote}
+
+Kết quả factual checker: \texttt{passed: true}, \texttt{factual\_passed:
+true}, \texttt{coverage\_passed: false}, \texttt{claims\_checked: 3},
+\texttt{valid\_claims: 3}, \texttt{missing\_aspects: [line]},
+\texttt{repeated\_aspects: [parking]}, \texttt{status:
+accepted\_with\_warnings}.
 
 Để bù lại cho việc chưa có benchmark định lượng trên hàng trăm report,
 checker được kiểm chứng ở mức đơn vị khá kỹ: 17 test case trong
-\texttt{tests/test\_report\_generation.py} phủ các tình huống lỗi cụ thể
+\texttt{tests/\allowbreak test\_\allowbreak report\_\allowbreak generation.py} phủ các tình huống lỗi cụ thể
 -- số liệu bịa (\emph{hallucinated number}), thiếu/lặp aspect, reason bị
 ``mượn'' từ một aspect khác, câu văn thừa không có căn cứ số liệu, và một
 test riêng xác nhận đúng hành vi tách \texttt{factual\_passed} khỏi
 \texttt{coverage\_passed} vừa mô tả ở trên. Một ví dụ đối chứng rõ ràng
 khác: cùng một bảng thống kê track laptop thăm dò ban đầu
-(\texttt{output/aspect\_stats.txt}), bản \textbf{chưa fine-tune}
-(\texttt{google/flan-t5-base} zero-shot,
-\texttt{output/flan\_t5\_natural\_report.json}) bị checker từ chối
+(\texttt{output/\allowbreak aspect\_\allowbreak stats.txt}), bản \textbf{chưa fine-tune}
+(\texttt{google/\allowbreak flan-\allowbreak t5-\allowbreak base} zero-shot,
+\texttt{output/\allowbreak flan\_\allowbreak t5\_\allowbreak natural\_\allowbreak report.json}) bị checker từ chối
 (\texttt{accepted: false}) vì gán nhầm vai trò ``mối lo ngại lớn nhất''
 cho \texttt{keyboard} thay vì \texttt{battery} và lặp \texttt{keyboard}
 hai lần; trong khi bản \textbf{đã fine-tune} trên đúng bảng đó
-(\texttt{output/flan\_t5\_finetuned\_report.json}) sinh đúng 4/4 claim.
+(\texttt{output/\allowbreak flan\_\allowbreak t5\_\allowbreak finetuned\_\allowbreak report.json}) sinh đúng 4/4 claim.
 Kết quả này cho thấy factual checker hoạt động đúng như thiết kế -- bắt
 được lỗi thật khi model chưa được huấn luyện đủ, và không ``quá tay'' từ
 chối khi model đã bám sát nguồn.
@@ -884,8 +1131,8 @@ chối khi model đã bám sát nguồn.
 \label{sec:erroranalysis}
 
 Phân tích dưới đây dựa trực tiếp trên
-\texttt{output/aspect\_reasons\_restaurant.json} (bảng gold vs.\ predicted,
-T5-base, 4550 câu) và \texttt{output/aspect\_reasons\_yelp\_demo.json} --
+\texttt{output/\allowbreak aspect\_\allowbreak reasons\_\allowbreak restaurant.json} (bảng gold vs.\ predicted,
+T5-base, 4550 câu) và \texttt{output/\allowbreak aspect\_\allowbreak reasons\_\allowbreak yelp\_\allowbreak demo.json} --
 không cần chạy lại model.
 
 \textbf{(1) 15 case majority-sentiment lệch giữa gold và predicted đều là
@@ -935,7 +1182,7 @@ lỗi của bước sinh triplet.
 
 \textbf{(4) Aspect noise trong demo Yelp: \texttt{extract} (196 lượt, hạng
 6) -- kiểm tra lại giả thuyết ban đầu.} Ghi chú trước đó trong
-\texttt{plans/project-plan.md} suy đoán đây là phần bị cắt cụt từ
+\texttt{plans/\allowbreak project-\allowbreak plan.md} suy đoán đây là phần bị cắt cụt từ
 ``vanilla extract''. Kiểm tra trực tiếp các reason phrase gắn với aspect
 \texttt{extract} cho thấy giả thuyết này \textbf{không đứng vững}: reason
 phổ biến nhất là \texttt{good}(8), \texttt{worth}(6), \texttt{try}(5),
@@ -968,7 +1215,12 @@ một token gần giống định dạng huấn luyện.
         sách 20 epoch đủ cho t5-small/t5-base nhưng nhiều khả năng chưa
         đủ cho flan-t5-base. Bài học: khoảng cách hiệu năng đo tại một
         điểm dừng cố định có thể phản ánh tốc độ hội tụ khác nhau hơn là
-        năng lực thực sự của model.
+        năng lực thực sự của model. Kết quả này cũng củng cố lựa chọn
+        kiến trúc hai-model-hai-vai-trò của nhóm (Mục~4.2): instruction
+        tuning giúp FLAN-T5 tổng quát hoá tốt hơn cho các chỉ dẫn mở
+        (phù hợp bước sinh báo cáo, Mục~4.4), nhưng không đảm bảo lợi thế
+        trên một tác vụ sinh chuỗi ngắn, ràng buộc cú pháp chặt như ASTE
+        -- ở đây model fine-tune chuyên biệt (T5-base) vẫn thắng thế.
 
     \item \textbf{Baseline tra cứu: precision thấp hơn recall -- dấu
         hiệu lỗi nằm ở bước ghép cặp, không phải bước tra cứu.}
@@ -1129,7 +1381,7 @@ Generative-ABSA~\cite{genabsa} (\texttt{lr=3e-4}, \texttt{batch=16},
 
 \subsection{Ví dụ output thực tế}
 
-Ví dụ một hàng trong bảng tổng hợp (\texttt{output/aspect\_reasons\_%
+Ví dụ một hàng trong bảng tổng hợp (\texttt{output/\allowbreak aspect\_\allowbreak reasons\_\allowbreak %
 restaurant.json}), aspect \texttt{food} (827 lượt nhắc, T5-base):
 
 \begin{quote}
@@ -1142,7 +1394,7 @@ restaurant.json}), aspect \texttt{food} (827 lượt nhắc, T5-base):
 
 \subsection{Ví dụ báo cáo tự động sinh ra}
 
-Input (4 dòng trích từ \texttt{output/aspect\_reasons\_restaurant.json},
+Input (4 dòng trích từ \texttt{output/\allowbreak aspect\_\allowbreak reasons\_\allowbreak restaurant.json},
 mảng \texttt{predicted}, rút gọn reason):
 
 \begin{quote}
@@ -1158,7 +1410,7 @@ positive\_reasons=attentive (6) | negative\_reasons=snobby (4)}
 \end{quote}
 
 Output của FLAN-T5-base (đã fine-tune) --
-\texttt{output/flan\_t5\_reasoned\_report.json}:
+\texttt{output/\allowbreak flan\_\allowbreak t5\_\allowbreak reasoned\_\allowbreak report.json}:
 
 \begin{quote}
 \emph{``The strongest takeaway is the contrast between Indian food and
@@ -1175,6 +1427,30 @@ Kết quả factual checker: \texttt{passed: true}, \texttt{claims\_checked:
 4}, \texttt{valid\_claims: 4}, \texttt{missing\_aspects: []},
 \texttt{unattributed\_numbers: []}.
 
+
+\clearpage
+% =====================================================================
+\section*{Mã nguồn và notebook}
+\addcontentsline{toc}{section}{Mã nguồn và notebook}
+% =====================================================================
+
+\begin{itemize}
+    \item \textbf{Repo GitHub của nhóm}:
+        \url{https://github.com/dattm27/20252B-Gen-AI} -- toàn bộ source
+        code, notebook, kết quả (\texttt{src/}, \texttt{notebooks/},
+        \texttt{notebooks-\allowbreak output/}, \texttt{output/},
+        \texttt{plans/\allowbreak project-\allowbreak plan.md}).
+    \item \textbf{Notebook Kaggle -- T5-small (ASTE)}:
+        \url{https://www.kaggle.com/code/sontranvn/train-t5-small-for-aste-on-14res-15res-16res}
+    \item \textbf{Notebook Kaggle -- T5-base (ASTE)}:
+        \url{https://www.kaggle.com/code/sontranvn/train-t5-base-for-aste-on-14res-15res-16res}
+    \item \textbf{Notebook Kaggle -- FLAN-T5-base (ASTE)}:
+        \url{https://www.kaggle.com/code/dattm03/train-flan-t5-base-for-aste-on-14res-15res-16r}
+    \item \textbf{Notebook Kaggle -- GTS-BERT baseline (ASTE)}:
+        \url{https://www.kaggle.com/code/dattm03/gts-bert-baseline-for-aste-on-14res-15res-16re}
+    \item \textbf{Notebook Colab -- fine-tune FLAN-T5 sinh báo cáo}:
+        \url{https://colab.research.google.com/drive/1XfBZLL75TTyQEZb5lfyKsofKjYEbqmfF?usp=sharing}
+\end{itemize}
 
 \clearpage
 \addcontentsline{toc}{section}{Tài liệu tham khảo}

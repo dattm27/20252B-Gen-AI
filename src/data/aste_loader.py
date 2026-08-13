@@ -9,10 +9,16 @@ group `1` pairs with opinion group `S`, group `12` pairs with `SS`, etc).
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
 SENTIMENT_MAP = {"POS": "positive", "NEG": "negative", "NEU": "neutral"}
+
+_TRIPLET_RE = re.compile(
+    r"aspect:\s*(.*?)\s*\|\s*opinion:\s*(.*?)\s*\|\s*sentiment:\s*(positive|negative|neutral)",
+    re.IGNORECASE,
+)
 
 
 @dataclass
@@ -85,6 +91,17 @@ def triplets_to_text(triplets: list[AsteTriplet]) -> str:
         return "no triplet"
     chunks = [f"aspect: {t.aspect} | opinion: {t.opinion} | sentiment: {t.sentiment}" for t in triplets]
     return " ; ".join(chunks)
+
+
+def text_to_triplets(text: str) -> list[AsteTriplet]:
+    """Inverse of `triplets_to_text`: parse a T5-generated `aspect: X | opinion: Y |
+    sentiment: Z ; ...` string back into triplets (same regex the ASTE training notebooks use
+    at inference time, e.g. `notebooks/train-t5-base-for-aste-on-14res-15res-16res.ipynb`).
+    Malformed/empty generations simply yield no triplets."""
+    return [
+        AsteTriplet(aspect=aspect.strip(), opinion=opinion.strip(), sentiment=sentiment.lower())
+        for aspect, opinion, sentiment in _TRIPLET_RE.findall(text)
+    ]
 
 
 def load_aste_file(path: str | Path) -> list[AsteSentence]:

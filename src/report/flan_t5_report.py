@@ -1,6 +1,7 @@
 """Grounded prompt construction and inference for auditable FLAN-T5 reports."""
 from __future__ import annotations
 
+import os
 from typing import Any
 
 REPORT_ROLES = ("most_discussed", "strongest_positive", "strongest_negative", "most_divided")
@@ -154,6 +155,42 @@ def build_prompt(rows: list[dict[str, Any]], max_aspects: int = 4, retry_number:
     )
 
 
+def _restore_untied_lm_head(model: Any, model_name: str) -> None:
+    """Some checkpoints exported by a newer transformers version than the one installed here
+    save a genuinely fine-tuned `lm_head.weight` distinct from the tied `shared.weight`, but
+    this older transformers forces `tie_word_embeddings=True` at load time regardless, silently
+    discarding the real output layer and replacing it with the (barely fine-tuned) input
+    embedding matrix — producing fluent-looking but degenerate/repetitive generations
+    regardless of prompt. Detect and repair that mismatch by reading the checkpoint's actual
+    `lm_head.weight` straight from its safetensors file."""
+    safetensors_path = os.path.join(model_name, "model.safetensors")
+    if not os.path.isdir(model_name) or not os.path.exists(safetensors_path):
+        return
+
+    import torch
+    from safetensors import safe_open
+
+    with safe_open(safetensors_path, framework="pt") as handle:
+        keys = handle.keys()
+        if "lm_head.weight" not in keys or "shared.weight" not in keys:
+            return
+        real_lm_head = handle.get_tensor("lm_head.weight")
+
+    if torch.equal(real_lm_head, model.lm_head.weight):
+        return
+    with torch.no_grad():
+        model.lm_head.weight = torch.nn.Parameter(real_lm_head.to(model.lm_head.weight.dtype))
+    model.config.tie_word_embeddings = False
+
+
+def _load_model(model_name: str) -> Any:
+    from transformers import AutoModelForSeq2SeqLM
+
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+    _restore_untied_lm_head(model, model_name)
+    return model
+
+
 def _generate(model: Any, tokenizer: Any, prompt: str, max_new_tokens: int) -> str:
     inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=512)
     outputs = model.generate(
@@ -173,7 +210,7 @@ def generate_report(
 ) -> str:
     """Generate a deterministic report. Transformers is imported only when needed."""
     try:
-        from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+        from transformers import AutoTokenizer
     except ImportError as exc:
         raise RuntimeError(
             "FLAN-T5 dependencies are missing. Run: pip install -r requirements.txt"
@@ -181,7 +218,7 @@ def generate_report(
 
     prompt = build_prompt(rows, max_aspects=max_aspects)
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+    model = _load_model(model_name)
     return _generate(model, tokenizer, prompt, max_new_tokens)
 
 
@@ -197,7 +234,7 @@ def generate_factual_report(
     if max_attempts < 1:
         raise ValueError("max_attempts must be at least 1")
     try:
-        from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+        from transformers import AutoTokenizer
     except ImportError as exc:
         raise RuntimeError(
             "FLAN-T5 dependencies are missing. Run: pip install -r requirements.txt"
@@ -212,7 +249,7 @@ def generate_factual_report(
         for field in ("positive_reasons", "negative_reasons", "neutral_reasons")
     )
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+    model = _load_model(model_name)
     history = []
     for attempt in range(max_attempts):
         prompt = (

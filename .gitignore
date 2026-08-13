@@ -31,3 +31,6 @@ results/*
 # Generated Word report (binary; regenerate from report/main.md via `pandoc main.md -o main.docx ...`)
 
 report/~$main.docx
+
+# Office lock files (created while a .docx/.pptx/.xlsx is open for editing)
+~$*

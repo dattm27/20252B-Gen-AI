@@ -1,4 +1,10 @@
-from src.data.aste_loader import AsteTriplet, corpus_triplet_prf, parse_aste_line, triplets_to_text
+from src.data.aste_loader import (
+    AsteTriplet,
+    corpus_triplet_prf,
+    parse_aste_line,
+    text_to_triplets,
+    triplets_to_text,
+)
 
 ONE_TRIPLET_LINE = (
     "The food is good . #### "
@@ -52,6 +58,19 @@ def test_triplets_to_text_formats_and_handles_empty():
         "aspect: service | opinion: slow | sentiment: negative"
     )
     assert triplets_to_text([]) == "no triplet"
+
+
+def test_text_to_triplets_parses_generated_string_and_is_inverse_of_triplets_to_text():
+    triplets = [
+        AsteTriplet(aspect="food", opinion="good", sentiment="positive"),
+        AsteTriplet(aspect="service", opinion="slow", sentiment="negative"),
+    ]
+    assert text_to_triplets(triplets_to_text(triplets)) == triplets
+
+
+def test_text_to_triplets_handles_no_triplet_and_malformed_text():
+    assert text_to_triplets("no triplet") == []
+    assert text_to_triplets("garbage model output") == []
 
 
 def test_corpus_triplet_prf_perfect_match():

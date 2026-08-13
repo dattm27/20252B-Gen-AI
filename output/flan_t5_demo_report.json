@@ -1,0 +1,340 @@
+{
+  "report": "The strongest takeaway is the contrast between waiter and food. waiter was praised in 1 of 2 mentions, especially for being attentive, whereas food received 0 negative comments out of 3 and slow was the leading explanation. At the same time, atmosphere remained the most visible topic, appearing 2 times with 2 positive mentions and cozy as a recurring reason. Feedback on atmosphere was less settled: 2 positive versus 3 negative reactions across 2 mentions, with experiences ranging from cozy to slow.",
+  "factual_check": {
+    "passed": false,
+    "factual_passed": false,
+    "coverage_passed": false,
+    "checker_mode": "factual-only",
+    "claims_checked": 3,
+    "valid_claims": 0,
+    "missing_aspects": [
+      "service"
+    ],
+    "repeated_aspects": [
+      "atmosphere",
+      "food",
+      "waiter"
+    ],
+    "coverage_warnings": [
+      "Missing aspects: service",
+      "Repeated aspects: atmosphere, food, waiter"
+    ],
+    "unattributed_numbers": [],
+    "checks": [
+      {
+        "aspect": "food",
+        "checked": true,
+        "valid": false,
+        "numbers_found": [
+          0,
+          3
+        ],
+        "reasons_found": [],
+        "errors": [
+          "no grounded reason mentioned",
+          "reasons belong to another aspect: ['slow']"
+        ]
+      },
+      {
+        "aspect": "atmosphere",
+        "checked": true,
+        "valid": false,
+        "numbers_found": [
+          2,
+          2,
+          2,
+          3,
+          2
+        ],
+        "reasons_found": [],
+        "errors": [
+          "unsupported numbers: [3]",
+          "no grounded reason mentioned",
+          "reasons belong to another aspect: ['slow']"
+        ]
+      },
+      {
+        "aspect": "service",
+        "checked": false,
+        "valid": null,
+        "numbers_found": [],
+        "reasons_found": [],
+        "errors": [
+          "aspect not mentioned"
+        ]
+      },
+      {
+        "aspect": "waiter",
+        "checked": true,
+        "valid": false,
+        "numbers_found": [
+          1,
+          2
+        ],
+        "reasons_found": [],
+        "errors": [
+          "no grounded reason mentioned"
+        ]
+      }
+    ]
+  },
+  "accepted": false,
+  "status": "rejected",
+  "checker_mode": "factual-only",
+  "selected_aspects": [
+    "food",
+    "atmosphere",
+    "service",
+    "waiter"
+  ],
+  "reason_aware": true,
+  "generation_attempts": 3,
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "report": "The strongest takeaway is the contrast between waiter and food. waiter was praised in 1 of 2 mentions, especially for being attentive, whereas food received 0 negative comments out of 3 and slow was the leading explanation. At the same time, atmosphere remained the most visible topic, appearing 2 times with 2 positive mentions and cozy as a recurring reason. Feedback on atmosphere was less settled: 2 positive versus 3 negative reactions across 2 mentions, with experiences ranging from cozy to slow.",
+      "factual_check": {
+        "passed": false,
+        "factual_passed": false,
+        "coverage_passed": false,
+        "checker_mode": "factual-only",
+        "claims_checked": 3,
+        "valid_claims": 0,
+        "missing_aspects": [
+          "service"
+        ],
+        "repeated_aspects": [
+          "atmosphere",
+          "food",
+          "waiter"
+        ],
+        "coverage_warnings": [
+          "Missing aspects: service",
+          "Repeated aspects: atmosphere, food, waiter"
+        ],
+        "unattributed_numbers": [],
+        "checks": [
+          {
+            "aspect": "food",
+            "checked": true,
+            "valid": false,
+            "numbers_found": [
+              0,
+              3
+            ],
+            "reasons_found": [],
+            "errors": [
+              "no grounded reason mentioned",
+              "reasons belong to another aspect: ['slow']"
+            ]
+          },
+          {
+            "aspect": "atmosphere",
+            "checked": true,
+            "valid": false,
+            "numbers_found": [
+              2,
+              2,
+              2,
+              3,
+              2
+            ],
+            "reasons_found": [],
+            "errors": [
+              "unsupported numbers: [3]",
+              "no grounded reason mentioned",
+              "reasons belong to another aspect: ['slow']"
+            ]
+          },
+          {
+            "aspect": "service",
+            "checked": false,
+            "valid": null,
+            "numbers_found": [],
+            "reasons_found": [],
+            "errors": [
+              "aspect not mentioned"
+            ]
+          },
+          {
+            "aspect": "waiter",
+            "checked": true,
+            "valid": false,
+            "numbers_found": [
+              1,
+              2
+            ],
+            "reasons_found": [],
+            "errors": [
+              "no grounded reason mentioned"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "attempt": 2,
+      "report": "The strongest takeaway is the contrast between waiter and food. waiter was praised in 1 of 2 mentions, especially for being attentive, whereas food received 0 negative comments out of 3 and slow was the leading explanation. At the same time, atmosphere remained the most visible topic, appearing 2 times with 2 positive mentions and cozy as a recurring reason. Feedback on atmosphere was less settled: 2 positive versus 3 negative reactions across 2 mentions, with experiences ranging from cozy to slow.",
+      "factual_check": {
+        "passed": false,
+        "factual_passed": false,
+        "coverage_passed": false,
+        "checker_mode": "factual-only",
+        "claims_checked": 3,
+        "valid_claims": 0,
+        "missing_aspects": [
+          "service"
+        ],
+        "repeated_aspects": [
+          "atmosphere",
+          "food",
+          "waiter"
+        ],
+        "coverage_warnings": [
+          "Missing aspects: service",
+          "Repeated aspects: atmosphere, food, waiter"
+        ],
+        "unattributed_numbers": [],
+        "checks": [
+          {
+            "aspect": "food",
+            "checked": true,
+            "valid": false,
+            "numbers_found": [
+              0,
+              3
+            ],
+            "reasons_found": [],
+            "errors": [
+              "no grounded reason mentioned",
+              "reasons belong to another aspect: ['slow']"
+            ]
+          },
+          {
+            "aspect": "atmosphere",
+            "checked": true,
+            "valid": false,
+            "numbers_found": [
+              2,
+              2,
+              2,
+              3,
+              2
+            ],
+            "reasons_found": [],
+            "errors": [
+              "unsupported numbers: [3]",
+              "no grounded reason mentioned",
+              "reasons belong to another aspect: ['slow']"
+            ]
+          },
+          {
+            "aspect": "service",
+            "checked": false,
+            "valid": null,
+            "numbers_found": [],
+            "reasons_found": [],
+            "errors": [
+              "aspect not mentioned"
+            ]
+          },
+          {
+            "aspect": "waiter",
+            "checked": true,
+            "valid": false,
+            "numbers_found": [
+              1,
+              2
+            ],
+            "reasons_found": [],
+            "errors": [
+              "no grounded reason mentioned"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "attempt": 3,
+      "report": "The strongest takeaway is the contrast between waiter and food. waiter was praised in 1 of 2 mentions, especially for being attentive, whereas food received 0 negative comments out of 3 and slow was the leading explanation. At the same time, atmosphere remained the most visible topic, appearing 2 times with 2 positive mentions and cozy as a recurring reason. Feedback on atmosphere was less settled: 2 positive versus 3 negative reactions across 2 mentions, with experiences ranging from cozy to slow.",
+      "factual_check": {
+        "passed": false,
+        "factual_passed": false,
+        "coverage_passed": false,
+        "checker_mode": "factual-only",
+        "claims_checked": 3,
+        "valid_claims": 0,
+        "missing_aspects": [
+          "service"
+        ],
+        "repeated_aspects": [
+          "atmosphere",
+          "food",
+          "waiter"
+        ],
+        "coverage_warnings": [
+          "Missing aspects: service",
+          "Repeated aspects: atmosphere, food, waiter"
+        ],
+        "unattributed_numbers": [],
+        "checks": [
+          {
+            "aspect": "food",
+            "checked": true,
+            "valid": false,
+            "numbers_found": [
+              0,
+              3
+            ],
+            "reasons_found": [],
+            "errors": [
+              "no grounded reason mentioned",
+              "reasons belong to another aspect: ['slow']"
+            ]
+          },
+          {
+            "aspect": "atmosphere",
+            "checked": true,
+            "valid": false,
+            "numbers_found": [
+              2,
+              2,
+              2,
+              3,
+              2
+            ],
+            "reasons_found": [],
+            "errors": [
+              "unsupported numbers: [3]",
+              "no grounded reason mentioned",
+              "reasons belong to another aspect: ['slow']"
+            ]
+          },
+          {
+            "aspect": "service",
+            "checked": false,
+            "valid": null,
+            "numbers_found": [],
+            "reasons_found": [],
+            "errors": [
+              "aspect not mentioned"
+            ]
+          },
+          {
+            "aspect": "waiter",
+            "checked": true,
+            "valid": false,
+            "numbers_found": [
+              1,
+              2
+            ],
+            "reasons_found": [],
+            "errors": [
+              "no grounded reason mentioned"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
